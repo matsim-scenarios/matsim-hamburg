@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE population SYSTEM "http://www.matsim.org/files/dtd/population_v6.dtd">
+
+<population>
+
+    <attributes>
+        <attribute name="coordinateReferenceSystem" class="java.lang.String">EPSG:25832</attribute>
+    </attributes>
+
+
+    <!-- ====================================================================== -->
+
+    <person id="1">
+        <attributes>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        </attributes>
+
+        <plan score="80.11179641489682" selected="yes">
+            <activity type="home_46200.0" x="560759.6714219197" y="5937324.08180596" end_time="03:59:47"/>
+            <leg mode="car" dep_time="03:59:47">
+            </leg>
+            <activity type="leisure_2400.0"  x="572235.8403831229" y="5936209.926355275" max_dur="00:00:00"/>
+            <leg mode="car">
+            </leg>
+            <activity type="work_28200.0"  x="570141.5057920266" y="5942863.310389342" end_time="12:32:29"/>
+            <leg mode="car">
+            </leg>
+            <activity type="leisure_600.0"  x="560759.6714219197" y="5937324.08180596" max_dur="00:00:00"/>
+        </plan>
+    </person>
+</population>

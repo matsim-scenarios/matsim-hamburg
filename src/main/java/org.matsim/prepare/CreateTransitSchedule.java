@@ -1,21 +1,29 @@
 package org.matsim.prepare;
 
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
+import org.matsim.contrib.gtfs.GtfsConverter;
 import org.matsim.contrib.gtfs.RunGTFS2MATSim;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.pt.transitSchedule.api.TransitScheduleWriter;
+import org.matsim.pt.utils.CreatePseudoNetwork;
+import org.matsim.pt.utils.CreateVehiclesForSchedule;
 import org.matsim.run.RunHamburgScenario;
 import org.matsim.vehicles.MatsimVehicleWriter;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.matsim.run.RunHamburgScenario.VERSION;
@@ -34,7 +42,7 @@ import static org.matsim.run.RunHamburgScenario.VERSION;
 public class CreateTransitSchedule implements Callable<Integer> {
 
     @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "/Users/meng/work/realLabHH/files/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip")
-    private Path gtfsFile;
+    private List<Path> gtfsFiles;
 
     @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
     private Path networkFile;
@@ -56,22 +64,40 @@ public class CreateTransitSchedule implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call(){
 
-        CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(inputCS,targetCS);
+        CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(inputCS, targetCS);
 
+        // Output files
         File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule.xml.gz");
         File networkPTFile = new File(output, networkFile.getFileName().toString().replace(".xml", "-with-pt.xml"));
         File transitVehiclesFile = new File(output, "hamburg-" + VERSION + "-transitVehicles.xml.gz");
 
-        Config config = ConfigUtils.createConfig();
-        config.network().setInputFile(networkFile.toString());
+        Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
 
-        Scenario scenario = ScenarioUtils.loadScenario(config);
-        RunGTFS2MATSim.convertGTFSandAddToScenario(scenario,gtfsFile.toString(),date,ct,true);
+        for (Path gtfsFile : gtfsFiles) {
+
+            // TODO: possibly some SPNV could be duplicated
+
+            GtfsConverter converter = GtfsConverter.newBuilder()
+                    .setScenario(scenario)
+                    .setTransform(ct)
+                    .setDate(date)
+                    .setFeed(gtfsFile)
+                    .setMergeStops(true)
+                    .build();
+
+            converter.convert();
+        }
+
+        Network network = Files.exists(networkFile) ? NetworkUtils.readNetwork(networkFile.toString()) : scenario.getNetwork();
+
+        // Create a network around the schedule
+        new CreatePseudoNetwork(scenario.getTransitSchedule(), network, "pt_").createNetwork();
+        new CreateVehiclesForSchedule(scenario.getTransitSchedule(), scenario.getTransitVehicles()).run();
 
         new TransitScheduleWriter(scenario.getTransitSchedule()).writeFile(scheduleFile.getAbsolutePath());
-        new NetworkWriter(scenario.getNetwork()).write(networkPTFile.getAbsolutePath());
+        new NetworkWriter(network).write(networkPTFile.getAbsolutePath());
         new MatsimVehicleWriter(scenario.getTransitVehicles()).writeFile(transitVehiclesFile.getAbsolutePath());
 
         return 0;
