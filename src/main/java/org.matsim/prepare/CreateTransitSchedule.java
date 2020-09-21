@@ -6,6 +6,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.contrib.gtfs.GtfsConverter;
 import org.matsim.contrib.gtfs.RunGTFS2MATSim;
+import org.matsim.contrib.gtfs.TransitSchedulePostProcessTools;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
@@ -77,8 +78,6 @@ public class CreateTransitSchedule implements Callable<Integer> {
 
         for (Path gtfsFile : gtfsFiles) {
 
-            // TODO: possibly some SPNV could be duplicated
-
             GtfsConverter converter = GtfsConverter.newBuilder()
                     .setScenario(scenario)
                     .setTransform(ct)
@@ -89,6 +88,10 @@ public class CreateTransitSchedule implements Callable<Integer> {
 
             converter.convert();
         }
+
+        //TODO : should we copy?
+        TransitSchedulePostProcessTools.copyLateDeparturesToStartOfDay(scenario.getTransitSchedule(), 86400.0D, "copied", false);
+        TransitSchedulePostProcessTools.copyEarlyDeparturesToFollowingNight(scenario.getTransitSchedule(), 21600.0D, "copied");
 
         Network network = Files.exists(networkFile) ? NetworkUtils.readNetwork(networkFile.toString()) : scenario.getNetwork();
 
