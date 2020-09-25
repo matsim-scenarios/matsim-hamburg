@@ -10,8 +10,8 @@
         <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
         <param name="runId" value="duesseldorf-1pct"/>
         <param name="outputDirectory" value="./output/output-hamburg-test/"/>
-        <param name="writeEventsInterval" value="50"/>
-        <param name="writePlansInterval" value="50"/>
+        <param name="writeEventsInterval" value="1"/>
+        <param name="writePlansInterval" value="1"/>
         <param name="enableLinkToLinkRouting" value="false" />
     </module>
 

@@ -17,15 +17,15 @@
 
         <plan score="80.11179641489682" selected="yes">
             <activity type="home_46200.0" x="560759.6714219197" y="5937324.08180596" end_time="03:59:47"/>
-            <leg mode="car" dep_time="03:59:47">
+            <leg mode="pt" dep_time="04:59:47">
             </leg>
             <activity type="leisure_2400.0"  x="572235.8403831229" y="5936209.926355275" max_dur="00:00:00"/>
-            <leg mode="car">
+            <leg mode="pt">
             </leg>
             <activity type="work_28200.0"  x="570141.5057920266" y="5942863.310389342" end_time="12:32:29"/>
-            <leg mode="car">
+            <leg mode="pt">
             </leg>
-            <activity type="leisure_600.0"  x="560759.6714219197" y="5937324.08180596" max_dur="00:00:00"/>
+            <activity type="home_46200.0"  x="560759.6714219197" y="5937324.08180596" max_dur="00:00:00"/>
         </plan>
     </person>
 </population>
