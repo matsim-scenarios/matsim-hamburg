@@ -17,5 +17,4 @@ public class RunHamburgScenarioTest {
 
         MATSimApplication.run(RunHamburgScenario.class,args);
     }
-
 }

@@ -7,6 +7,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.contrib.osm.networkReader.LinkProperties;
 import org.matsim.contrib.osm.networkReader.SupersonicOsmNetworkReader;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.run.RunHamburgScenario;
@@ -36,7 +37,7 @@ public class CreateNetwork implements Callable<Integer> {
 
     private static final Logger log = LogManager.getLogger(CreateNetwork.class);
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "INPUT", description = "Input file", defaultValue = "/Users/meng/work/realLabHH/files/hamburg-latest.osm.pbf")
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "INPUT", description = "Input file", defaultValue = "/Users/meng/work/realLabHH/files/germany-latest.osm.pbf")
     private List<Path> input;
 
     @CommandLine.Option(names = "--from-osm", description = "Import from OSM without lane information", defaultValue = "false")
@@ -61,13 +62,16 @@ public class CreateNetwork implements Callable<Integer> {
             Network network = new SupersonicOsmNetworkReader.Builder()
                     .setCoordinateTransformation(ct)
                     .setIncludeLinkAtCoordWithHierarchy((coord, hierachyLevel) ->
-                                    hierachyLevel <= LinkProperties.LEVEL_RESIDENTIAL
+                                    hierachyLevel <= LinkProperties.LEVEL_RESIDENTIAL &&
+                                            coord.getX() >= (RunHamburgScenario.X_EXTENT[0] - 50000) && (coord.getX() <= RunHamburgScenario.X_EXTENT[1] + 50000) &&
+                                            coord.getY() >= (RunHamburgScenario.Y_EXTENT[0] - 50000) && (coord.getY() <= RunHamburgScenario.Y_EXTENT[1] + 50000)
                     )
 
                     .setAfterLinkCreated((link, osmTags, isReverse) -> link.setAllowedModes(new HashSet<>(Arrays.asList(TransportMode.car, TransportMode.bike, TransportMode.ride))))
                     .build()
                     .read(input.get(0));
 
+            NetworkUtils.runNetworkCleaner(network);
             new NetworkWriter(network).write(output.getAbsolutePath());
 
             return 0;
