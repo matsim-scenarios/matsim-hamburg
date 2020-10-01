@@ -45,6 +45,7 @@ public class RunHamburgScenario extends MATSimApplication{
        config.controler().setRunId(runId);
        config.controler().setOutputDirectory(outputDirectory + "/" + runId);
 
+       //todo: think about opening and closing time, it can be overnight activities like shopping or business...
         for (long ii = 600; ii <= 97200; ii += 600) {
 
             for (String act : List.of("educ_higher", "educ_tertiary", "educ_other", "home", "educ_primary", "errands", "educ_secondary", "visit")) {
