@@ -2,37 +2,49 @@ package org.matsim.prepare;
 
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.*;
-import org.matsim.calibration.InitialDemandCalibration;
+import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
-import org.matsim.run.RunHamburgScenario;
+import org.matsim.core.scenario.ScenarioUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.matsim.run.RunHamburgScenario.VERSION;
-
+import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 /**
  * @author zmeng
  */
 public class PreparePopulation {
-    String initialDemand;
+
     Scenario scenario;
     Path output;
 
-    public PreparePopulation(String initialDemand,Path output) {
-        this.initialDemand = initialDemand;
-        InitialDemandCalibration initialDemandCalibration = new InitialDemandCalibration(initialDemand,null);
-        this.scenario = initialDemandCalibration.getScenario();
+    public PreparePopulation(String initialDemand,String attributes, Path output) {
+
+        Config config = ConfigUtils.createConfig();
+
+        config.plans().setInputPersonAttributeFile(attributes);
+        config.plans().setInputFile(initialDemand);
+
+        config.plans().setInsistingOnUsingDeprecatedPersonAttributeFile(true);
+
+        config.global().setCoordinateSystem("EPSG:25832");
+        config.plans().setInputCRS("EPSG:25832");
+
+        scenario = ScenarioUtils.loadScenario(config);
+
         this.output = output;
     }
 
     public static void main(String[] args) throws IOException {
-        String initialDemand = "/Users/meng/work/realLabHH/svn/realLabHH/matsim-input-files/v0_temporary-version/optimizedPopulation.xml.gz";
+        String initialDemand = "/Users/meng/work/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/optimizedPopulation.xml.gz";
+        String attributes = "/Users/meng/work/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/additionalPersonAttributes.xml.gz";
         String outputPath = "scenarios/input";
 
-        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, Path.of(outputPath));
+        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, Path.of(outputPath));
         preparePopulation.run();
     }
 
@@ -42,6 +54,11 @@ public class PreparePopulation {
 
             person.getAttributes().putAttribute("subpopulation", "person");
 
+            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 17)
+                PersonUtils.setCarAvail(person, "never");
+            else
+                PersonUtils.setCarAvail(person, person.getAttributes().getAttribute("sim_carAvailability").toString());
+
             for (Plan plan :
                     person.getPlans()) {
                 Plan newPlan = preparePlan(plan);
@@ -49,7 +66,7 @@ public class PreparePopulation {
                 person.addPlan(newPlan);
             }
         }
-       // scenario.getPopulation().getAttributes().putAttribute("coordinateReferenceSystem", RunHamburgScenario.COORDINATE_SYSTEM);
+
         Files.createDirectories(output);
         org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-25pct.plans.xml.gz").toString());
 
@@ -70,6 +87,7 @@ public class PreparePopulation {
 
         for (PlanElement pe :
                 planElements) {
+
             if (pe instanceof Activity) {
                 Activity activity = (Activity)pe;
                 activity.setFacilityId(null);

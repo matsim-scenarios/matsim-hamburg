@@ -10,7 +10,7 @@ import org.matsim.contrib.osm.networkReader.SupersonicOsmNetworkReader;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
-import org.matsim.run.RunHamburgScenario;
+import org.matsim.run.RunBaseCaseHamburgScenario;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.matsim.run.RunHamburgScenario.VERSION;
+import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 /**
  * Creates the road network layer.
  *
@@ -57,14 +57,14 @@ public class CreateNetwork implements Callable<Integer> {
 
         if (fromOSM) {
 
-            CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(TransformationFactory.WGS84, RunHamburgScenario.COORDINATE_SYSTEM);
+            CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(TransformationFactory.WGS84, RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
             Network network = new SupersonicOsmNetworkReader.Builder()
                     .setCoordinateTransformation(ct)
                     .setIncludeLinkAtCoordWithHierarchy((coord, hierachyLevel) ->
                                     hierachyLevel <= LinkProperties.LEVEL_RESIDENTIAL &&
-                                            coord.getX() >= (RunHamburgScenario.X_EXTENT[0] - 50000) && (coord.getX() <= RunHamburgScenario.X_EXTENT[1] + 50000) &&
-                                            coord.getY() >= (RunHamburgScenario.Y_EXTENT[0] - 50000) && (coord.getY() <= RunHamburgScenario.Y_EXTENT[1] + 50000)
+                                            coord.getX() >= (RunBaseCaseHamburgScenario.X_EXTENT[0] - 50000) && (coord.getX() <= RunBaseCaseHamburgScenario.X_EXTENT[1] + 50000) &&
+                                            coord.getY() >= (RunBaseCaseHamburgScenario.Y_EXTENT[0] - 50000) && (coord.getY() <= RunBaseCaseHamburgScenario.Y_EXTENT[1] + 50000)
                     )
 
                     .setAfterLinkCreated((link, osmTags, isReverse) -> link.setAllowedModes(new HashSet<>(Arrays.asList(TransportMode.car, TransportMode.bike, TransportMode.ride))))

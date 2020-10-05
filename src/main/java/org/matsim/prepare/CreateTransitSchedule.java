@@ -16,7 +16,7 @@ import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.pt.transitSchedule.api.TransitScheduleWriter;
 import org.matsim.pt.utils.CreatePseudoNetwork;
 import org.matsim.pt.utils.CreateVehiclesForSchedule;
-import org.matsim.run.RunHamburgScenario;
+import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.matsim.vehicles.MatsimVehicleWriter;
 import picocli.CommandLine;
 
@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.matsim.run.RunHamburgScenario.VERSION;
+import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
 
 /**
@@ -54,7 +54,7 @@ public class CreateTransitSchedule implements Callable<Integer> {
     @CommandLine.Option(names = "--input-cs", description = "Input coordinate system of the data", defaultValue = TransformationFactory.WGS84)
     private String inputCS;
 
-    @CommandLine.Option(names = "--target-cs", description = "Target coordinate system of the network", defaultValue = RunHamburgScenario.COORDINATE_SYSTEM)
+    @CommandLine.Option(names = "--target-cs", description = "Target coordinate system of the network", defaultValue = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM)
     private String targetCS;
 
     @CommandLine.Option(names = "--date", description = "The day for which the schedules will be extracted", defaultValue = "2020-09-09")

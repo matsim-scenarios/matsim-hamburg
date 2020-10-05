@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE population SYSTEM "http://www.matsim.org/files/dtd/population_v6.dtd">
+
+<population>
+
+    <attributes>
+        <attribute name="coordinateReferenceSystem" class="java.lang.String">EPSG:25832</attribute>
+    </attributes>
+
+    <!-- ====================================================================== -->
+
+    <person id="14566a">
+    <attributes>
+        <attribute name="IPD_actEndTimes" class="java.lang.String">27882.0;50283.0;57510.0;61811.0;-Infinity</attribute>
+        <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;28412.0;50912.0;58412.0;62312.0</attribute>
+        <attribute name="IPD_actTypes" class="java.lang.String">home;educ_secondary;home;leisure;home</attribute>
+        <attribute name="age" class="java.lang.Integer">16</attribute>
+        <attribute name="carAvail" class="java.lang.String">never</attribute>
+        <attribute name="gender" class="java.lang.String">m</attribute>
+        <attribute name="sim_carAvailability" class="java.lang.String">never</attribute>
+        <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+        <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+    </attributes>
+    <plan selected="yes">
+        <activity type="home_51600.0" x="548518.5354641331" y="5945833.333923192" end_time="07:44:42" >
+        </activity>
+        <leg mode="bike" >
+        </leg>
+        <activity type="educ_secondary_21600.0" x="551823.0613116082" y="5947273.972974843" start_time="07:53:32" end_time="13:58:03" >
+        </activity>
+        <leg mode="bike" >
+        </leg>
+        <activity type="home_6600.0" x="548518.5354641331" y="5945833.333923192" start_time="14:08:32" end_time="15:58:30" >
+        </activity>
+        <leg mode="bike" >
+        </leg>
+        <activity type="leisure_3600.0" x="550961.2393402185" y="5945892.562727944" start_time="16:13:32" end_time="17:10:11" >
+        </activity>
+        <leg mode="bike" >
+        </leg>
+        <activity type="home_51600.0" x="548518.5354641331" y="5945833.333923192" start_time="17:18:32" >
+        </activity>
+    </plan>
+
+</person>
+
+    <!-- ====================================================================== -->
+</population>
