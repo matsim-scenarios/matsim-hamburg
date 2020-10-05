@@ -1,15 +1,12 @@
 package org.matsim.run;
 
-import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.analysis.ModeStatsControlerListener;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.groups.StrategyConfigGroup;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.testcases.MatsimTestUtils;
 
 /**

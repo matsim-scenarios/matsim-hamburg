@@ -27,7 +27,7 @@
 
     <module name="plans">
         <param name="inputPlansFile"
-               value="./1agent-hamburg.plans.xml"/>
+               value="./test-hamburg.plans.xml"/>
         <param name="removingUnnecessaryPlanAttributes" value="true"/>
     </module>
 
