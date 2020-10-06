@@ -7,7 +7,10 @@ import org.matsim.analysis.ModeStatsControlerListener;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.Controler;
+import org.matsim.hamburg.replanning.modules.HamburgSubtourModeChoicePlanStrategy;
 import org.matsim.testcases.MatsimTestUtils;
+
+import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
 /**
  * @author zmeng
@@ -25,13 +28,13 @@ public class RunHamburgScenarioTest {
                   "--config:controler.lastIteration" , "2"
         };
 
-        Config config = RunBaseCaseHamburgScenario.prepareConfig(args);
+        Config config = prepareConfig(args);
 
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
-        Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
-        Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
+        Scenario scenario = prepareScenario(config);
+        Controler controler = prepareControler(scenario);
 
         controler.run();
     }
@@ -44,7 +47,7 @@ public class RunHamburgScenarioTest {
                 "--config:controler.lastIteration" , "3"
         };
 
-        Config config = RunBaseCaseHamburgScenario.prepareConfig(args);
+        Config config = prepareConfig(args);
 
         config.controler().setRunId("u17CarUsingTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
@@ -57,14 +60,47 @@ public class RunHamburgScenarioTest {
                 strategySettings.setWeight(100.);
             });
 
-        Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
-        Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
+        Scenario scenario = prepareScenario(config);
+        Controler controler = prepareControler(scenario);
 
         controler.run();
 
         ModeStatsControlerListener modeStatsControlerListener = controler.getInjector().getInstance(ModeStatsControlerListener.class);
 
         Assert.assertFalse("U17 person should not drive car",modeStatsControlerListener.getModeHistories().containsKey("car"));
+    }
 
+    @Test
+    public void HamburgSubtourModeChoiceTest(){
+        String args[] = new String[]{
+                "test/input/test-hamburg.config.xml" ,
+                "--config:controler.lastIteration" , "10"
+        };
+
+        Config config = prepareConfig(args);
+
+        config.controler().setRunId("HamburgSubtourModeChoiceTest");
+        config.controler().setOutputDirectory(utils.getOutputDirectory());
+
+        config.plans().setInputFile("test-u17-hamburg.plans.xml");
+        config.subtourModeChoice().setConsiderCarAvailability(false);
+
+        config.strategy().getStrategySettings().forEach(strategySettings ->
+        {if(strategySettings.getStrategyName().equals("SubtourModeChoice")){
+            strategySettings.setStrategyName(HamburgSubtourModeChoicePlanStrategy.class.getCanonicalName());
+            strategySettings.setWeight(100);
+        } //else
+            //strategySettings.setWeight(0);
+        });
+
+        Scenario scenario = prepareScenario(config);
+
+        Controler controler = prepareControler(scenario);
+
+        controler.run();
+
+        ModeStatsControlerListener modeStatsControlerListener = controler.getInjector().getInstance(ModeStatsControlerListener.class);
+
+        Assert.assertFalse("U17 person should not drive car",modeStatsControlerListener.getModeHistories().containsKey("car"));
     }
 }

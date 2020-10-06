@@ -95,6 +95,11 @@ public class RunBaseCaseHamburgScenario {
 
         ScenarioUtils.loadScenario(scenario);
 
+        scenario.getPopulation().getPersons().values().forEach(person -> {
+            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 17)
+                person.getAttributes().putAttribute("bannedModes",TransportMode.car);
+        });
+
         //todo add income attribute
         boolean usePersonSpecificMarginalUtilityOfMoney = false;
         if (usePersonSpecificMarginalUtilityOfMoney) {
