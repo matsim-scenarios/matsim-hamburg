@@ -14,6 +14,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -41,7 +42,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"../shared-svn/projects/avoev/matsim-input-files/berlin/v1/config_berlin_vsp_2019-05-08_test.xml"};
+            args = new String[] {"../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
@@ -95,9 +96,12 @@ public class RunBaseCaseHamburgScenario {
 
         ScenarioUtils.loadScenario(scenario);
 
+        // set CarAvail of person under 18 never, set always otherwise
         scenario.getPopulation().getPersons().values().forEach(person -> {
-            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 17)
-                person.getAttributes().putAttribute("bannedModes",TransportMode.car);
+            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 18)
+                PersonUtils.setCarAvail(person, "never");
+            else
+                PersonUtils.setCarAvail(person, "always");
         });
 
         //todo add income attribute
@@ -119,7 +123,20 @@ public class RunBaseCaseHamburgScenario {
             counter++;
         }
 
-        final Config config = ConfigUtils.loadConfig( args[ 0 ], customModulesAll );
+        String configFile;
+
+        if(args[0].contains(".xml")) {
+            configFile = args[0];
+        } else if (args[0].equals("1pct"))
+            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml";
+        else if (args[0].equals("10pct"))
+            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-10pct.config.xml";
+        else if (args[0].equals("25pct"))
+            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-25pct.config.xml";
+        else
+            throw new RuntimeException(args[0] + " can not be processed as a config file");
+
+        final Config config = ConfigUtils.loadConfig( configFile, customModulesAll );
 
         // delete default modes
         config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);
@@ -127,7 +144,7 @@ public class RunBaseCaseHamburgScenario {
         String[] typedArgs = Arrays.copyOfRange(args, 1, args.length);
         ConfigUtils.applyCommandline(config, typedArgs);
 
-        //todo: think about opening and closing time, it can be overnight activities like shopping or business...
+        //todo: think about opening and closing time, there can be some overnight activities like shopping or business...
         for (long ii = 600; ii <= 97200; ii += 600) {
 
             for (String act : List.of("educ_higher", "educ_tertiary", "educ_other", "home", "educ_primary", "errands", "educ_secondary", "visit")) {

@@ -40,9 +40,12 @@ public class PreparePopulation {
     }
 
     public static void main(String[] args) throws IOException {
-        String initialDemand = "/Users/meng/work/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/optimizedPopulation.xml.gz";
-        String attributes = "/Users/meng/work/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/additionalPersonAttributes.xml.gz";
-        String outputPath = "scenarios/input";
+
+        // population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
+
+        String initialDemand = "../shared-svn/projects/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/optimizedPopulation.xml.gz";
+        String attributes = "../shared-svn/projects/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/additionalPersonAttributes.xml.gz";
+        String outputPath = "../shared-svn/project/realLabHH/svn/realLabHH/matsim-input-files/v1/";
 
         PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, Path.of(outputPath));
         preparePopulation.run();
