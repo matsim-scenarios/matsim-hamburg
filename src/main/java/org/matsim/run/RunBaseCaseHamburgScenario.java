@@ -14,11 +14,9 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.scoring.IncomeBasedPlanScoringFunctionFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,13 +79,13 @@ public class RunBaseCaseHamburgScenario {
         });
 
         // use personSpecific scoring approach
-        IncomeBasedPlanScoringFunctionFactory incomeBasedPlanScoringFunctionFactory = new IncomeBasedPlanScoringFunctionFactory(controler.getScenario());
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.bindScoringFunctionFactory().toInstance(incomeBasedPlanScoringFunctionFactory);
-            }
-        });
+//        IncomeBasedPlanScoringFunctionFactory incomeBasedPlanScoringFunctionFactory = new IncomeBasedPlanScoringFunctionFactory(controler.getScenario());
+//        controler.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                this.bindScoringFunctionFactory().toInstance(incomeBasedPlanScoringFunctionFactory);
+//            }
+//        });
 
         return controler;
     }
@@ -106,14 +104,6 @@ public class RunBaseCaseHamburgScenario {
 
         ScenarioUtils.loadScenario(scenario);
 
-        // set CarAvail of person under 18 never, set always otherwise
-        scenario.getPopulation().getPersons().values().forEach(person -> {
-            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 18)
-                PersonUtils.setCarAvail(person, "never");
-            else
-                PersonUtils.setCarAvail(person, "always");
-        });
-
         return scenario;
     }
 
@@ -127,20 +117,8 @@ public class RunBaseCaseHamburgScenario {
             counter++;
         }
 
-        String configFile;
 
-        if(args[0].contains(".xml")) {
-            configFile = args[0];
-        } else if (args[0].equals("1pct"))
-            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml";
-        else if (args[0].equals("10pct"))
-            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-10pct.config.xml";
-        else if (args[0].equals("25pct"))
-            configFile = "../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-25pct.config.xml";
-        else
-            throw new RuntimeException(args[0] + " can not be processed as a config file");
-
-        final Config config = ConfigUtils.loadConfig( configFile, customModulesAll );
+        final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
 
         // delete default modes
         config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);

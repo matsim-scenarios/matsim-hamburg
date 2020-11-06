@@ -2,9 +2,15 @@ package org.matsim.prepare;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
@@ -14,21 +20,25 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.gbl.MatsimRandom;
+import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.RoutingModeMainModeIdentifier;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.scenario.ScenarioUtils;
+
 /**
  * @author zmeng
  */
 public class PreparePopulation {
     private static final Logger log = Logger.getLogger(PreparePopulation.class);
 
-    Scenario scenario;
-    Path output;
+    private final Scenario scenario;
+    private final Path output;
+    private final String personIncomeFile;
 
-    public PreparePopulation(String initialDemand,String attributes, Path output) {
+    public PreparePopulation(String initialDemand,String attributes, String person2incomeFile, Path output) {
 
         Config config = ConfigUtils.createConfig();
 
@@ -42,6 +52,9 @@ public class PreparePopulation {
 
         scenario = ScenarioUtils.loadScenario(config);
 
+
+        this.personIncomeFile = person2incomeFile;
+
         this.output = output;
     }
 
@@ -51,17 +64,30 @@ public class PreparePopulation {
 
         String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
         String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
+        String personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
         String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
 
-        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, Path.of(outputPath));
+        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
         preparePopulation.run();
     }
 
     public void run() throws IOException {
+        var person2Income = this.readPersonId2Income(this.personIncomeFile);
+
         for (Person person :
              scenario.getPopulation().getPersons().values()) {
 
             person.getAttributes().putAttribute("subpopulation", "person");
+
+            addPersonIncomeFromCSVFile(person, person2Income);
+
+            // set CarAvail of person under 18 never, set always otherwise
+            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 18)
+                PersonUtils.setCarAvail(person, "never");
+            else
+                PersonUtils.setCarAvail(person, "always");
+            // set Income for person
+
             
             // remove attributes that are confusing and we will not need
             person.getAttributes().removeAttribute("sim_carAvailability");
@@ -128,34 +154,7 @@ public class PreparePopulation {
 			newPlan.addActivity(destinationActivity);
 		}
 
-//        List<PlanElement> planElements = plan.getPlanElements();
-//        for (PlanElement pe :
-//                planElements) {
-//
-//            if (pe instanceof Activity) {
-//                Activity activity = (Activity)pe;
-//                activity.setFacilityId(null);
-//                activity.setLinkId(null);
-//
-//                if (!activity.getType().contains("interaction"))
-//                    splitActivityTypesBasedOnDuration(activity);
-//
-//                newPlan.addActivity(activity);
-//
-//            } else if (pe instanceof Leg) {
-//                Leg leg = (Leg) pe;
-//
-//                if(leg.getMode().contains("teleported")){
-//                    leg.setMode(leg.getMode().split("ed_")[1]);
-//                    leg.getAttributes().putAttribute("routingMode",leg.getMode());
-//                }
-//
-//                leg.setRoute(null);
-//                newPlan.addLeg(leg);
-//            }
-//        }
-        
-        mergeOvernightActivities(newPlan);
+		mergeOvernightActivities(newPlan);
         return newPlan;
     }
 
@@ -204,5 +203,46 @@ public class PreparePopulation {
             }
         }  // skipping plans with just one activity
 
+    }
+
+    private void addPersonIncomeFromCSVFile(Person person, Map<String,Double> personId2Income) throws IOException {
+
+        final Random rnd = MatsimRandom.getLocalInstance();
+
+        if(personId2Income.containsKey(person.getId().toString())){
+            person.getAttributes().putAttribute("income", personId2Income.get(person.getId().toString()));
+        } else {
+            double income = 0.;
+            double rndDouble = rnd.nextDouble();
+            if (rndDouble <= 0.1) income = 826.;
+            else if (rndDouble > 0.1 && rndDouble <= 0.2) income = 1142.;
+            else if (rndDouble > 0.2 && rndDouble <= 0.3) income = 1399.;
+            else if (rndDouble > 0.3 && rndDouble <= 0.4) income = 1630.;
+            else if (rndDouble > 0.4 && rndDouble <= 0.5) income = 1847.;
+            else if (rndDouble > 0.5 && rndDouble <= 0.6) income = 2070.;
+            else if (rndDouble > 0.6 && rndDouble <= 0.7) income = 2332.;
+            else if (rndDouble > 0.7 && rndDouble <= 0.8) income = 2659.;
+            else if (rndDouble > 0.8 && rndDouble <= 0.9) income = 3156.;
+            else if (rndDouble > 0.9) income = 4329.;
+            else {
+                throw new RuntimeException("Aborting..." + rndDouble);
+            }
+            person.getAttributes().putAttribute("income", income);
+            }
+    }
+
+    private Map<String, Double> readPersonId2Income(String person2incomeFile) throws IOException {
+        Map<String, Double> personId2Income = new HashMap<>();
+        File file = new File(person2incomeFile);
+        log.info("read personId2incomeFile from" + file.getAbsolutePath());
+
+        BufferedReader csvReader = new BufferedReader(new FileReader(file));
+        String firstLine = csvReader.readLine();
+        while ((firstLine = csvReader.readLine()) != null) {
+            String[] income = firstLine.split(",");
+            personId2Income.put(income[0],Double.valueOf(income[1]));
+        }
+        csvReader.close();
+        return personId2Income;
     }
 }
