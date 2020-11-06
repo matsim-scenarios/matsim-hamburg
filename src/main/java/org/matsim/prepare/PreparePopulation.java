@@ -1,23 +1,29 @@
 package org.matsim.prepare;
 
-import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.population.*;
-import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.population.PersonUtils;
-import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.scenario.ScenarioUtils;
+import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
-import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
+import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.population.Activity;
+import org.matsim.api.core.v01.population.Leg;
+import org.matsim.api.core.v01.population.Person;
+import org.matsim.api.core.v01.population.Plan;
+import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.router.RoutingModeMainModeIdentifier;
+import org.matsim.core.router.TripStructureUtils;
+import org.matsim.core.router.TripStructureUtils.Trip;
+import org.matsim.core.scenario.ScenarioUtils;
 /**
  * @author zmeng
  */
 public class PreparePopulation {
+    private static final Logger log = Logger.getLogger(PreparePopulation.class);
 
     Scenario scenario;
     Path output;
@@ -43,9 +49,9 @@ public class PreparePopulation {
 
         // population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
 
-        String initialDemand = "../shared-svn/projects/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/optimizedPopulation.xml.gz";
-        String attributes = "../shared-svn/projects/realLabHH/svn/realLabHH/matsim-input-files/v1/initialDemand/additionalPersonAttributes.xml.gz";
-        String outputPath = "../shared-svn/project/realLabHH/svn/realLabHH/matsim-input-files/v1/";
+        String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
+        String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
+        String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
 
         PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, Path.of(outputPath));
         preparePopulation.run();
@@ -56,11 +62,10 @@ public class PreparePopulation {
              scenario.getPopulation().getPersons().values()) {
 
             person.getAttributes().putAttribute("subpopulation", "person");
-
-            if(Integer.parseInt(person.getAttributes().getAttribute("age").toString()) < 17)
-                PersonUtils.setCarAvail(person, "never");
-            else
-                PersonUtils.setCarAvail(person, person.getAttributes().getAttribute("sim_carAvailability").toString());
+            
+            // remove attributes that are confusing and we will not need
+            person.getAttributes().removeAttribute("sim_carAvailability");
+            person.getAttributes().removeAttribute("sim_ptAbo");
 
             for (Plan plan :
                     person.getPlans()) {
@@ -84,35 +89,72 @@ public class PreparePopulation {
     }
 
     private Plan preparePlan(Plan plan) {
+        int activityCounter = 0;
 
+    	RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
+    	
+    	String initialStartTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actStartTimes");
+    	String initialEndTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actEndTimes");
+
+    	String[] initialStartTimes = initialStartTimesString.split(";");
+    	String[] initialEndTimes = initialEndTimesString.split(";");
+    	
         Plan newPlan = scenario.getPopulation().getFactory().createPlan();
-        List<PlanElement> planElements = plan.getPlanElements();
+        
+        Activity firstActivity = (Activity) plan.getPlanElements().get(0);
+		firstActivity.setFacilityId(null);
+		firstActivity.setLinkId(null);
+		splitActivityTypesBasedOnDuration(firstActivity);
+		firstActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+		firstActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
 
-        for (PlanElement pe :
-                planElements) {
+        newPlan.addActivity(firstActivity);
+		
+		for (Trip trip : TripStructureUtils.getTrips(plan.getPlanElements())) {	
+			activityCounter++;
+			
+			String mainMode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+			Leg leg = scenario.getPopulation().getFactory().createLeg(mainMode);
+			newPlan.addLeg(leg);
+			
+			Activity destinationActivity = trip.getDestinationActivity();
+			destinationActivity.setFacilityId(null);
+			destinationActivity.setLinkId(null);
+			splitActivityTypesBasedOnDuration(destinationActivity);
 
-            if (pe instanceof Activity) {
-                Activity activity = (Activity)pe;
-                activity.setFacilityId(null);
-                activity.setLinkId(null);
+			destinationActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+			destinationActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
+			
+			newPlan.addActivity(destinationActivity);
+		}
 
-                if (!activity.getType().contains("interaction"))
-                    splitActivityTypesBasedOnDuration(activity);
-
-                newPlan.addActivity(activity);
-
-            } else if (pe instanceof Leg) {
-                Leg leg = (Leg) pe;
-
-                if(leg.getMode().contains("teleported")){
-                    leg.setMode(leg.getMode().split("ed_")[1]);
-                    leg.getAttributes().putAttribute("routingMode",leg.getMode());
-                }
-
-                leg.setRoute(null);
-                newPlan.addLeg(leg);
-            }
-        }
+//        List<PlanElement> planElements = plan.getPlanElements();
+//        for (PlanElement pe :
+//                planElements) {
+//
+//            if (pe instanceof Activity) {
+//                Activity activity = (Activity)pe;
+//                activity.setFacilityId(null);
+//                activity.setLinkId(null);
+//
+//                if (!activity.getType().contains("interaction"))
+//                    splitActivityTypesBasedOnDuration(activity);
+//
+//                newPlan.addActivity(activity);
+//
+//            } else if (pe instanceof Leg) {
+//                Leg leg = (Leg) pe;
+//
+//                if(leg.getMode().contains("teleported")){
+//                    leg.setMode(leg.getMode().split("ed_")[1]);
+//                    leg.getAttributes().putAttribute("routingMode",leg.getMode());
+//                }
+//
+//                leg.setRoute(null);
+//                newPlan.addLeg(leg);
+//            }
+//        }
+        
         mergeOvernightActivities(newPlan);
         return newPlan;
     }
