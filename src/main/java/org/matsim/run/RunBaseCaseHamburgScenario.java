@@ -18,6 +18,7 @@ import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.scoring.IncomeBasedPlanScoringFunctionFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,6 +80,15 @@ public class RunBaseCaseHamburgScenario {
             }
         });
 
+        // use personSpecific scoring approach
+        IncomeBasedPlanScoringFunctionFactory incomeBasedPlanScoringFunctionFactory = new IncomeBasedPlanScoringFunctionFactory(controler.getScenario());
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                this.bindScoringFunctionFactory().toInstance(incomeBasedPlanScoringFunctionFactory);
+            }
+        });
+
         return controler;
     }
 
@@ -103,12 +113,6 @@ public class RunBaseCaseHamburgScenario {
             else
                 PersonUtils.setCarAvail(person, "always");
         });
-
-        //todo add income attribute
-        boolean usePersonSpecificMarginalUtilityOfMoney = false;
-        if (usePersonSpecificMarginalUtilityOfMoney) {
-
-        }
 
         return scenario;
     }
