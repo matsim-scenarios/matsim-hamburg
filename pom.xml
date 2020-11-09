@@ -23,6 +23,11 @@
         </repository>
 
         <repository>
+            <id>SBB</id>
+            <url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>
+        </repository>
+
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
