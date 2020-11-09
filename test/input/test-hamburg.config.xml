@@ -22,24 +22,26 @@
     </module>
 
     <module name="network">
-        <param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0/input/hamburg-v1.0-network-with-pt.xml.gz"/>
+        <param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-network-with-pt.xml.gz"/>
     </module>
 
     <module name="plans">
+        <!-- TODO: change to 1pct -->
         <param name="inputPlansFile"
-               value="./test-hamburg.plans.xml"/>
+               value="./test-hamburg.plan.xml"/>
         <param name="removingUnnecessaryPlanAttributes" value="true"/>
     </module>
 
     <module name="vehicles">
-        <param name="vehiclesFile" value="./test-vehicle-types.xml"/>
+        <!-- TODO: change to 1pct -->
+        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/vehicle-types.xml"/>
     </module>
 
     <module name="transit">
         <param name="transitScheduleFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0/input/hamburg-v1.0-transitSchedule.xml.gz"/>
+               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-transitSchedule.xml.gz"/>
         <param name="vehiclesFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0/input/hamburg-v1.0-transitVehicles.xml.gz"/>
+               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-transitVehicles.xml.gz"/>
         <param name="useTransit" value="true"/>
     </module>
 
