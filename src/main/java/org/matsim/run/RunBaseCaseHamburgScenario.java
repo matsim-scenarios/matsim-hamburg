@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.population.Person;
+import org.matsim.api.core.v01.population.Plan;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
 import org.matsim.core.config.Config;
@@ -103,6 +105,14 @@ public class RunBaseCaseHamburgScenario {
         routeFactories.setRouteFactory(DrtRoute.class, new DrtRouteFactory());
 
         ScenarioUtils.loadScenario(scenario);
+
+        for (Person person :
+                scenario.getPopulation().getPersons().values()) {
+            Plan selectedPlan = person.getSelectedPlan();
+            person.getPlans().clear();
+            person.addPlan(selectedPlan);
+            person.setSelectedPlan(selectedPlan);
+        }
 
         return scenario;
     }

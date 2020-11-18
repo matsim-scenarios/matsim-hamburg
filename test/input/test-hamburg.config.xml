@@ -28,7 +28,7 @@
     <module name="plans">
         <!-- TODO: change to 1pct -->
         <param name="inputPlansFile"
-               value="./test-hamburg.plan.xml"/>
+               value="./test-hamburg.plans.xml"/>
         <param name="removingUnnecessaryPlanAttributes" value="true"/>
     </module>
 
