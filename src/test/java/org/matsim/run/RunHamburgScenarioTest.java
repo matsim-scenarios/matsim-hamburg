@@ -1,5 +1,6 @@
 package org.matsim.run;
 
+import org.graphstream.ui.j2dviewer.renderer.shape.swing.IconAndText;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -8,13 +9,12 @@ import org.matsim.analysis.ScoreStatsControlerListener;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.config.Config;
-import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
-import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.testcases.MatsimTestUtils;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
+import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
@@ -29,7 +29,12 @@ public class RunHamburgScenarioTest {
 
         String args[] = new String[]{
           "test/input/test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "2"
+                "--config:controler.lastIteration" , "2",
+                "--config:hamburgExperimental.freeFlowFactor", "1.2",
+                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
+                "--config:HereAPITravelTimeValidation.date","2019-06-13",
+                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","null",
+                "--config:HereAPITravelTimeValidation.useHereAPI","false",
 
         };
 
@@ -40,8 +45,10 @@ public class RunHamburgScenarioTest {
 
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
-
         controler.run();
+
+        runHEREValidation(controler);
+
     }
 
 
@@ -93,12 +100,6 @@ public class RunHamburgScenarioTest {
         }
 
         Controler controler = prepareControler(scenario);
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
-            }
-        });
 
         controler.run();
         Assert.assertNotEquals("",68.3508985518222,controler.getScoreStats().getScoreHistory().get(ScoreStatsControlerListener.ScoreItem.executed).get(5));

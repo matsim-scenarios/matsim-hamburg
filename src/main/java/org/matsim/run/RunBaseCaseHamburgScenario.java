@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.contrib.drt.routing.DrtRoute;
@@ -19,9 +20,13 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
+import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
@@ -58,8 +63,11 @@ public class RunBaseCaseHamburgScenario {
 
         controler.run();
 
+        runHEREValidation(controler);
+
         log.info("Done.");
     }
+
 
     public static Controler prepareControler(Scenario scenario) {
         Controler controler = new Controler(scenario);
@@ -77,17 +85,12 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
+
+                if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
+                    bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
+                }
             }
         });
-
-        // use personSpecific scoring approach
-//        IncomeBasedPlanScoringFunctionFactory incomeBasedPlanScoringFunctionFactory = new IncomeBasedPlanScoringFunctionFactory(controler.getScenario());
-//        controler.addOverridingModule(new AbstractModule() {
-//            @Override
-//            public void install() {
-//                this.bindScoringFunctionFactory().toInstance(incomeBasedPlanScoringFunctionFactory);
-//            }
-//        });
 
         return controler;
     }
@@ -114,6 +117,14 @@ public class RunBaseCaseHamburgScenario {
             person.setSelectedPlan(selectedPlan);
         }
 
+        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+        // increase flowspeed for links, where flowspeed lower than 50kmh
+        for (Link link : scenario.getNetwork().getLinks().values()) {
+            if (link.getFreespeed() < 25.5 / 3.6) {
+                link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeFlowFactor());
+            }
+        }
+
         return scenario;
     }
 
@@ -129,6 +140,9 @@ public class RunBaseCaseHamburgScenario {
 
 
         final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
+        ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+        ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
+
 
         // delete default modes
         config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);
@@ -150,7 +164,6 @@ public class RunBaseCaseHamburgScenario {
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_other_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("educ_kiga_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(18. * 3600.));
         }
-
         return config;
     }
 }
