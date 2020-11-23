@@ -1,95 +1,88 @@
 package org.matsim.run;
 
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.HereMapsRouteValidator;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.TravelTimeValidationRunner;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.matsim.run.RunBaseCaseHamburgScenario.prepareConfig;
 
 /**
  * @author zmeng
  */
 public class RunTravelTimeValidation {
-//    public static void main(String[] args) {
-//        args = new String[]{
-//                "/Users/meng/work/realLabHH/calibrate/plans/hh-1pct-17.output_plans.xml.gz", // plans
-//                "/Users/meng/work/realLabHH/calibrate/events/hh-1pct-17.output_events.xml.gz", // events
-//                "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-network-with-pt.xml.gz", // network
-//                "EPSG:25832", // epsg
-//                "uH4B4BCIRbl9F-RiJ69H9a2IteJrt0dAoSSug8OuIIw", // apiKey
-//                "scenarios/output/HEREValidation", // outputFolder
-//                "2019-06-13", // date Wednesday
-//                "500"
-//        };
-//        String plans = args[0];
-//        String events = args[1];
-//        String network = args [2];
-//        String epsg = args[3];
-//        String apiKey = args[4];
-//        String outputfolder = args[5];
-//        String date = args[6];
-//        Integer tripsToValidate = null;
-//        if (args.length>7){
-//            tripsToValidate = Integer.parseInt(args[7]);
-//        }
-//
-//        Set<Id<Person>> populationIds = new HashSet<>();
-//        Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-//        new MatsimNetworkReader(scenario.getNetwork()).readFile(network);
-//        StreamingPopulationReader spr = new StreamingPopulationReader(scenario);
-//        spr.addAlgorithm(new PersonAlgorithm() {
-//            @Override
-//            public void run(Person person) {
-//                populationIds.add(person.getId());
-//            }
-//        });
-//        spr.readFile(plans);
-//        System.out.println("populationId Size is " + populationIds.size());
-//
-//
-//        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(epsg, TransformationFactory.WGS84);
-//        HereMapsRouteValidator validator = new HereMapsRouteValidator(outputfolder, apiKey, date, transformation);
-//        //Setting this to true will write out the raw JSON files for each calculated route
-//        validator.setWriteDetailedFiles(false);
-//        TravelTimeValidationRunner runner;
-//        if (tripsToValidate != null){
-//            runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator, tripsToValidate);
-//        }
-//        else  {
-//            runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator);
-//        }
-//        runner.run();
-//    }
+    private static final Logger log = Logger.getLogger(RunTravelTimeValidation.class);
 
-    public static void runHEREValidation(Controler controler) {
-        Config config = controler.getConfig();
-        Scenario scenario = controler.getScenario();
+    public static void main(String[] args) throws ParseException {
+
+        args = new String[]{
+                "test/input/test-hamburg.config.xml" ,
+                "--config:HereAPITravelTimeValidation.date","2019-06-13",
+                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","EQ9BYtOQ-QKGBL2M2wR49hb6Aqxoa8yfkAbC77ZvQZg",
+                "--config:HereAPITravelTimeValidation.useHereAPI","true",
+                "--config:HereAPITravelTimeValidation.timeWindow","08:00:00-10:00:00"
+        };
+
+        Config config = prepareConfig(args);
+        config.plans().setInputFile("/Volumes/Macintosh HD/Users/meng/work/realLabHH/calibrate/HERE/hh-1pct-18-0.output_plans.xml.gz");
+        config.controler().setOutputDirectory("/Users/meng/work/realLabHH/calibrate/HERE");
+        runHEREValidation(config, "/Users/meng/work/realLabHH/calibrate/HERE" + "/hh-1pct-18-7.output_events.xml.gz");
+
+    }
+
+    public static  void runHEREValidation(Config config, String events) throws ParseException {
+        Scenario scenario = ScenarioUtils.loadScenario(config);
         HereAPITravelTimeValidationConfigGroup hereAPITravelTimeValidationConfigGroup = ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
 
         if(hereAPITravelTimeValidationConfigGroup.isUseHereAPI()){
 
             TravelTimeValidationRunner runner;
             final var populationIds = scenario.getPopulation().getPersons().keySet();
-            final var events = config.controler().getOutputDirectory()  + config.controler().getRunId() + ".output_events.xml.gz";
             CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(config.global().getCoordinateSystem(), TransformationFactory.WGS84);
 
-            var outputfolder = config.controler().getOutputDirectory() + "/" + "here_validation_" + hereAPITravelTimeValidationConfigGroup.getDate() + "/";
+            String[] timeWindowString = hereAPITravelTimeValidationConfigGroup.getTimeWindow().split("-");
+
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            double reference = (dateFormat.parse("00:00:00")).getTime();
+
+            double time1 = (dateFormat.parse(timeWindowString[0]).getTime() - reference) / 1000L;
+            double time2 = (dateFormat.parse(timeWindowString[1]).getTime() - reference) / 1000L;
+
+            Tuple<Double, Double> timeWindow = new Tuple(time1,time2);
+
+            var outputfolder = config.controler().getOutputDirectory() + "/" + "here_validation_" + config.controler().getRunId() + "_" + hereAPITravelTimeValidationConfigGroup.getDate() + "_" + hereAPITravelTimeValidationConfigGroup.getTimeWindow() + "/";
             HereMapsRouteValidator validator = new HereMapsRouteValidator(outputfolder, hereAPITravelTimeValidationConfigGroup.getHereMapsAPIKey(), hereAPITravelTimeValidationConfigGroup.getDate(), transformation);
 
             if (hereAPITravelTimeValidationConfigGroup.getNumOfTrips().equals("all")){
-                runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator);
+                runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator, (int) Double.POSITIVE_INFINITY, timeWindow);
             }
             else  {
-                runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator);
+                runner = new TravelTimeValidationRunner(scenario.getNetwork(), populationIds, events, outputfolder, validator, Integer.valueOf(hereAPITravelTimeValidationConfigGroup.getNumOfTrips()), timeWindow);
             }
             //Setting this to true will write out the raw JSON files for each calculated route
             validator.setWriteDetailedFiles(false);
             runner.run();
 
-            }
         }
+    }
 
+    public static void runHEREValidation(Controler controler, String events) throws ParseException {
+        runHEREValidation(controler.getConfig(),events);
+    }
+
+    public static void runHEREValidation(Controler controler) throws ParseException {
+        runHEREValidation(controler, controler.getConfig().controler().getOutputDirectory() + "/" + controler.getConfig().controler().getRunId() + ".output_events.xml.gz");
+    }
 }

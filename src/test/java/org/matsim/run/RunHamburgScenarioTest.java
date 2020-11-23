@@ -13,6 +13,8 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
+import java.text.ParseException;
+
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
@@ -25,7 +27,7 @@ public class RunHamburgScenarioTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void runTest(){
+    public void runTest() throws ParseException {
 
         String args[] = new String[]{
           "test/input/test-hamburg.config.xml" ,
@@ -33,8 +35,8 @@ public class RunHamburgScenarioTest {
                 "--config:hamburgExperimental.freeFlowFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.date","2019-06-13",
-                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","null",
-                "--config:HereAPITravelTimeValidation.useHereAPI","false",
+                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","EQ9BYtOQ-QKGBL2M2wR49hb6Aqxoa8yfkAbC77ZvQZg",
+                "--config:HereAPITravelTimeValidation.useHereAPI","true",
 
         };
 
@@ -102,6 +104,6 @@ public class RunHamburgScenarioTest {
         Controler controler = prepareControler(scenario);
 
         controler.run();
-        Assert.assertNotEquals("",68.3508985518222,controler.getScoreStats().getScoreHistory().get(ScoreStatsControlerListener.ScoreItem.executed).get(5));
+        Assert.assertNotEquals("after the income based approach a different score should be obtained",68.3508985518222,controler.getScoreStats().getScoreHistory().get(ScoreStatsControlerListener.ScoreItem.executed).get(5));
     }
 }

@@ -5,7 +5,7 @@ from shapely.geometry import Point
 
 trips_info_folder = '/Users/meng/work/realLabHH/calibrate/trips_info/'
 scenario_scale = '1'
-scenario_id = '18'
+scenario_id = '18-10'
 
 
 trips_ending = '.output_trips.csv.gz'

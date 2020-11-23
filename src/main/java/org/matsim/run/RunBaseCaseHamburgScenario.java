@@ -23,6 +23,7 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class RunBaseCaseHamburgScenario {
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
 
         for (String arg : args) {
             log.info(arg);
@@ -55,16 +56,14 @@ public class RunBaseCaseHamburgScenario {
         baseCaseHH.run(args);
     }
 
-    private void run(String[] args) {
+    private void run(String[] args) throws ParseException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
 
         controler.run();
-
         runHEREValidation(controler);
-
         log.info("Done.");
     }
 
