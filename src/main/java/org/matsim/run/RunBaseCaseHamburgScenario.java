@@ -84,10 +84,21 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
-
+            }
+        });
+        // use PersonIncomeSpecificScoringFunction if is needed
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
                 }
+            }
+        });
+        // use HereApiValidator if is needed
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(),HereAPITravelTimeValidationConfigGroup.class).isUseHereAPI())
                     this.addControlerListenerBinding().to(HereAPIControlerListener.class);
             }
@@ -119,10 +130,11 @@ public class RunBaseCaseHamburgScenario {
         }
 
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+
         // increase flowspeed for links, where flowspeed lower than 50kmh
         for (Link link : scenario.getNetwork().getLinks().values()) {
             if (link.getFreespeed() < 25.5 / 3.6) {
-                link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeFlowFactor());
+                link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeSpeedFactor());
             }
         }
 

@@ -10,7 +10,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
 
     private static final String POPULATION_DOWNSAMPLE_FACTOR = "populationDownsampleFactor";
     private static final String USE_PERSON_INCOME_BASED_SCORING = "usePersonIncomeBasedScoring";
-    private static final String FREE_FLOW_FACTOR = "freeFlowFactor";
+    private static final String FREE_SPEED_FACTOR = "freeSpeedFactor";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -18,7 +18,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
 
     private double populationDownsampleFactor = 1.0;
     private boolean usePersonIncomeBasedScoring = false;
-    private double freeFlowFactor = 1.;
+    private double freeSpeedFactor = 1.;
 
     @StringGetter(POPULATION_DOWNSAMPLE_FACTOR)
     public double getPopulationDownsampleFactor() {
@@ -36,12 +36,12 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public void setUsePersonIncomeBasedScoring(boolean usePersonIncomeBasedScoring) {
         this.usePersonIncomeBasedScoring = usePersonIncomeBasedScoring;
     }
-    @StringGetter(FREE_FLOW_FACTOR)
-    public double getFreeFlowFactor() {
-        return freeFlowFactor;
+    @StringGetter(FREE_SPEED_FACTOR)
+    public double getFreeSpeedFactor() {
+        return freeSpeedFactor;
     }
-    @StringSetter(FREE_FLOW_FACTOR)
-    public void setFreeFlowFactor(double freeFlowFactor) {
-        this.freeFlowFactor = freeFlowFactor;
+    @StringSetter(FREE_SPEED_FACTOR)
+    public void setFreeSpeedFactor(double freeSpeedFactor) {
+        this.freeSpeedFactor = freeSpeedFactor;
     }
 }
