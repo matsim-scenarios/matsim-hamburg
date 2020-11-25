@@ -55,40 +55,40 @@ public class PreparePopulation {
         this.output = output;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
-        // population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
+//      population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
 
-//        String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
-//        String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
-//        String personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
-//        String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
+        String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
+        String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
+        String personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
+        String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
+
+        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
+        preparePopulation.run();
+
+
+//        String tem = "tem";
+//        String dir = args[1];
+//        Path output = Path.of(dir + "/shared-svn/projects/matsim-hamburg/hamburg-v1.0/");
+//        String populationsFile = args[0];
 //
-//        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
-//        preparePopulation.run();
-
-        //
-        String tem = "tem";
-        String dir = args[1];
-        Path output = Path.of(dir + "/shared-svn/projects/matsim-hamburg/hamburg-v1.0/");
-        String populationsFile = args[0];
-
-        Config config = ConfigUtils.createConfig();
-
-        config.global().setCoordinateSystem("EPSG:25832");
-        config.plans().setInputCRS("EPSG:25832");
-
-        config.plans().setInputFile(populationsFile);
-        Scenario scenario = ScenarioUtils.loadScenario(config);
-
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-25pct.plans.xml.gz").toString());
-        // sample 25% to 10%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-10pct.plans.xml.gz").toString());
-
-        // sample 10% to 1%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
-        PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-1pct.plans.xml.gz").toString());
+//        Config config = ConfigUtils.createConfig();
+//
+//        config.global().setCoordinateSystem("EPSG:25832");
+//        config.plans().setInputCRS("EPSG:25832");
+//
+//        config.plans().setInputFile(populationsFile);
+//        Scenario scenario = ScenarioUtils.loadScenario(config);
+//
+//        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-25pct.plans.xml.gz").toString());
+//        // sample 25% to 10%
+//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
+//        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-10pct.plans.xml.gz").toString());
+//
+//        // sample 10% to 1%
+//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
+//        PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-1pct.plans.xml.gz").toString());
 
     }
 

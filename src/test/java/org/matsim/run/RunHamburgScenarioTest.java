@@ -1,22 +1,21 @@
 package org.matsim.run;
 
-import org.graphstream.ui.j2dviewer.renderer.shape.swing.IconAndText;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.analysis.ModeStatsControlerListener;
 import org.matsim.analysis.ScoreStatsControlerListener;
+import org.matsim.analysis.here.HereAPIControlerListener;
+import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
-import java.text.ParseException;
-
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
-import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
@@ -27,7 +26,7 @@ public class RunHamburgScenarioTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void runTest() throws ParseException {
+    public void runTest() {
 
         String args[] = new String[]{
           "test/input/test-hamburg.config.xml" ,
@@ -37,6 +36,8 @@ public class RunHamburgScenarioTest {
                 "--config:HereAPITravelTimeValidation.date","2019-06-13",
                 "--config:HereAPITravelTimeValidation.HereMapsAPIKey","EQ9BYtOQ-QKGBL2M2wR49hb6Aqxoa8yfkAbC77ZvQZg",
                 "--config:HereAPITravelTimeValidation.useHereAPI","true",
+                "--config:HereAPITravelTimeValidation.numOfTrips","5",
+                "--config:HereAPITravelTimeValidation.timeBin","3600"
 
         };
 
@@ -47,9 +48,18 @@ public class RunHamburgScenarioTest {
 
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
+
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                CarTripsExtractor carTripsExtractor = new CarTripsExtractor(scenario.getPopulation().getPersons().keySet(), scenario.getNetwork());
+                this.addEventHandlerBinding().toInstance(carTripsExtractor);
+                this.addControlerListenerBinding().to(HereAPIControlerListener.class);
+                this.bind(HereAPITravelTimeValidation.class).toInstance(new HereAPITravelTimeValidation(carTripsExtractor,config));
+            }
+        });
         controler.run();
 
-        runHEREValidation(controler);
 
     }
 

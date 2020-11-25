@@ -4,6 +4,8 @@ package org.matsim.run;
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
+import org.matsim.analysis.here.HereAPIControlerListener;
+import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -27,7 +29,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
@@ -63,7 +64,6 @@ public class RunBaseCaseHamburgScenario {
         Controler controler = prepareControler(scenario);
 
         controler.run();
-        runHEREValidation(controler);
         log.info("Done.");
     }
 
@@ -88,6 +88,8 @@ public class RunBaseCaseHamburgScenario {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
                 }
+                if(ConfigUtils.addOrGetModule(scenario.getConfig(),HereAPITravelTimeValidationConfigGroup.class).isUseHereAPI())
+                    this.addControlerListenerBinding().to(HereAPIControlerListener.class);
             }
         });
 
