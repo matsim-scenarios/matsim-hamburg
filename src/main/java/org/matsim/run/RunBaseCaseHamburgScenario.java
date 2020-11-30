@@ -22,8 +22,8 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -91,7 +91,7 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                    bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
+                    bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
                 }
             }
         });

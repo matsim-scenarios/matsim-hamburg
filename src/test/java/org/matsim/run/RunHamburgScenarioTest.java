@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
@@ -103,6 +104,8 @@ public class RunHamburgScenarioTest {
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
         config.subtourModeChoice().setConsiderCarAvailability(true);
+
+        ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class).setUsePersonIncomeBasedScoring(true);
 
         Scenario scenario = prepareScenario(config);
         double income = 1000;
