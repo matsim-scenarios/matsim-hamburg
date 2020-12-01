@@ -22,7 +22,7 @@ public class RunU18CarUsingTest {
     public void u18CarUsingTest(){
         String args[] = new String[]{
                 "test/input/test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "10",
+                "--config:controler.lastIteration" , "5",
                 "--config:planCalcScore.scoringParameters[subpopulation=null].modeParams[mode=car].constant", "-7"
         };
 
