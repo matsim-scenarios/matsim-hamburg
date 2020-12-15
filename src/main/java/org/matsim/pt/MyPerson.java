@@ -2,7 +2,6 @@ package org.matsim.pt;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.facilities.Facility;
 import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 import org.matsim.vehicles.Vehicle;
 
@@ -11,10 +10,10 @@ import java.util.List;
 
 public class MyPerson {
 
-    final Id<Person> id;
-    boolean usingPt = false;
-    Id<TransitStopFacility> startStation;
-    List<MyTransitUsage> transitUsageList = new ArrayList<>();
+    private final Id<Person> id;
+    private boolean usingPt = false;
+    private Id<TransitStopFacility> startStation;
+    private List<MyTransitUsage> transitUsageList = new ArrayList<>();
 
     MyPerson(Id<Person> id) {
         this.id = id;
@@ -45,9 +44,9 @@ public class MyPerson {
 
     private class MyTransitUsage {
 
-        final Id<TransitStopFacility> startStation;
-        final Id<TransitStopFacility> endStation;
-        final Id<Vehicle> vehicleId;
+        private final Id<TransitStopFacility> startStation;
+        private final Id<TransitStopFacility> endStation;
+        private final Id<Vehicle> vehicleId;
 
         MyTransitUsage (Id<TransitStopFacility> startStation, Id<TransitStopFacility> endStation, Id<Vehicle> vehicleId) {
             this.startStation = startStation;

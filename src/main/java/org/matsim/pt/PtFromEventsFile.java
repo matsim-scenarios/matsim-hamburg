@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PtFromEventsFile {
 
-    static HashMap<String, MyTransitObject> publicTransit = new HashMap<>();
+    private static HashMap<String, MyTransitObject> publicTransit = new HashMap<>();
 
     public static void main(String[] args) {
 

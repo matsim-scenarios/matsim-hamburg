@@ -18,21 +18,16 @@ import org.matsim.vehicles.Vehicle;
 
 import java.util.HashMap;
 
-public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler, VehicleDepartsAtFacilityEventHandler, PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, ActivityEndEventHandler {
+public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler {
 
     HashMap<Id<Person>, MyPerson> ptUsageMap = new HashMap<>();
     HashMap<Id<Vehicle>, Id<TransitStopFacility>> movingVehicle = new HashMap<>();
 
     @Override
     public void handleEvent(VehicleArrivesAtFacilityEvent event) {
-        Id<Vehicle> vehicleIdid = event.getVehicleId();
+        Id<Vehicle> vehicleId = event.getVehicleId();
         Id<TransitStopFacility> facilityId = event.getFacilityId();
-        movingVehicle.put(vehicleIdid, facilityId);
-    }
-
-    @Override
-    public void handleEvent(VehicleDepartsAtFacilityEvent event) {
-
+        movingVehicle.put(vehicleId, facilityId);
     }
 
     @Override
@@ -85,10 +80,6 @@ public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler, Veh
             myPerson.addTransitUsage(myPerson.getStartStation(), endStation, vehicleId);
             myPerson.setUsingPt(false);
         }
-    }
-
-    @Override
-    public void handleEvent(ActivityEndEvent event) {
     }
 
     public HashMap<Id<Person>, MyPerson> getPtUsageMap() {
