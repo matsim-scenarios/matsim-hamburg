@@ -48,12 +48,10 @@ public class ReadPtCounts {
 						NodeList children = tableItems.getChildNodes();
 						key = children.item(1).getTextContent();
 						if (count == 0) {
-							System.out.println(key);
 						} else if (count > 5) {
 							String tripKey = null;
 							for (int j = 1; j < children.getLength(); j = j + 2) {
 								String value = children.item(j).getTextContent();
-								System.out.println(j + " " + value);
 								if (j == 1) {
 									tripKey = value;
 								} else if (j == 3) {
