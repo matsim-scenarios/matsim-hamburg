@@ -1,4 +1,4 @@
-package org.matsim.pt;
+package org.matsim.pt.events;
 
 import org.matsim.api.core.v01.events.LinkEnterEvent;
 import org.matsim.api.core.v01.events.handler.LinkEnterEventHandler;
