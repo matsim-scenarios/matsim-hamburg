@@ -41,13 +41,13 @@ public class ReadPtCounts {
 				NodeList tableChildren = table.getChildNodes();
 				int count = 0;
 				for (int i = 0; i < tableChildren.getLength(); i++) {
-					String key;
+					String key = null;
 					PersonCounts personCounts = new PersonCounts();
 					Node tableItems = tableChildren.item(i);
 					if (tableItems.getNodeName() == "Row") {
 						NodeList children = tableItems.getChildNodes();
-						key = children.item(1).getTextContent();
 						if (count == 0) {
+							key = children.item(1).getTextContent();
 						} else if (count > 5) {
 							String tripKey = null;
 							for (int j = 1; j < children.getLength(); j = j + 2) {
