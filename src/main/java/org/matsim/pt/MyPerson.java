@@ -34,6 +34,10 @@ public class MyPerson {
         transitUsageList.add(transitUsage);
     }
 
+    public List<MyTransitUsage> getTransitUsageList() {
+        return transitUsageList;
+    }
+
     public boolean isUsingPt() {
         return usingPt;
     }
@@ -42,7 +46,7 @@ public class MyPerson {
         this.usingPt = usingPt;
     }
 
-    private class MyTransitUsage {
+    class MyTransitUsage {
 
         private final Id<TransitStopFacility> startStation;
         private final Id<TransitStopFacility> endStation;
@@ -54,5 +58,16 @@ public class MyPerson {
             this.vehicleId = vehicleId;
         }
 
+        public Id<TransitStopFacility> getStartStation() {
+            return startStation;
+        }
+
+        public Id<TransitStopFacility> getEndStation() {
+            return endStation;
+        }
+
+        public Id<Vehicle> getVehicleId() {
+            return vehicleId;
+        }
     }
 }

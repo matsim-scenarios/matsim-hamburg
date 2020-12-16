@@ -22,10 +22,10 @@ import org.xml.sax.SAXException;
  */
 public class ReadPtCounts {
 
-	public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read() {
+	 static public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read(String directoryToScanForRuns) {
 
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> ptCounts = new LinkedHashMap<String, LinkedHashMap<String, PersonCounts>>();
-		String directoryToScanForRuns = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
+//		String directoryToScanForRuns = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
 		File[] files = new File(directoryToScanForRuns).listFiles(File::isFile);
 		for (int k = 0; k < files.length; k++) {
 
@@ -55,13 +55,17 @@ public class ReadPtCounts {
 								if (j == 1) {
 									tripKey = value;
 								} else if (j == 3) {
-									personCounts.setEinsteigerOutbound(value);
+									if (value.equals("")) {
+										System.out.println(value + " " + key);
+										System.out.println();
+									}
+									personCounts.setEinsteigerOutbound(Integer.parseInt(value));
 								} else if (j == 5) {
-									personCounts.setAussteigerOutbound(value);
+									personCounts.setAussteigerOutbound(Integer.parseInt(value));
 								} else if (j == 7) {
-									personCounts.setEinsteigerInbound(value);
+									personCounts.setEinsteigerInbound(Integer.parseInt(value));
 								} else if (j == 9) {
-									personCounts.setAussteigerInbound(value);
+									personCounts.setAussteigerInbound(Integer.parseInt(value));
 								}
 							}
 							trip.put(tripKey, personCounts);
@@ -82,6 +86,9 @@ public class ReadPtCounts {
 				e.printStackTrace();
 			}
 		}
+
+		System.out.println("Done, reading real world data");
+
 		return ptCounts;
 	}
 }

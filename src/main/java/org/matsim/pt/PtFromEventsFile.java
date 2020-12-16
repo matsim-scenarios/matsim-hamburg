@@ -17,17 +17,7 @@ import java.util.List;
 
 public class PtFromEventsFile {
 
-    private static HashMap<String, MyTransitObject> publicTransit = new HashMap<>();
-
-    public static void main(String[] args) {
-
-        String eventsFile = "D:/Arbeit/Hamburg/hh-10pct-19.output_events.xml";
-        String transitScheduleFile = "D:/Arbeit/Hamburg/hh-10pct-19.output_transitSchedule.xml.gz";
-
-        Config config = ConfigUtils.createConfig();
-        Scenario scenario = ScenarioUtils.createScenario(config);
-        readTransitSchedule(transitScheduleFile, scenario);
-
+    public static HashMap<Id<Person>, MyPerson> readSimulationData(String eventsFile) {
         EventsManager eventsManager = EventsUtils.createEventsManager();
         MyEventHandler myEventHandler = new MyEventHandler();
         eventsManager.addHandler(myEventHandler);
@@ -36,13 +26,16 @@ public class PtFromEventsFile {
         reader.readFile(eventsFile);
         eventsManager.finishProcessing();
 
-        HashMap<Id<Person>, MyPerson> ptUsage = myEventHandler.getPtUsageMap();
+        System.out.println("Done, reading simulation data");
 
-        System.out.println("Done");
-
+        return  myEventHandler.getPtUsageMap();
     }
 
-    private static void readTransitSchedule(String transitSceduleFile, Scenario scenario) {
+    static HashMap<String, MyTransitObject> readTransitSchedule(String transitSceduleFile) {
+        HashMap<String, MyTransitObject> publicTransit = new HashMap<>();
+
+        Config config = ConfigUtils.createConfig();
+        Scenario scenario = ScenarioUtils.createScenario(config);
         TransitScheduleReader transitScheduleReader = new TransitScheduleReader(scenario);
         transitScheduleReader.readFile(transitSceduleFile);
 
@@ -61,13 +54,17 @@ public class PtFromEventsFile {
                 }
             }
         }
+
+        System.out.println("Done, reading schedule data");
+
+        return publicTransit;
     }
 
-    private static class MyTransitObject {
+    static class MyTransitObject {
 
-        final String line;
-        HashMap<String, String> stations = new HashMap();
-        List<String> vehicels = new ArrayList<>();
+        private final String line;
+        private HashMap<String, String> stations = new HashMap();
+        private List<String> vehicels = new ArrayList<>();
 
         MyTransitObject(String line) {
             this.line = line;
@@ -87,6 +84,13 @@ public class PtFromEventsFile {
             return stations;
         }
 
+        public String getLine() {
+            return line;
+        }
+
+        public List<String> getVehicels() {
+            return vehicels;
+        }
     }
 
 }

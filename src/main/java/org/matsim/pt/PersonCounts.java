@@ -9,40 +9,76 @@ package org.matsim.pt;
  */
 public class PersonCounts {
 
-	private String einsteigerOutbound;
-	private String aussteigerOutbound;
-	private String einsteigerInbound;
-	private String aussteigerInbound;
+	private int einsteigerOutbound;
+	private int aussteigerOutbound;
+	private int einsteigerInbound;
+	private int aussteigerInbound;
+	private int einsteigerOutboundSim = 0;
+	private int aussteigerOutboundSim = 0;
+	private int einsteigerInboundSim = 0;
+	private int aussteigerInboundSim = 0;
 
-	public String getEinsteigerOutbound() {
+	public int getEinsteigerOutbound() {
 		return einsteigerOutbound;
 	}
 
-	public void setEinsteigerOutbound(String einsteigerOutbound) {
+	public void setEinsteigerOutbound(int einsteigerOutbound) {
 		this.einsteigerOutbound = einsteigerOutbound;
 	}
 
-	public String getAussteigerOutbound() {
+	public int getAussteigerOutbound() {
 		return aussteigerOutbound;
 	}
 
-	public void setAussteigerOutbound(String aussteigerOutbound) {
+	public void setAussteigerOutbound(int aussteigerOutbound) {
 		this.aussteigerOutbound = aussteigerOutbound;
 	}
 
-	public String getEinsteigerInbound() {
+	public int getEinsteigerInbound() {
 		return einsteigerInbound;
 	}
 
-	public void setEinsteigerInbound(String einsteigerInbound) {
+	public void setEinsteigerInbound(int einsteigerInbound) {
 		this.einsteigerInbound = einsteigerInbound;
 	}
 
-	public String getAussteigerInbound() {
+	public int getAussteigerInbound() {
 		return aussteigerInbound;
 	}
 
-	public void setAussteigerInbound(String aussteigerInbound) {
+	public void setAussteigerInbound(int aussteigerInbound) {
 		this.aussteigerInbound = aussteigerInbound;
+	}
+
+	public int getEinsteigerOutboundSim() {
+		return einsteigerOutboundSim;
+	}
+
+	public void setEinsteigerOutboundSim() {
+		this.einsteigerOutboundSim += 1;
+	}
+
+	public int getAussteigerOutboundSim() {
+		return aussteigerOutboundSim;
+	}
+
+	public void setAussteigerOutboundSim() {
+		this.aussteigerOutboundSim += 1;
+	}
+
+	public int getEinsteigerInboundSim() {
+		return einsteigerInboundSim;
+	}
+
+	public void setEinsteigerInboundSim() {
+		this.einsteigerInboundSim += 1;
+	}
+
+	public int getAussteigerInboundSim() {
+		return aussteigerInboundSim;
+	}
+
+	public void setAussteigerInboundSim() {
+		this.aussteigerInboundSim += 1;
 	}
 }
