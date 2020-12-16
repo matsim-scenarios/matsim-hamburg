@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
  */
 public class ReadPtCounts {
 
-	 static public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read(String directoryToScanForRuns) {
+	static public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read(String directoryToScanForRuns) {
 
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> ptCounts = new LinkedHashMap<String, LinkedHashMap<String, PersonCounts>>();
 //		String directoryToScanForRuns = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
@@ -51,21 +51,24 @@ public class ReadPtCounts {
 						} else if (count > 5) {
 							String tripKey = null;
 							for (int j = 1; j < children.getLength(); j = j + 2) {
-								String value = children.item(j).getTextContent();
-								if (j == 1) {
-									tripKey = value;
-								} else if (j == 3) {
-									if (value.equals("")) {
-										System.out.println(value + " " + key);
-										System.out.println();
+								Node childItem = children.item(j);
+								if (!childItem.getTextContent().isEmpty()) {
+									String value = childItem.getTextContent();
+									if (j == 1) {
+										tripKey = value;
+									} else if (j == 3) {
+										if (value.equals("")) {
+											System.out.println(value + " " + key);
+											System.out.println();
+										}
+										personCounts.setEinsteigerOutbound(Integer.parseInt(value));
+									} else if (j == 5) {
+										personCounts.setAussteigerOutbound(Integer.parseInt(value));
+									} else if (j == 7) {
+										personCounts.setEinsteigerInbound(Integer.parseInt(value));
+									} else if (j == 9) {
+										personCounts.setAussteigerInbound(Integer.parseInt(value));
 									}
-									personCounts.setEinsteigerOutbound(Integer.parseInt(value));
-								} else if (j == 5) {
-									personCounts.setAussteigerOutbound(Integer.parseInt(value));
-								} else if (j == 7) {
-									personCounts.setEinsteigerInbound(Integer.parseInt(value));
-								} else if (j == 9) {
-									personCounts.setAussteigerInbound(Integer.parseInt(value));
 								}
 							}
 							trip.put(tripKey, personCounts);
