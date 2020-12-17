@@ -57,10 +57,6 @@ public class ReadPtCounts {
 									if (j == 1) {
 										tripKey = value;
 									} else if (j == 3) {
-										if (value.equals("")) {
-											System.out.println(value + " " + key);
-											System.out.println();
-										}
 										personCounts.setEinsteigerOutbound(Integer.parseInt(value));
 									} else if (j == 5) {
 										personCounts.setAussteigerOutbound(Integer.parseInt(value));

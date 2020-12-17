@@ -9,6 +9,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.facilities.Facility;
 import org.matsim.pt.transitSchedule.api.*;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class PtFromEventsFile {
             publicTransit.put(id[0], myTransitObject);
             for (TransitRoute transitRoute : transitLine.getRoutes().values()) {
                 for (TransitRouteStop transitRouteStop : transitRoute.getStops()) {
-                    String stationId = transitRouteStop.getStopFacility().getId().toString();
+                    Id<TransitStopFacility> stationId = transitRouteStop.getStopFacility().getId();
                     String name = transitRouteStop.getStopFacility().getName();
                     myTransitObject.addStation(stationId, name);
                 }
@@ -63,14 +64,14 @@ public class PtFromEventsFile {
     static class MyTransitObject {
 
         private final String line;
-        private HashMap<String, String> stations = new HashMap();
+        private HashMap<Id<TransitStopFacility>, String> stations = new HashMap();
         private List<String> vehicels = new ArrayList<>();
 
         MyTransitObject(String line) {
             this.line = line;
         }
 
-        void addStation(String id, String name) {
+        void addStation(Id<TransitStopFacility> id, String name) {
             if (!stations.containsKey(id)) {
                 stations.put(id, name);
             }
@@ -80,7 +81,7 @@ public class PtFromEventsFile {
             vehicels.add(id);
         }
 
-        public HashMap<String, String> getStations() {
+        public HashMap<Id<TransitStopFacility>, String> getStations() {
             return stations;
         }
 
