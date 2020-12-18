@@ -42,7 +42,7 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 )
 public class CreateTransitSchedule implements Callable<Integer> {
 
-    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "/Users/meng/work/realLabHH/files/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip")
+    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "D:/Arbeit/shared-svn/projects/realLabHH/data/gtfs_prognose2030/Prognose2030-3_USAR_Bus angepasst_20200504 GTFS_201012.zip")
     private List<Path> gtfsFiles;
 
     @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
@@ -60,6 +60,9 @@ public class CreateTransitSchedule implements Callable<Integer> {
     @CommandLine.Option(names = "--date", description = "The day for which the schedules will be extracted", defaultValue = "2020-09-09")
     private LocalDate date;
 
+    public CreateTransitSchedule() {
+    }
+
     public static void main(String[] args) {
         System.exit(new CommandLine(new CreateTransitSchedule()).execute(args));
     }
@@ -70,7 +73,7 @@ public class CreateTransitSchedule implements Callable<Integer> {
         CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(inputCS, targetCS);
 
         // Output files
-        File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule.xml.gz");
+        File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule2030.xml.gz");
         File networkPTFile = new File(output, networkFile.getFileName().toString().replace(".xml", "-with-pt.xml"));
         File transitVehiclesFile = new File(output, "hamburg-" + VERSION + "-transitVehicles.xml.gz");
 

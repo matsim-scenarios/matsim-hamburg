@@ -49,7 +49,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml"};
+            args = new String[] {"D:/Gregor/Uni/TUCloud/Masterarbeit/MATSim/input/hamburg-v1.0-1pct.config.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
