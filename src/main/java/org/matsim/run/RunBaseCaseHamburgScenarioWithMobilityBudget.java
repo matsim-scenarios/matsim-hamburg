@@ -1,6 +1,5 @@
 package org.matsim.run;
 
-
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
@@ -21,7 +20,10 @@ import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
-import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import org.matsim.core.scoring.ScoringFunction;
+import org.matsim.core.scoring.ScoringFunctionFactory;
+import org.matsim.core.scoring.SumScoringFunction;
+import org.matsim.core.scoring.functions.*;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -31,8 +33,9 @@ import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
+ * @author gryb
  */
-public class RunBaseCaseHamburgScenario {
+public class RunBaseCaseHamburgScenarioWithMobilityBudget {
 
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
@@ -52,8 +55,8 @@ public class RunBaseCaseHamburgScenario {
             args = new String[] {"D:/Gregor/Uni/TUCloud/Masterarbeit/MATSim/input/hamburg-v1.0-1pct.config.xml"};
         }
 
-        RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
-        baseCaseHH.run(args);
+        RunBaseCaseHamburgScenarioWithMobilityBudget baseCaseHHWithMobilityBudget = new RunBaseCaseHamburgScenarioWithMobilityBudget();
+        baseCaseHHWithMobilityBudget.run(args);
     }
 
     private void run(String[] args) throws ParseException {
@@ -91,6 +94,33 @@ public class RunBaseCaseHamburgScenario {
             }
         });
 
+        controler.setScoringFunctionFactory(new ScoringFunctionFactory() {
+            @Override
+            public ScoringFunction createNewScoringFunction(Person person) {
+
+                SumScoringFunction sumScoringFunction = new SumScoringFunction();
+                ScoringParameters params = new ScoringParameters.Builder(scenario, person).build();
+                sumScoringFunction.addScoringFunction(new CharyparNagelActivityScoring(params));
+                sumScoringFunction.addScoringFunction(new CharyparNagelLegScoring(params, scenario.getNetwork()));
+                sumScoringFunction.addScoringFunction(new CharyparNagelMoneyScoring(params));
+                sumScoringFunction.addScoringFunction(new CharyparNagelAgentStuckScoring(params));
+
+                if (person.getAttributes().getAttribute("mobilityBudget") != null)  {
+                    
+
+                }
+
+
+                return sumScoringFunction;
+            }
+        });
+
+
+
+
+
+
+
         return controler;
     }
 
@@ -108,13 +138,11 @@ public class RunBaseCaseHamburgScenario {
 
         ScenarioUtils.loadScenario(scenario);
 
-        for (Person person :
-                scenario.getPopulation().getPersons().values()) {
+        for (Person person : scenario.getPopulation().getPersons().values()) {
             Plan selectedPlan = person.getSelectedPlan();
             person.getPlans().clear();
             person.addPlan(selectedPlan);
             person.setSelectedPlan(selectedPlan);
-
         }
 
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
@@ -124,6 +152,10 @@ public class RunBaseCaseHamburgScenario {
                 link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeFlowFactor());
             }
         }
+
+
+
+
 
         return scenario;
     }
@@ -167,3 +199,4 @@ public class RunBaseCaseHamburgScenario {
         return config;
     }
 }
+
