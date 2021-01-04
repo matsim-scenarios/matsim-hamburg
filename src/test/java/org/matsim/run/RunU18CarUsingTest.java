@@ -9,6 +9,8 @@ import org.matsim.core.config.Config;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
+import java.io.IOException;
+
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
 /**
@@ -19,7 +21,7 @@ public class RunU18CarUsingTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void u18CarUsingTest(){
+    public void u18CarUsingTest() throws IOException {
         String args[] = new String[]{
                 "test/input/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "5",

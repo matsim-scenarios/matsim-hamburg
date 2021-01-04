@@ -2,6 +2,7 @@ package org.matsim.run;
 
 
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import com.google.inject.Provides;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
 import org.matsim.analysis.here.HereAPIControlerListener;
@@ -13,18 +14,28 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
+import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.mobsim.qsim.AbstractQSimModule;
+import org.matsim.core.mobsim.qsim.QSim;
+import org.matsim.core.mobsim.qsim.qnetsimengine.ConfigurableQNetworkFactory;
+import org.matsim.core.mobsim.qsim.qnetsimengine.QNetworkFactory;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import org.matsim.parking.NetworkParkPressureReader;
+import org.matsim.parking.VehicleHandlerForParking;
+import org.matsim.utils.objectattributes.ObjectAttributes;
+import org.matsim.utils.objectattributes.ObjectAttributesXmlReader;
 import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +54,7 @@ public class RunBaseCaseHamburgScenario {
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, IOException {
 
         for (String arg : args) {
             log.info(arg);
@@ -57,7 +68,7 @@ public class RunBaseCaseHamburgScenario {
         baseCaseHH.run(args);
     }
 
-    private void run(String[] args) throws ParseException {
+    private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
@@ -104,10 +115,23 @@ public class RunBaseCaseHamburgScenario {
             }
         });
 
+        // use link-based park time
+        controler.addOverridingQSimModule(new AbstractQSimModule() {
+
+            protected void configureQSim() {
+            }
+            @Provides
+            QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
+                ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
+                factory.setVehicleHandler(new VehicleHandlerForParking(qSim));
+                return factory;
+            }
+        });
+
         return controler;
     }
 
-    public static Scenario prepareScenario(Config config) {
+    public static Scenario prepareScenario(Config config) throws IOException {
 
         /*
          * We need to set the DrtRouteFactory before loading the scenario. Otherwise DrtRoutes in input plans are loaded
@@ -136,6 +160,15 @@ public class RunBaseCaseHamburgScenario {
             if (link.getFreespeed() < 25.5 / 3.6) {
                 link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeSpeedFactor());
             }
+        }
+
+        // add parkPressureAttribute
+        if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
+            NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
+            Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
+                    .map(Double::parseDouble)
+                    .toArray(Double[]::new);
+            networkParkPressureReader.addLinkParkPressureAsAttribute(parkTime);
         }
 
         return scenario;

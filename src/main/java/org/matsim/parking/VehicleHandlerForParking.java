@@ -28,15 +28,17 @@ public class VehicleHandlerForParking implements VehicleHandler {
 
     @Override
     public boolean handleVehicleArrival(QVehicle qVehicle, Link link) {
-        //todo assign park time to link
-        double time = this.qsim.getSimTimer().getTimeOfDay();
-        if (!this.vehicle2parkWishTime.containsKey(qVehicle)) {
-            this.vehicle2parkWishTime.put(qVehicle, time + (Double) link.getAttributes().getAsMap().get("parkTime"));
-        }
-        boolean letVehicleStop = time >= this.vehicle2parkWishTime.get(qVehicle);
-        if(letVehicleStop)
-            this.vehicle2parkWishTime.remove(qVehicle);
-        return letVehicleStop;
+        if(!link.getId().toString().contains("pt")){
+            double time = this.qsim.getSimTimer().getTimeOfDay();
+            if (!this.vehicle2parkWishTime.containsKey(qVehicle)) {
+                this.vehicle2parkWishTime.put(qVehicle, time + (Double) link.getAttributes().getAsMap().get("parkPressure"));
+            }
+            boolean letVehicleStop = time >= this.vehicle2parkWishTime.get(qVehicle);
+            if(letVehicleStop)
+                this.vehicle2parkWishTime.remove(qVehicle);
+            return letVehicleStop;
+        } else
+            return true;
     }
 
     @Override

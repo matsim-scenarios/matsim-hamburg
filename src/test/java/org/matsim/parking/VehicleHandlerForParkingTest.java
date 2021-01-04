@@ -6,10 +6,6 @@ import org.junit.Test;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.events.PersonArrivalEvent;
-import org.matsim.api.core.v01.events.PersonDepartureEvent;
-import org.matsim.api.core.v01.events.handler.PersonArrivalEventHandler;
-import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkFactory;
@@ -59,7 +55,6 @@ public class VehicleHandlerForParkingTest{
             }
             @Provides
             QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
-                VehicleHandlerForParking vehicleHandlerForParking;
                 ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
                 factory.setVehicleHandler(new VehicleHandlerForParking(qSim));
                 return factory;
@@ -72,17 +67,6 @@ public class VehicleHandlerForParkingTest{
                 .map(Leg::getTravelTime).mapToDouble(OptionalTime::seconds).average().getAsDouble();
 
         return avg;
-    }
-
-    private class PersonDepartureAndArrivalEventHandler implements PersonArrivalEventHandler, PersonDepartureEventHandler{
-        @Override
-        public void handleEvent(PersonDepartureEvent personDepartureEvent) {
-
-        }
-        @Override
-        public void handleEvent(PersonArrivalEvent personArrivalEvent) {
-
-        }
     }
 
     private Scenario createScenario() {

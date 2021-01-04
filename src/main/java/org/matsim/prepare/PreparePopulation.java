@@ -67,29 +67,6 @@ public class PreparePopulation {
         PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
         preparePopulation.run();
 
-
-//        String tem = "tem";
-//        String dir = args[1];
-//        Path output = Path.of(dir + "/shared-svn/projects/matsim-hamburg/hamburg-v1.0/");
-//        String populationsFile = args[0];
-//
-//        Config config = ConfigUtils.createConfig();
-//
-//        config.global().setCoordinateSystem("EPSG:25832");
-//        config.plans().setInputCRS("EPSG:25832");
-//
-//        config.plans().setInputFile(populationsFile);
-//        Scenario scenario = ScenarioUtils.loadScenario(config);
-//
-//        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-25pct.plans.xml.gz").toString());
-//        // sample 25% to 10%
-//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
-//        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-10pct.plans.xml.gz").toString());
-//
-//        // sample 10% to 1%
-//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
-//        PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-1pct.plans.xml.gz").toString());
-
     }
 
     public void run() throws IOException {
@@ -100,6 +77,7 @@ public class PreparePopulation {
 
             person.getAttributes().putAttribute("subpopulation", "person");
 
+            // set Income for person
             addPersonIncomeFromCSVFile(person, person2Income);
 
             // set CarAvail of person under 18 never, set always otherwise
@@ -107,10 +85,8 @@ public class PreparePopulation {
                 PersonUtils.setCarAvail(person, "never");
             else
                 PersonUtils.setCarAvail(person, "always");
-            // set Income for person
 
-            
-            // remove attributes that are confusing and we will not need
+            // remove attributes that are confusing
             person.getAttributes().removeAttribute("sim_carAvailability");
             person.getAttributes().removeAttribute("sim_ptAbo");
 

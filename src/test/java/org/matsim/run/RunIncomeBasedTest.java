@@ -11,6 +11,8 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
+import java.io.IOException;
+
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
 /**
@@ -21,7 +23,7 @@ public class RunIncomeBasedTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void incomeBasedTest(){
+    public void incomeBasedTest() throws IOException {
         String args[] = new String[]{
                 "test/input/test-hamburg.config.xml",
                 "--config:controler.lastIteration" , "5"

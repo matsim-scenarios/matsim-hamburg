@@ -17,6 +17,8 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
+import java.io.IOException;
+
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
 /**
@@ -28,7 +30,7 @@ public class RunHamburgScenarioTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void runTest() {
+    public void runTest() throws IOException {
 
         String args[] = new String[]{
           "test/input/test-hamburg.config.xml" ,

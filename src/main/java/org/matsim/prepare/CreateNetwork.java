@@ -14,7 +14,6 @@ import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.run.RunBaseCaseHamburgScenario;
 import picocli.CommandLine;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
+
 /**
  * Creates the road network layer.
  *

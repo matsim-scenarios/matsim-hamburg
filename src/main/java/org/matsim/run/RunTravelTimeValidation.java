@@ -10,6 +10,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.events.ParallelEventsManager;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.prepareConfig;
@@ -21,7 +22,7 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.prepareScenario;
 public class RunTravelTimeValidation {
     private static final Logger log = Logger.getLogger(RunTravelTimeValidation.class);
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, IOException {
 
         args = new String[]{
                 "test/input/test-hamburg.config.xml" ,
