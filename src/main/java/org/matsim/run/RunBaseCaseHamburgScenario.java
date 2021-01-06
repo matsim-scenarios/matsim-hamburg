@@ -164,11 +164,17 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-            NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
-            Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
-                    .map(Double::parseDouble)
-                    .toArray(Double[]::new);
-            networkParkPressureReader.addLinkParkPressureAsAttribute(parkTime);
+        	
+        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
+        		log.info("Adding missing park pressure link attributes based on provided files...");
+        		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
+                Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
+                        .map(Double::parseDouble)
+                        .toArray(Double[]::new);
+                networkParkPressureReader.addLinkParkPressureAsAttribute(parkTime);  
+        		log.info("Adding missing park pressure link attributes based on provided files... Done.");
+        	}
+
         }
 
         return scenario;
