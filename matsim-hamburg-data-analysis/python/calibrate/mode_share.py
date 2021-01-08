@@ -3,17 +3,17 @@ import geopandas as gpd
 import pandas as pd
 from shapely.geometry import Point
 
-trips_info_folder = '/Users/meng/work/realLabHH/calibrate/trips_info/'
-scenario_scale = '1'
-scenario_id = '23'
+trips_info_folder = '/Users/meng/work/realLabHH_meng/calibrate/trips_info/'
+scenario_scale = '10'
+scenario_id = '19'
 
 
 trips_ending = '.output_trips.csv.gz'
 trips_raw_data = pd.read_csv(trips_info_folder + 'hh-' + scenario_scale + 'pct-' + scenario_id + trips_ending, sep=';')
 
-person_to_home = pd.read_csv('/Users/meng/IdeaProjects/shared-svn/projects/matsim-hamburg/hamburg-v1.0'
-                             '/person_specific_info/person2homeLocation.csv')
-hamburg = gpd.read_file("/Users/meng/work/realLabHH/files/shapeFIle/hamburg_merge/hamburg.shp")
+person_to_home = pd.read_csv('/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info'
+                             '/person2homeLocation.csv')
+hamburg = gpd.read_file("/Users/meng/work/realLabHH_meng/files/shapeFIle/hamburg_merge/hamburg.shp")
 # %%
 trips_raw_data = trips_raw_data.merge(right=person_to_home, left_on=['person'], right_on=['person'], how='left')
 

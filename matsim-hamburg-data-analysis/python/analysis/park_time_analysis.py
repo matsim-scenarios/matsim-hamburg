@@ -4,7 +4,7 @@ import pandas as pd
 from shapely.geometry import Point
 #%%
 
-legs = pd.read_csv("/Users/meng/work/realLabHH_meng/calibrate/legs_info/hh-1pct-23.output_legs.csv.gz",sep=";")
+legs = pd.read_csv("/Users/meng/work/realLabHH_meng/calibrate/legs_info/hh-1pct-25.output_legs.csv.gz",sep=";")
 links_to_park_pressure = pd.read_csv("/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0"
                                      "/network_specific_info/link2parkpressure.csv")
 

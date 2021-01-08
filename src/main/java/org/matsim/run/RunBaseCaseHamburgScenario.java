@@ -31,8 +31,6 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.VehicleHandlerForParking;
-import org.matsim.utils.objectattributes.ObjectAttributes;
-import org.matsim.utils.objectattributes.ObjectAttributesXmlReader;
 import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
@@ -116,17 +114,20 @@ public class RunBaseCaseHamburgScenario {
         });
 
         // use link-based park time
-        controler.addOverridingQSimModule(new AbstractQSimModule() {
+        if(ConfigUtils.addOrGetModule(controler.getConfig(),HamburgExperimentalConfigGroup.class).isUseLinkBasedParkPressure()){
 
-            protected void configureQSim() {
-            }
-            @Provides
-            QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
-                ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
-                factory.setVehicleHandler(new VehicleHandlerForParking(qSim));
-                return factory;
-            }
-        });
+            controler.addOverridingQSimModule(new AbstractQSimModule() {
+
+                protected void configureQSim() {
+                }
+                @Provides
+                QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
+                    ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
+                    factory.setVehicleHandler(new VehicleHandlerForParking(qSim, scenario));
+                    return factory;
+                }
+            });
+        }
 
         return controler;
     }
@@ -145,6 +146,10 @@ public class RunBaseCaseHamburgScenario {
 
         ScenarioUtils.loadScenario(scenario);
 
+        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+
+        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), hamburgExperimentalConfigGroup.getPopulationDownsampleFactor());
+
         for (Person person :
                 scenario.getPopulation().getPersons().values()) {
             Plan selectedPlan = person.getSelectedPlan();
@@ -152,8 +157,6 @@ public class RunBaseCaseHamburgScenario {
             person.addPlan(selectedPlan);
             person.setSelectedPlan(selectedPlan);
         }
-
-        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
         // increase flowspeed for links, where flowspeed lower than 50kmh
         for (Link link : scenario.getNetwork().getLinks().values()) {
@@ -171,7 +174,7 @@ public class RunBaseCaseHamburgScenario {
                 Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
                         .map(Double::parseDouble)
                         .toArray(Double[]::new);
-                networkParkPressureReader.addLinkParkPressureAsAttribute(parkTime);  
+                networkParkPressureReader.addLinkParkTimeAsAttribute(parkTime);
         		log.info("Adding missing park pressure link attributes based on provided files... Done.");
         	}
 
