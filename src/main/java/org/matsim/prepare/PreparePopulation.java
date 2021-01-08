@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -34,6 +36,11 @@ public class PreparePopulation {
     private final Scenario scenario;
     private final Path output;
     private final String personIncomeFile;
+
+    private final double rangeForShortDistanceTrips = 1000.;
+    private final double maxDurationForShortDistanceTrips = 1800.;
+	private final double approximateTimeForShortDistanceActivityPlusWalking = 3600.;
+    private final double missingTrips = 182500;
 
     public PreparePopulation(String initialDemand,String attributes, String person2incomeFile, Path output) {
 
@@ -71,6 +78,17 @@ public class PreparePopulation {
 
     public void run() throws IOException {
         var person2Income = this.readPersonId2Income(this.personIncomeFile);
+        
+     // to correct the number short distance trips get the total number of trips of Hamburg residents
+        int totalTripsByHamburgResidents = 0;
+        for (Person person : scenario.getPopulation().getPersons().values()) {
+        	Activity firstActivity = (Activity) person.getSelectedPlan().getPlanElements().get(0);     
+            if (firstActivity.getType().startsWith("home") && isActivityInCityOfHamburg(firstActivity)) {
+            	// first get the total number of relevant trips
+            	totalTripsByHamburgResidents += TripStructureUtils.getTrips(person.getSelectedPlan().getPlanElements()).size();  	
+            }
+        }
+		double probability = missingTrips / totalTripsByHamburgResidents;
 
         for (Person person :
              scenario.getPopulation().getPersons().values()) {
@@ -89,10 +107,11 @@ public class PreparePopulation {
             // remove attributes that are confusing
             person.getAttributes().removeAttribute("sim_carAvailability");
             person.getAttributes().removeAttribute("sim_ptAbo");
-
+            
             for (Plan plan :
                     person.getPlans()) {
-                Plan newPlan = preparePlan(plan);
+				Plan planWithMissingShortDistanceTrips = addMissingShortDistanceTrips(plan, probability);
+                Plan newPlan = preparePlan(planWithMissingShortDistanceTrips);
                 person.removePlan(plan);
                 person.addPlan(newPlan);
             }
@@ -154,8 +173,76 @@ public class PreparePopulation {
 		mergeOvernightActivities(newPlan);
         return newPlan;
     }
+    
+    private Plan addMissingShortDistanceTrips(Plan plan, double probability) {
+    	RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
+    	
+        Plan newPlan = scenario.getPopulation().getFactory().createPlan();
+        
+        Activity firstActivity = (Activity) plan.getPlanElements().get(0);
+        newPlan.addActivity(firstActivity);
+        
+        final Random rnd = MatsimRandom.getLocalInstance();
+        
+        double previousActivityEndTime = 0.;
+        double previousTripTravelTime = 0.;
+        
+        for (Trip trip : TripStructureUtils.getTrips(plan.getPlanElements())) {	
+			
+        	if (rnd.nextDouble() < probability) {
+        		
+        		if (trip.getOriginActivity().getEndTime() == null) throw new RuntimeException("No end time. Aborting...");
+        		
+        		double originalEndTime = trip.getOriginActivity().getEndTime().seconds();
+        		double estimatedArrivalTime = previousActivityEndTime + previousTripTravelTime;
+				double updatedEndTime = estimatedArrivalTime + rnd.nextDouble() * (originalEndTime - estimatedArrivalTime - approximateTimeForShortDistanceActivityPlusWalking);
+				if (updatedEndTime < 0.) throw new RuntimeException("Negative time. Aborting...");
+				trip.getOriginActivity().setEndTime(updatedEndTime);
+        		
+        		Leg leg1 = scenario.getPopulation().getFactory().createLeg(TransportMode.walk);
+    			newPlan.addLeg(leg1);
+    			
+    			Activity shortDistanceRangeActivity = scenario.getPopulation().getFactory().createActivityFromCoord("other", getShortDistanceCoordinate(trip.getOriginActivity().getCoord(), rangeForShortDistanceTrips));
+    			shortDistanceRangeActivity.setMaximumDuration(rnd.nextDouble() * maxDurationForShortDistanceTrips);
+    			newPlan.addActivity(shortDistanceRangeActivity);
+    			
+    			Leg leg2 = scenario.getPopulation().getFactory().createLeg(TransportMode.walk);
+    			newPlan.addLeg(leg2);
+    			
+    			Activity previousActivity = trip.getOriginActivity();
+    			newPlan.addActivity(previousActivity);
+    		
+        	}
+        	
+			String mainMode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+			Leg leg = scenario.getPopulation().getFactory().createLeg(mainMode);
+			newPlan.addLeg(leg);
+			if (leg.getTravelTime() != null) {
+				previousTripTravelTime = leg.getTravelTime().seconds();
+			} else {
+				previousTripTravelTime = 0.;
+			}
+			
+			Activity destinationActivity = trip.getDestinationActivity();
+			newPlan.addActivity(destinationActivity);
+			previousActivityEndTime = destinationActivity.getEndTime().seconds();
+		}
 
-    /**
+        return newPlan;
+    }
+
+    private Coord getShortDistanceCoordinate(Coord coord, double range) {
+        final Random rnd = MatsimRandom.getLocalInstance();
+    	Coord newCoord = new Coord(rnd.nextDouble() * coord.getX() * range, rnd.nextDouble() * coord.getY() * range);
+		return newCoord;
+	}
+
+	private boolean isActivityInCityOfHamburg(Activity act) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/**
      * Split activities into typical durations to improve value of travel time savings calculation.
      *
      * @see playground.vsp.openberlinscenario.planmodification.CemdapPopulationTools
@@ -163,7 +250,6 @@ public class PreparePopulation {
     private void splitActivityTypesBasedOnDuration(Activity act) {
 
         final double timeBinSize_s = 600.;
-
 
         double duration = act.getEndTime().orElse(24 * 3600)
                 - act.getStartTime().orElse(0);
