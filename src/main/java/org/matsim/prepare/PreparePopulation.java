@@ -65,11 +65,22 @@ public class PreparePopulation {
     public static void main(String[] args) throws IOException {
 
 //      population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
+        String initialDemand;
+        String attributes;
+        String personIncomeFile;
+        String outputPath;
 
-        String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
-        String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
-        String personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
-        String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
+        if (args.length == 0) {
+            initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
+            attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
+            personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
+            outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
+        } else {
+            initialDemand = args[0];
+            attributes = args[1];
+            personIncomeFile = args[2];
+            outputPath = args[3];
+        }
 
         PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
         preparePopulation.run();
@@ -135,11 +146,11 @@ public class PreparePopulation {
 
     	RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
     	
-    	String initialStartTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actStartTimes");
-    	String initialEndTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actEndTimes");
-
-    	String[] initialStartTimes = initialStartTimesString.split(";");
-    	String[] initialEndTimes = initialEndTimesString.split(";");
+//    	String initialStartTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actStartTimes");
+//    	String initialEndTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actEndTimes");
+//
+//    	String[] initialStartTimes = initialStartTimesString.split(";");
+//    	String[] initialEndTimes = initialEndTimesString.split(";");
     	
         Plan newPlan = scenario.getPopulation().getFactory().createPlan();
         
@@ -147,8 +158,8 @@ public class PreparePopulation {
 		firstActivity.setFacilityId(null);
 		firstActivity.setLinkId(null);
 		splitActivityTypesBasedOnDuration(firstActivity);
-		firstActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
-		firstActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
+//		firstActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+//		firstActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
 
         newPlan.addActivity(firstActivity);
 		
@@ -164,8 +175,8 @@ public class PreparePopulation {
 			destinationActivity.setLinkId(null);
 			splitActivityTypesBasedOnDuration(destinationActivity);
 
-			destinationActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
-			destinationActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
+//			destinationActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+//			destinationActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
 			
 			newPlan.addActivity(destinationActivity);
 		}
