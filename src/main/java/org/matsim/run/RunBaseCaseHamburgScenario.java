@@ -208,7 +208,7 @@ public class RunBaseCaseHamburgScenario {
         //todo: think about opening and closing time, there can be some overnight activities like shopping or business...
         for (long ii = 600; ii <= 97200; ii += 600) {
 
-            for (String act : List.of("educ_higher", "educ_tertiary", "educ_other", "home", "educ_primary", "errands", "educ_secondary", "visit")) {
+            for (String act : List.of("educ_higher", "educ_tertiary", "educ_other", "home", "educ_primary", "errands", "educ_secondary", "visit", "other")) {
                 config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams(act + "_" + ii + ".0").setTypicalDuration(ii));
             }
 

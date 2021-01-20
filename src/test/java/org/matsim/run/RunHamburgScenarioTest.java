@@ -69,54 +69,5 @@ public class RunHamburgScenarioTest {
 
 
     }
-    
-    @Test
-    public void runTestParking() throws IOException {
 
-        String args[] = new String[]{
-          "test/input/test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "30",
-                "--config:hamburgExperimental.freeSpeedFactor", "1.2",
-                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.date","2019-06-13",
-                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","EQ9BYtOQ-QKGBL2M2wR49hb6Aqxoa8yfkAbC77ZvQZg",
-                "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:HereAPITravelTimeValidation.numOfTrips","5",
-                "--config:HereAPITravelTimeValidation.timeBin","3600"
-
-        };
-
-        Config config = prepareConfig(args);
-
-        config.global().setNumberOfThreads(5);
-        config.qsim().setNumberOfThreads(10);
-
-        config.controler().setRunId("runTestParking");
-        config.controler().setOutputDirectory(utils.getOutputDirectory());
-        
-        HamburgExperimentalConfigGroup hamburgConfig = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-        hamburgConfig.setParkPressureLinkAttributeFile(null);
-        hamburgConfig.setUseLinkBasedParkPressure(true);
-        
-        Scenario scenario = prepareScenario(config);
-        
-        for (Link link : scenario.getNetwork().getLinks().values()) {
-        	link.getAttributes().putAttribute("parkTime", 300.);
-        }
-        
-        Controler controler = prepareControler(scenario);
-
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                CarTripsExtractor carTripsExtractor = new CarTripsExtractor(scenario.getPopulation().getPersons().keySet(), scenario.getNetwork());
-                this.addEventHandlerBinding().toInstance(carTripsExtractor);
-                this.addControlerListenerBinding().to(HereAPIControlerListener.class);
-                this.bind(HereAPITravelTimeValidation.class).toInstance(new HereAPITravelTimeValidation(carTripsExtractor,config));
-            }
-        });
-        controler.run();
-
-
-    }
 }
