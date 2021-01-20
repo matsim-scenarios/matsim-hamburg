@@ -44,7 +44,7 @@ public class RunHamburgScenarioTest {
                 "--config:HereAPITravelTimeValidation.numOfTrips","5",
                 "--config:HereAPITravelTimeValidation.timeBin","3600",
                 "--config:hamburgExperimental.parkPressureLinkAttributeFile","/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0/network_specific_info/link2parkpressure.csv",
-                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
+                "--config:hamburgExperimental.useLinkBasedParkPressure","false",
 
         };
 
