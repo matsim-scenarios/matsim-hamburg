@@ -17,6 +17,8 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.controler.listener.AfterMobsimListener;
+import org.matsim.core.controler.listener.StartupListener;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -90,6 +92,20 @@ public class RunBaseCaseHamburgScenario {
                 }
             }
         });
+
+        controler.addControlerListener((StartupListener) startupEvent -> {
+
+        // Add AfterMobsimListener
+        startupEvent.getServices().addControlerListener((AfterMobsimListener) afterMobsimEvent -> {
+            afterMobsimEvent.getServices().getInjector().g
+        }
+
+
+        }
+
+
+
+
 
         return controler;
     }
