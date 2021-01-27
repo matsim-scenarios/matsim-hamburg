@@ -28,10 +28,12 @@ import java.util.function.Predicate;
 public class AddMissingTripsToSNZPlans {
     private static final Logger log = Logger.getLogger(AddMissingTripsToSNZPlans.class);
     private static final Random rnd = MatsimRandom.getLocalInstance();
+    private static int addingTrips = 0;
 
     private Population population;
     private int numOfMissingTrips;
     private double rangeForShortDistanceTrips;
+    private double maxShortRangeActivityDuration = 3600.;
 
     public static void main(String[] args) {
         String plans;
@@ -69,7 +71,13 @@ public class AddMissingTripsToSNZPlans {
 
 
 
-        Predicate<String> condition = personInHam::contains;
+//        Predicate<String> condition = personInHam::contains;
+        Predicate<String> condition = new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return true;
+            }
+        };
         AddMissingTripsToSNZPlans addMissingTripsToSNZPlans = new AddMissingTripsToSNZPlans(plans, missingTrips, range);
         addMissingTripsToSNZPlans.run(condition);
         PopulationUtils.writePopulation(addMissingTripsToSNZPlans.getPopulation(), outputFolder + "test-hamburg-addtrips.plans.xml.gz");
@@ -101,7 +109,7 @@ public class AddMissingTripsToSNZPlans {
 
         double probability = computeAddingProbability(numOfMissingTrips, addingCondition);
         log.info("probability of adding trips is: " + probability);
-
+        log.info("adding missing trips.........."+addingTrips);
         for (Person person :
                 population.getPersons().values()) {
             if (addingCondition.test(person.getId().toString())) {
@@ -110,31 +118,36 @@ public class AddMissingTripsToSNZPlans {
                 var activities = TripStructureUtils.getActivities(plan.getPlanElements(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
 
                 var markedActivities = new ArrayList<>();
-                for (Activity activity :
-                        activities) {
-                    if (activity.getEndTime().isDefined()) {
+                 // can not insert short distance activity into the first or the last activity
+                if(activities.size() > 2){
+                    for (int i = 1; i < activities.size()-2; i++) {
                         if (rnd.nextDouble() < probability)
-                            markedActivities.add(activity);
+                            markedActivities.add(activities.get(i));
                     }
                 }
-
 
                 if (markedActivities.size() > 0) {
                     Plan newPlan = population.getFactory().createPlan();
                     RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
                     Activity lastActivity = null;
                     for (TripStructureUtils.Trip trip : TripStructureUtils.getTrips(plan.getPlanElements())) {
-                        if (markedActivities.contains(trip.getOriginActivity())) {
+                        Activity originActivity = trip.getOriginActivity();
+                        if (markedActivities.contains(originActivity)) {
+
+                            addingTrips+=2;
+
+                            if(addingTrips%1 == 0){
+                                log.info("adding missing trips.........."+addingTrips);
+                            }
                             // add activity
-                            Activity originActivity = trip.getOriginActivity();
                             if (!originActivity.getStartTime().isDefined())
                                 originActivity.setStartTime(0);
 
                             double range = rnd.nextDouble() * rangeForShortDistanceTrips;
                             double walkTime = range / 1.2 * 2;
                             double maxDurationForShortDistanceTrips = Math.max(originActivity.getEndTime().seconds() - originActivity.getStartTime().seconds() - walkTime, 1);
-                            double duration = rnd.nextDouble() * maxDurationForShortDistanceTrips;
-                            double newEndTime = updateEndTime(originActivity, duration, walkTime / 2);
+                            double duration = Math.min(this.maxShortRangeActivityDuration,rnd.nextDouble() * maxDurationForShortDistanceTrips);
+                            double newEndTime = updateEndTime(originActivity, duration, walkTime);
 
 
                             Activity activity1 = population.getFactory().createActivityFromCoord(originActivity.getType(), originActivity.getCoord());
@@ -158,7 +171,7 @@ public class AddMissingTripsToSNZPlans {
 
                             Activity activity2 = population.getFactory().createActivityFromCoord(originActivity.getType(), originActivity.getCoord());
                             activity2.setLinkId(originActivity.getLinkId());
-                            activity2.setStartTime(updateStartTime(originActivity, newEndTime + duration + walkTime));
+                            activity2.setStartTime(updateStartTime(originActivity, shortDistanceRangeActivity.getEndTime().seconds() + walkTime/2));
                             activity2.setEndTime(originActivity.getEndTime().seconds());
                             newPlan.addActivity(activity2);
 
@@ -167,7 +180,6 @@ public class AddMissingTripsToSNZPlans {
                             newPlan.addLeg(leg);
 
                         } else {
-                            Activity originActivity = trip.getOriginActivity();
                             newPlan.addActivity(originActivity);
                             String mainMode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
                             Leg leg = population.getFactory().createLeg(mainMode);
@@ -197,25 +209,28 @@ public class AddMissingTripsToSNZPlans {
     }
 
     private double updateStartTime(Activity originActivity, double v) {
-        return Math.max(originActivity.getEndTime().seconds(), originActivity.getStartTime().seconds() + v);
+        return Math.min(originActivity.getEndTime().seconds(), v);
     }
 
     private double computeAddingProbability(int numOfMissingTrips, Predicate<String> addingCondition) {
+        int numOfAct = 0;
+        int numOfTrips = 0;
         for (Person person :
                 population.getPersons().values()) {
             Plan selectedPlan = person.getSelectedPlan();
             person.getPlans().clear();
             person.addPlan(selectedPlan);
             person.setSelectedPlan(selectedPlan);
-        }
 
-        long totalTrips = this.population.getPersons().values().stream().filter(person -> addingCondition.test(person.getId().toString()))
-                .map(HasPlansAndId::getSelectedPlan)
-                .map(plan -> TripStructureUtils.getTrips(plan.getPlanElements()))
-                .mapToLong(List::size)
-                .sum();
-        log.info("number of missing trips are " + numOfMissingTrips + " ,total number of trips for person meets the condition are: " + totalTrips);
-        return (double)(numOfMissingTrips) / totalTrips / 2;
+            if (addingCondition.test(person.getId().toString())){
+                var activities = TripStructureUtils.getActivities(selectedPlan.getPlanElements(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
+                var trips = TripStructureUtils.getTrips(selectedPlan);
+                numOfAct += Math.max((activities.size() - 2), 0);
+                numOfTrips += trips.size();
+            }
+        }
+        log.info("activities: "+numOfAct+", trips: "+numOfTrips+ ", missing trips: "+numOfMissingTrips);
+        return (double)(numOfMissingTrips)/2/numOfAct;
     }
 
     public Population getPopulation() {
