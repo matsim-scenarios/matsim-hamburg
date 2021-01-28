@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author zmeng
@@ -29,6 +31,7 @@ public class AddMissingTripsToSNZPlans {
     private static final Logger log = Logger.getLogger(AddMissingTripsToSNZPlans.class);
     private static final Random rnd = MatsimRandom.getLocalInstance();
     private static int addingTrips = 0;
+    private static double range;
 
     private Population population;
     private int numOfMissingTrips;
@@ -40,7 +43,6 @@ public class AddMissingTripsToSNZPlans {
         String personInHamburg;
         String outputFolder;
         int missingTrips;
-        double range;
 
         if(args.length == 0){
             plans = "test/input/test-hamburg.plans.xml";
@@ -71,13 +73,14 @@ public class AddMissingTripsToSNZPlans {
 
 
 
-//        Predicate<String> condition = personInHam::contains;
+//         Predicate<String> condition = personInHam::contains;
         Predicate<String> condition = new Predicate<String>() {
             @Override
             public boolean test(String s) {
                 return true;
             }
         };
+
         AddMissingTripsToSNZPlans addMissingTripsToSNZPlans = new AddMissingTripsToSNZPlans(plans, missingTrips, range);
         addMissingTripsToSNZPlans.run(condition);
         PopulationUtils.writePopulation(addMissingTripsToSNZPlans.getPopulation(), outputFolder + "test-hamburg-addtrips.plans.xml.gz");
@@ -116,15 +119,10 @@ public class AddMissingTripsToSNZPlans {
 
                 Plan plan = person.getSelectedPlan();
                 var activities = TripStructureUtils.getActivities(plan.getPlanElements(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
+                var filterActivities = activityFilter(activities);
+                List<Activity> markedActivities = new ArrayList<>();
 
-                var markedActivities = new ArrayList<>();
-                 // can not insert short distance activity into the first or the last activity
-                if(activities.size() > 2){
-                    for (int i = 1; i < activities.size()-2; i++) {
-                        if (rnd.nextDouble() < probability)
-                            markedActivities.add(activities.get(i));
-                    }
-                }
+                markedActivities = filterActivities.stream().filter(x -> rnd.nextDouble() < probability).collect(Collectors.toList());
 
                 if (markedActivities.size() > 0) {
                     Plan newPlan = population.getFactory().createPlan();
@@ -136,12 +134,10 @@ public class AddMissingTripsToSNZPlans {
 
                             addingTrips+=2;
 
-                            if(addingTrips%1 == 0){
+                            if(addingTrips%100 == 0){
                                 log.info("adding missing trips.........."+addingTrips);
                             }
                             // add activity
-                            if (!originActivity.getStartTime().isDefined())
-                                originActivity.setStartTime(0);
 
                             double range = rnd.nextDouble() * rangeForShortDistanceTrips;
                             double walkTime = range / 1.2 * 2;
@@ -193,6 +189,7 @@ public class AddMissingTripsToSNZPlans {
                 }
             }
         }
+        log.info("adding missing trips.........."+addingTrips + "..finished");
     }
 
 
@@ -225,12 +222,26 @@ public class AddMissingTripsToSNZPlans {
             if (addingCondition.test(person.getId().toString())){
                 var activities = TripStructureUtils.getActivities(selectedPlan.getPlanElements(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
                 var trips = TripStructureUtils.getTrips(selectedPlan);
-                numOfAct += Math.max((activities.size() - 2), 0);
+                numOfAct += activityFilter(activities).size();
                 numOfTrips += trips.size();
             }
         }
         log.info("activities: "+numOfAct+", trips: "+numOfTrips+ ", missing trips: "+numOfMissingTrips);
         return (double)(numOfMissingTrips)/2/numOfAct;
+    }
+
+    private List<Activity> activityFilter (List<Activity> activities){
+        // the first, last, and too short activities can not be split to add other activity
+        var filterAct = new LinkedList<Activity>();
+        if(activities.size() > 2){
+            for (int i = 1; i < activities.size()-2; i++) {
+                double startTime = activities.get(i).getStartTime().seconds();
+                double endTime = activities.get(i).getEndTime().seconds();
+                if((endTime-startTime) > range * 2 * 1.5)
+                    filterAct.add(activities.get(i));
+            }
+        }
+        return filterAct;
     }
 
     public Population getPopulation() {
