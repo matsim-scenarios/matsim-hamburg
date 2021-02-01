@@ -29,8 +29,8 @@ import org.matsim.core.scoring.functions.SubpopulationScoringParameters;
  * 
  * @author ikaddoura, tschlenther
  */
-public class HamburgPlanScoringFunctionFactory implements ScoringFunctionFactory {
-	private static final Logger log = Logger.getLogger(HamburgPlanScoringFunctionFactory.class );
+public class IncomeDependentPlanScoringFunctionFactory implements ScoringFunctionFactory {
+	private static final Logger log = Logger.getLogger(IncomeDependentPlanScoringFunctionFactory.class );
 
 	private double globalAverageIncome = -1.0;
 
@@ -43,12 +43,12 @@ public class HamburgPlanScoringFunctionFactory implements ScoringFunctionFactory
 	
 	public static final String PERSONAL_INCOME_ATTRIBUTE_NAME = "income";
 
-	public HamburgPlanScoringFunctionFactory( final Scenario sc ) {
+	public IncomeDependentPlanScoringFunctionFactory( final Scenario sc ) {
 		this( sc.getConfig(), new SubpopulationScoringParameters( sc ) , sc.getNetwork() , sc.getPopulation());
 	}
 
 	@Inject
-	HamburgPlanScoringFunctionFactory(Config config, ScoringParametersForPerson params, Network network, Population population) {
+	IncomeDependentPlanScoringFunctionFactory(Config config, ScoringParametersForPerson params, Network network, Population population) {
 		this.config = config;
 		this.params = params;
 		this.network = network;

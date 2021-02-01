@@ -105,7 +105,7 @@ public class RunBaseCaseHamburgScenario {
                 	// bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
                 	
                 	// new approach which is maybe not so nice but should require less memory
-                	this.bindScoringFunctionFactory().to(HamburgPlanScoringFunctionFactory.class);
+                	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                 }
             }
         });
