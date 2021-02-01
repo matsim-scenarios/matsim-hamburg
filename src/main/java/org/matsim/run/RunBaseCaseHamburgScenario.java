@@ -100,7 +100,12 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                    bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
+                	
+                	// old approach which is nicer but requires a large amount of memory
+                	// bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
+                	
+                	// new approach which is maybe not so nice but should require less memory
+                	this.bindScoringFunctionFactory().to(HamburgPlanScoringFunctionFactory.class);
                 }
             }
         });
