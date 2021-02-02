@@ -33,7 +33,6 @@ public class IncomeDependentPlanScoringFunctionFactory implements ScoringFunctio
 	private static final Logger log = Logger.getLogger(IncomeDependentPlanScoringFunctionFactory.class );
 
 	private double globalAverageIncome = -1.0;
-	private boolean globalAverageComputedAndMarginalUtilityOfMoneySetForEachAgent = false;
 
 	private final Config config;
 	private Network network;
@@ -80,14 +79,13 @@ public class IncomeDependentPlanScoringFunctionFactory implements ScoringFunctio
 		
 		double personSpecificMarginalUtilityOfMoney;
 		
-		if (globalAverageComputedAndMarginalUtilityOfMoneySetForEachAgent == false) {
-			log.info("Initial setting up of scoring functions. "
-					+ "Computing person-specific marginal utility of money based on the income "
-					+ "and storing it in the person attributes...");
-			
-			globalAverageComputedAndMarginalUtilityOfMoneySetForEachAgent = true;
-			
-			this.globalAverageIncome = computeAvgIncome(population);
+		if (globalAverageIncome <= 0.0) {		
+			this.globalAverageIncome = computeAvgIncome(population);	
+		}
+		
+		Object marginalUtilityOfMoneyObject = person.getAttributes().getAttribute(PERSONAL_MARGINAL_UTILITY_OF_MONEY_ATTRIBUTE_NAME);
+
+		if (marginalUtilityOfMoneyObject == null) {
 			double personIncome = globalAverageIncome;
 			
 			if (person.getAttributes().getAttribute(PERSONAL_INCOME_ATTRIBUTE_NAME) != null) {
@@ -101,17 +99,11 @@ public class IncomeDependentPlanScoringFunctionFactory implements ScoringFunctio
 			}
 
 			final String subpopulation = PopulationUtils.getSubpopulation( person );
-
 			personSpecificMarginalUtilityOfMoney = this.config.planCalcScore().getScoringParameters(subpopulation).getMarginalUtilityOfMoney() * globalAverageIncome  / personIncome ;
 			person.getAttributes().putAttribute(PERSONAL_MARGINAL_UTILITY_OF_MONEY_ATTRIBUTE_NAME, personSpecificMarginalUtilityOfMoney);
 		
 		} else {
-			Object marginalUtilityOfMoneyObject = person.getAttributes().getAttribute(PERSONAL_MARGINAL_UTILITY_OF_MONEY_ATTRIBUTE_NAME);
-			if (marginalUtilityOfMoneyObject == null) {
-				throw new RuntimeException("No person-specific marginal utility of money attribute. Aborting...");
-			} else {
-				personSpecificMarginalUtilityOfMoney = (double) marginalUtilityOfMoneyObject;
-			}
+			personSpecificMarginalUtilityOfMoney = (double) marginalUtilityOfMoneyObject;
 		}
 		
 		final ScoringParameters parameters = params.getScoringParameters( person );
