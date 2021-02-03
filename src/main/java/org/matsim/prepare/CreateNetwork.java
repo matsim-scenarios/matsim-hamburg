@@ -7,13 +7,13 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.contrib.osm.networkReader.LinkProperties;
 import org.matsim.contrib.osm.networkReader.SupersonicOsmNetworkReader;
+import org.matsim.contrib.sumo.SumoNetworkConverter;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.run.RunBaseCaseHamburgScenario;
 import picocli.CommandLine;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
+
 /**
  * Creates the road network layer.
  *
@@ -44,11 +45,10 @@ public class CreateNetwork implements Callable<Integer> {
     private boolean fromOSM;
 
     @CommandLine.Option(names = "--output", description = "Output xml file", defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
-    private File output;
+    private Path output;
 
 
     public static void main(String[] args) {
-        args = new String[] {"--from-osm"};
         System.exit(new CommandLine(new CreateNetwork()).execute(args));
     }
 
@@ -72,10 +72,13 @@ public class CreateNetwork implements Callable<Integer> {
                     .read(input.get(0));
 
             NetworkUtils.runNetworkCleaner(network);
-            new NetworkWriter(network).write(output.getAbsolutePath());
+            new NetworkWriter(network).write(output.toAbsolutePath().toString());
 
             return 0;
         }
-        return 0;
+
+        return SumoNetworkConverter.newInstance(
+                input, output, "EPSG:32632", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM
+        ).call();
     }
 }

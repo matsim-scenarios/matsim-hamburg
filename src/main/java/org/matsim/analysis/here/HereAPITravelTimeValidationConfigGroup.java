@@ -1,10 +1,6 @@
-package org.matsim.run;
+package org.matsim.analysis.here;
 
 import org.matsim.core.config.ReflectiveConfigGroup;
-import org.matsim.core.utils.collections.Tuple;
-
-import java.sql.Time;
-
 /**
  * @author zmeng
  */
@@ -17,12 +13,14 @@ public class HereAPITravelTimeValidationConfigGroup extends ReflectiveConfigGrou
     private static final String DATE = "date";
     private static final String NUM_OF_TRIPS = "numOfTrips";
     private static final String TIME_WINDOW = "timeWindow";
+    private static final String TIME_BIN = "timeBin";
 
     private boolean useHereAPI = false;
     private String HereMapsAPIKey = null;
     private String date = null;
     private String numOfTrips = "all";
     private String timeWindow ="00:00:00-36:00:00";
+    private int tmeBin = 0;
 
     public HereAPITravelTimeValidationConfigGroup() {
         super(GROUP_NAME);
@@ -64,4 +62,12 @@ public class HereAPITravelTimeValidationConfigGroup extends ReflectiveConfigGrou
     public String getTimeWindow() { return timeWindow; }
     @StringSetter(TIME_WINDOW)
     public void setTimeWindow(String timeWindow) { this.timeWindow = timeWindow; }
+    @StringGetter(TIME_BIN)
+    public int getTmeBin() {
+        return tmeBin;
+    }
+    @StringSetter(TIME_BIN)
+    public void setTmeBin(int tmeBin) {
+        this.tmeBin = tmeBin;
+    }
 }

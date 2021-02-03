@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -55,51 +57,42 @@ public class PreparePopulation {
         this.output = output;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
-        // population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
+//      population files can not be public, thus they are stored privately in svn, to get the access of those folders please contact us in github
+        String initialDemand;
+        String attributes;
+        String personIncomeFile;
+        String outputPath;
 
-//        String initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
-//        String attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
-//        String personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
-//        String outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
-//
-//        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
-//        preparePopulation.run();
+        if (args.length == 0) {
+            initialDemand = "../shared-svn/projects/realLabHH/matsim-input-files/v1/optimizedPopulation.xml.gz";
+            attributes = "../shared-svn/projects/realLabHH/matsim-input-files/v1/additionalPersonAttributes.xml.gz";
+            personIncomeFile = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person2income.csv";
+            outputPath = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/";
+        } else {
+            initialDemand = args[0];
+            attributes = args[1];
+            personIncomeFile = args[2];
+            outputPath = args[3];
+        }
 
-        //
-        String tem = "tem";
-        String dir = args[1];
-        Path output = Path.of(dir + "/shared-svn/projects/matsim-hamburg/hamburg-v1.0/");
-        String populationsFile = args[0];
-
-        Config config = ConfigUtils.createConfig();
-
-        config.global().setCoordinateSystem("EPSG:25832");
-        config.plans().setInputCRS("EPSG:25832");
-
-        config.plans().setInputFile(populationsFile);
-        Scenario scenario = ScenarioUtils.loadScenario(config);
-
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-25pct.plans.xml.gz").toString());
-        // sample 25% to 10%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-10pct.plans.xml.gz").toString());
-
-        // sample 10% to 1%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
-        PopulationUtils.writePopulation(scenario.getPopulation(), output.resolve("hamburg-" + VERSION + "-" + tem + "-1pct.plans.xml.gz").toString());
+        PreparePopulation preparePopulation = new PreparePopulation(initialDemand, attributes, personIncomeFile,Path.of(outputPath));
+        preparePopulation.run();
 
     }
 
     public void run() throws IOException {
         var person2Income = this.readPersonId2Income(this.personIncomeFile);
+        
+     // to correct the number short distance trips get the total number of trips of Hamburg residents
 
         for (Person person :
              scenario.getPopulation().getPersons().values()) {
 
             person.getAttributes().putAttribute("subpopulation", "person");
 
+            // set Income for person
             addPersonIncomeFromCSVFile(person, person2Income);
 
             // set CarAvail of person under 18 never, set always otherwise
@@ -107,13 +100,11 @@ public class PreparePopulation {
                 PersonUtils.setCarAvail(person, "never");
             else
                 PersonUtils.setCarAvail(person, "always");
-            // set Income for person
 
-            
-            // remove attributes that are confusing and we will not need
+            // remove attributes that are confusing
             person.getAttributes().removeAttribute("sim_carAvailability");
             person.getAttributes().removeAttribute("sim_ptAbo");
-
+            
             for (Plan plan :
                     person.getPlans()) {
                 Plan newPlan = preparePlan(plan);
@@ -140,11 +131,11 @@ public class PreparePopulation {
 
     	RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
     	
-    	String initialStartTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actStartTimes");
-    	String initialEndTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actEndTimes");
-
-    	String[] initialStartTimes = initialStartTimesString.split(";");
-    	String[] initialEndTimes = initialEndTimesString.split(";");
+//    	String initialStartTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actStartTimes");
+//    	String initialEndTimesString = (String) plan.getPerson().getAttributes().getAttribute("IPD_actEndTimes");
+//
+//    	String[] initialStartTimes = initialStartTimesString.split(";");
+//    	String[] initialEndTimes = initialEndTimesString.split(";");
     	
         Plan newPlan = scenario.getPopulation().getFactory().createPlan();
         
@@ -152,8 +143,8 @@ public class PreparePopulation {
 		firstActivity.setFacilityId(null);
 		firstActivity.setLinkId(null);
 		splitActivityTypesBasedOnDuration(firstActivity);
-		firstActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
-		firstActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
+//		firstActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+//		firstActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
 
         newPlan.addActivity(firstActivity);
 		
@@ -169,8 +160,8 @@ public class PreparePopulation {
 			destinationActivity.setLinkId(null);
 			splitActivityTypesBasedOnDuration(destinationActivity);
 
-			destinationActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
-			destinationActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
+//			destinationActivity.getAttributes().putAttribute("initialStartTime", initialStartTimes[activityCounter]);
+//			destinationActivity.getAttributes().putAttribute("initialEndTime", initialEndTimes[activityCounter]);
 			
 			newPlan.addActivity(destinationActivity);
 		}
@@ -178,8 +169,76 @@ public class PreparePopulation {
 		mergeOvernightActivities(newPlan);
         return newPlan;
     }
+    
+//    private Plan addMissingShortDistanceTrips(Plan plan, double probability) {
+//    	RoutingModeMainModeIdentifier mainModeIdentifier = new RoutingModeMainModeIdentifier();
+//
+//        Plan newPlan = scenario.getPopulation().getFactory().createPlan();
+//
+//        Activity firstActivity = (Activity) plan.getPlanElements().get(0);
+//        newPlan.addActivity(firstActivity);
+//
+//        final Random rnd = MatsimRandom.getLocalInstance();
+//
+//        double previousActivityEndTime = 0.;
+//        double previousTripTravelTime = 0.;
+//
+//        for (Trip trip : TripStructureUtils.getTrips(plan.getPlanElements())) {
+//
+//        	if (rnd.nextDouble() < probability) {
+//
+//        		if (trip.getOriginActivity().getEndTime() == null) throw new RuntimeException("No end time. Aborting...");
+//
+//        		double originalEndTime = trip.getOriginActivity().getEndTime().seconds();
+//        		double estimatedArrivalTime = previousActivityEndTime + previousTripTravelTime;
+//				double updatedEndTime = estimatedArrivalTime + rnd.nextDouble() * (originalEndTime - estimatedArrivalTime - approximateTimeForShortDistanceActivityPlusWalking);
+//				if (updatedEndTime < 0.) throw new RuntimeException("Negative time. Aborting...");
+//				trip.getOriginActivity().setEndTime(updatedEndTime);
+//
+//        		Leg leg1 = scenario.getPopulation().getFactory().createLeg(TransportMode.walk);
+//    			newPlan.addLeg(leg1);
+//
+//    			Activity shortDistanceRangeActivity = scenario.getPopulation().getFactory().createActivityFromCoord("other", getShortDistanceCoordinate(trip.getOriginActivity().getCoord(), rangeForShortDistanceTrips));
+//    			shortDistanceRangeActivity.setMaximumDuration(rnd.nextDouble() * maxDurationForShortDistanceTrips);
+//    			newPlan.addActivity(shortDistanceRangeActivity);
+//
+//    			Leg leg2 = scenario.getPopulation().getFactory().createLeg(TransportMode.walk);
+//    			newPlan.addLeg(leg2);
+//
+//    			Activity previousActivity = trip.getOriginActivity();
+//    			newPlan.addActivity(previousActivity);
+//
+//        	}
+//
+//			String mainMode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+//			Leg leg = scenario.getPopulation().getFactory().createLeg(mainMode);
+//			newPlan.addLeg(leg);
+//			if (leg.getTravelTime() != null) {
+//				previousTripTravelTime = leg.getTravelTime().seconds();
+//			} else {
+//				previousTripTravelTime = 0.;
+//			}
+//
+//			Activity destinationActivity = trip.getDestinationActivity();
+//			newPlan.addActivity(destinationActivity);
+//			previousActivityEndTime = destinationActivity.getEndTime().seconds();
+//		}
+//
+//        return newPlan;
+//    }
 
-    /**
+//    private Coord getShortDistanceCoordinate(Coord coord, double range) {
+//        final Random rnd = MatsimRandom.getLocalInstance();
+//    	Coord newCoord = new Coord(rnd.nextDouble() * coord.getX() * range, rnd.nextDouble() * coord.getY() * range);
+//		return newCoord;
+//	}
+//
+//	private boolean isActivityInCityOfHamburg(Activity act) {
+//		// TODO Auto-generated method stub
+//		return true;
+//	}
+
+	/**
      * Split activities into typical durations to improve value of travel time savings calculation.
      *
      * @see playground.vsp.openberlinscenario.planmodification.CemdapPopulationTools
@@ -187,7 +246,6 @@ public class PreparePopulation {
     private void splitActivityTypesBasedOnDuration(Activity act) {
 
         final double timeBinSize_s = 600.;
-
 
         double duration = act.getEndTime().orElse(24 * 3600)
                 - act.getStartTime().orElse(0);

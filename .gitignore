@@ -305,3 +305,4 @@ hs_err_pid*
 /target/
 /.classpath
 /.project
+/matsim-hamburg-data-analysis/
