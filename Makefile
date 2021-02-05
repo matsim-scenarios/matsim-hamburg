@@ -2,7 +2,7 @@
 JAR := matsim-hamburg-*.jar
 V := v1.0
 
-export SUMO_HOME := $(abspath ../../sumo-1.6.0/)
+export SUMO_HOME := $(abspath ../../sumo-1.8.0/)
 osmosis := osmosis\bin\osmosis
 
 .PHONY: prepare
@@ -12,7 +12,7 @@ $(JAR):
 
 # Required files
 scenarios/input/network.osm.pbf:
-	curl https://download.geofabrik.de/europe/germany-latest.osm.pbf\
+	curl -L https://download.geofabrik.de/europe/germany-latest.osm.pbf\
 	  -o $@
 
 scenarios/input/network.osm: scenarios/input/network.osm.pbf
@@ -36,8 +36,10 @@ scenarios/input/network.osm: scenarios/input/network.osm.pbf
 
 scenarios/input/sumo.net.xml: scenarios/input/network.osm
 
-	$(SUMO_HOME)/bin/netconvert --geometry.remove --junctions.join --tls.discard-simple --tls.join\
+	$(SUMO_HOME)/bin/netconvert --geometry.remove --ramps.guess\
 	 --type-files $(SUMO_HOME)/data/typemap/osmNetconvert.typ.xml,$(SUMO_HOME)/data/typemap/osmNetconvertUrbanDe.typ.xml\
+	 --tls.guess-signals true --tls.discard-simple --tls.join --tls.default-type actuated\
+	 --junctions.join --junctions.corner-detail 5\
 	 --roundabouts.guess --remove-edges.isolated\
 	 --no-internal-links --keep-edges.by-vclass passenger --remove-edges.by-type highway.track,highway.services,highway.unsurfaced\
 	 --remove-edges.by-vclass hov,tram,rail,rail_urban,rail_fast,pedestrian\
@@ -47,10 +49,9 @@ scenarios/input/sumo.net.xml: scenarios/input/network.osm
 	 --osm-files $< -o=$@
 
 
-scenarios/input/duesseldorf-$V-network.xml.gz: scenarios/input/sumo.net.xml
-	java -cp $(JAR) org.matsim.prepare.CreateNetwork $<
-	 --output $@
+scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/sumo.net.xml
+	java -cp $(JAR) org.matsim.prepare.CreateNetwork $< --output $@
 
 # Aggregated target
-prepare: scenarios/input/duesseldorf-$V-network.xml.gz
+prepare: scenarios/input/hamburg-$V-network.xml.gz
 	echo "Done"
