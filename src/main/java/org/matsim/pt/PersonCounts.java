@@ -17,6 +17,24 @@ public class PersonCounts {
 	private int aussteigerOutboundSim = 0;
 	private int einsteigerInboundSim = 0;
 	private int aussteigerInboundSim = 0;
+	private int einsteigerSim = 0;
+	private int aussteigerSim = 0;
+
+	public int getEinsteigerSim() {
+		return einsteigerSim;
+	}
+
+	public void setEinsteigerSim() {
+		this.einsteigerSim += 1;
+	}
+
+	public int getAussteigerSim() {
+		return aussteigerSim;
+	}
+
+	public void setAussteigerSim() {
+		this.aussteigerSim += 1;
+	}
 
 	public int getEinsteigerOutbound() {
 		return einsteigerOutbound;

@@ -80,6 +80,10 @@ public class PtFromEventsFile {
         void addVehicle(String id) {
             vehicels.add(id);
         }
+        
+		public List<String> getVehicles() {
+			return vehicels;
+		}
 
         public HashMap<Id<TransitStopFacility>, String> getStations() {
             return stations;
