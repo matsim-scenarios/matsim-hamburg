@@ -1,18 +1,15 @@
 package org.matsim.pt;
 
-import static org.matsim.pt.PtFromEventsFile.readSimulationData;
-import static org.matsim.pt.PtFromEventsFile.readTransitSchedule;
-
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
@@ -23,56 +20,39 @@ import org.matsim.vehicles.Vehicle;
 public class CompareSimualtionRealWorld {
 
 	public static void main(String[] args) {
+
+		//Takes from arguments
+		String transitScheduleFile = args[0];
+		String eventsFile = args[1];
+		String realWordCountsDirectory = args[2];
+		String outputResultsDirectory = args[3];
+		String outputMissingStationsDirectory = args[4];
 		
-		String transitScheduleFile = "C:/Users/Aravind/work/Calibration/hh-10pct-19.output_transitSchedule.xml";
-		String eventsFile = "C:/Users/Aravind/work/Calibration/hh-10pct-19.output_events.xml";
-		String realWordCountsFile = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
+		
+		
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = readRealWorldData(
-				realWordCountsFile);
-		HashMap<String, MyTransitObject> transitScheduleData = readTransitSchedule(transitScheduleFile);
-		HashMap<Id<Person>, MyPerson> simResults = readSimulationData(eventsFile); // change
+				realWordCountsDirectory);
+		HashMap<String, MyTransitObject> transitScheduleData = PtFromEventsFile.readTransitSchedule(transitScheduleFile);
+		HashMap<Id<Person>, MyPerson> simResults = PtFromEventsFile.readSimulationData(eventsFile); // change
 		HashMap<Id<Vehicle>, String> vehicleLines = mapVehicleIdToLineNo(transitScheduleData, simResults);
-		ArrayList<String> count = new ArrayList<String>();
-		ArrayList<String> count1 = new ArrayList<String>();
+		ArrayList<String> simulationLines = new ArrayList<String>();
+		ArrayList<String> simulationLinesMatchingRealWorld = new ArrayList<String>();
 		ArrayList<String> missingStationLines = new ArrayList<String>();
 		HashMap<String, LinkedHashMap<String, MissingStationPersonCounts>> missingStation = new LinkedHashMap<String, LinkedHashMap<String, MissingStationPersonCounts>>();
 		HashMap<String, ArrayList<String>> allSimulationStations = new LinkedHashMap<String, ArrayList<String>>();
 
-		FileWriter fwriterPerson = null;
-		try {
-			fwriterPerson = new FileWriter(new File("C:/Users/Aravind/work/Calibration" + "/personTransitTest.txt"),
-					false);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		BufferedWriter bwPerson = new BufferedWriter(fwriterPerson);
-		PrintWriter writerPerson = new PrintWriter(bwPerson);
-
 		for (Id<Person> key : simResults.keySet()) {
-
-			for (MyTransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
-				String lineNo = vehicleLines.get(personTransitUsage.getVehicleId());
-				if (lineNo != null && lineNo.contentEquals("111")) {
-					writerPerson.println("Line : " + lineNo);
-					writerPerson.println("Person : " + key);
-					writerPerson.println("Start : "
-							+ transitScheduleData.get(lineNo).getStations().get(personTransitUsage.getStartStation()));
-					writerPerson.println("End : "
-							+ transitScheduleData.get(lineNo).getStations().get(personTransitUsage.getEndStation()));
-				}
-			}
 
 			for (MyTransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
 				String lineNo = vehicleLines.get(personTransitUsage.getVehicleId());
 				// transit contains all stations and corresponding person counts
 				LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(lineNo);
 				if (transit != null) {
-					if (!count.contains(lineNo)) {
-						count.add(lineNo);
+					if (!simulationLines.contains(lineNo)) {
+						simulationLines.add(lineNo);
 					}
-					if (!count1.contains(lineNo) && !missingStationLines.contains(lineNo)) {
-						count1.add(lineNo);
+					if (!simulationLinesMatchingRealWorld.contains(lineNo) && !missingStationLines.contains(lineNo)) {
+						simulationLinesMatchingRealWorld.add(lineNo);
 					}
 					List<String> realworldStops = new ArrayList<String>(transit.keySet());
 					String startStation = transitScheduleData.get(lineNo).getStations()
@@ -115,9 +95,9 @@ public class CompareSimualtionRealWorld {
 							transit.get(endStation).setAussteigerInboundSim();
 						}
 					} else {
-						
-						if (count1.contains(lineNo)) {
-							count1.remove(lineNo);
+
+						if (simulationLinesMatchingRealWorld.contains(lineNo)) {
+							simulationLinesMatchingRealWorld.remove(lineNo);
 						}
 						if (!missingStationLines.contains(lineNo)) {
 							missingStationLines.add(lineNo);
@@ -176,56 +156,16 @@ public class CompareSimualtionRealWorld {
 			}
 		}
 
-		writerPerson.flush();
-		writerPerson.close();
-
 		try {
-			FileWriter fwriter = new FileWriter(new File("C:/Users/Aravind/work/Calibration" + "/results.csv"), false);
-			BufferedWriter bw = new BufferedWriter(fwriter);
-			PrintWriter writer = new PrintWriter(bw);
+			Writer fwriterResults = new OutputStreamWriter(
+					new FileOutputStream(outputResultsDirectory + "/results.csv"), "Windows-1252");
+			BufferedWriter bwResults = new BufferedWriter(fwriterResults);
+			PrintWriter writerResults = new PrintWriter(bwResults);
 
-			FileWriter fwriter1 = new FileWriter(new File("C:/Users/Aravind/work/Calibration" + "/missingStations.csv"),
-					false);
-			BufferedWriter bw1 = new BufferedWriter(fwriter1);
-			PrintWriter missingStationWriter = new PrintWriter(bw1);
-
-			FileWriter fwriter2 = new FileWriter(new File("C:/Users/Aravind/work/Calibration" + "/simulationLines.txt"),
-					false);
-			BufferedWriter bw2 = new BufferedWriter(fwriter2);
-			PrintWriter writer2 = new PrintWriter(bw2);
-
-			FileWriter fwriter3 = new FileWriter(
-					new File("C:/Users/Aravind/work/Calibration" + "/missingLinesInSimulation.txt"), false);
-			BufferedWriter bw3 = new BufferedWriter(fwriter3);
-			PrintWriter writer3 = new PrintWriter(bw3);
-			
-			FileWriter fwriter4 = new FileWriter(
-					new File("C:/Users/Aravind/work/Calibration" + "/listAfterRemoval.txt"), false);
-			BufferedWriter bw4 = new BufferedWriter(fwriter4);
-			PrintWriter writer4 = new PrintWriter(bw4);
-			
-			FileWriter fwriter5 = new FileWriter(
-					new File("C:/Users/Aravind/work/Calibration" + "/missingStationLines.txt"), false);
-			BufferedWriter bw5 = new BufferedWriter(fwriter5);
-			PrintWriter writer5 = new PrintWriter(bw5);
-
-			Set<String> realWorldLines = realWordCountsData.keySet();
-
-			for (String line : realWorldLines) {
-				if (!count.contains(line)) {
-					writer3.println(line);
-				}
-			}
-
-			for (String line : count) {
-				writer2.println(line);
-			}
-			for (String line : count1) {
-				writer4.println(line);
-			}
-			for (String line : missingStationLines) {
-				writer5.println(line);
-			}
+			Writer fwriterMissingStations = new OutputStreamWriter(
+					new FileOutputStream(outputMissingStationsDirectory + "/missingStations.csv"), "Windows-1252");
+			BufferedWriter bwMissingStations = new BufferedWriter(fwriterMissingStations);
+			PrintWriter missingStationWriter = new PrintWriter(bwMissingStations);
 
 			for (String line : realWordCountsData.keySet()) {
 				if (missingStationLines.contains(line)) {
@@ -234,11 +174,11 @@ public class CompareSimualtionRealWorld {
 					int simulationCounts = 0;
 					for (String station : transit.keySet()) {
 						PersonCounts personCounts = transit.get(station);
-						simulationCounts += ((personCounts.getAussteigerInboundSim() > 1
-								|| personCounts.getAussteigerOutboundSim() > 1
-								|| personCounts.getEinsteigerInboundSim() > 1
-								|| personCounts.getEinsteigerOutboundSim() > 1 || personCounts.getAussteigerSim() > 1
-								|| personCounts.getEinsteigerSim() > 1) ? 1 : 0);
+						simulationCounts += ((personCounts.getAussteigerInboundSim() > 0
+								|| personCounts.getAussteigerOutboundSim() > 0
+								|| personCounts.getEinsteigerInboundSim() > 0
+								|| personCounts.getEinsteigerOutboundSim() > 0 || personCounts.getAussteigerSim() > 0
+								|| personCounts.getEinsteigerSim() > 0) ? 1 : 0);
 					}
 					int missingStationCount = missingStation.get(line).size();
 					missingStationWriter.println();
@@ -275,7 +215,18 @@ public class CompareSimualtionRealWorld {
 						PersonCounts personCounts = transit.get(station);
 						// if() {
 						missingStationWriter.println();
-						missingStationWriter.print(station);
+						String value = station;
+						String stationToPrint = "";
+						String[] split = null;
+						if (value.contains(",")) {
+							split = value.split(",");
+							for (int ii = 0; ii < split.length; ii++) {
+								stationToPrint += " " + split[ii];
+							}
+						} else {
+							stationToPrint = station;
+						}
+						missingStationWriter.print(stationToPrint);
 						missingStationWriter.print(",");
 						missingStationWriter.print(personCounts.getEinsteigerOutbound());
 						missingStationWriter.print(",");
@@ -311,9 +262,20 @@ public class CompareSimualtionRealWorld {
 					missingStationWriter.print("Aussteiger");
 					LinkedHashMap<String, MissingStationPersonCounts> missingStationCounts = missingStation.get(line);
 					for (String station : missingStationCounts.keySet()) {
+						String value = station;
+						String stationToPrint = "";
+						String[] split = null;
+						if (value.contains(",")) {
+							split = value.split(",");
+							for (int ii = 0; ii < split.length; ii++) {
+								stationToPrint += " " + split[ii];
+							}
+						} else {
+							stationToPrint = station;
+						}
 						MissingStationPersonCounts missingStationPersonCounts = missingStationCounts.get(station);
 						missingStationWriter.println();
-						missingStationWriter.print(station);
+						missingStationWriter.print(stationToPrint);
 						missingStationWriter.print(",");
 						missingStationWriter.print(missingStationPersonCounts.getEinsteigerCount());
 						missingStationWriter.print(",");
@@ -339,7 +301,18 @@ public class CompareSimualtionRealWorld {
 					missingStationWriter.println();
 					for (String station : allSimulationStations.get(line)) {
 						missingStationWriter.println();
-						missingStationWriter.print(station);
+						String value = station;
+						String stationToPrint = "";
+						String[] split = null;
+						if (value.contains(",")) {
+							split = value.split(",");
+							for (int ii = 0; ii < split.length; ii++) {
+								stationToPrint += " " + split[ii];
+							}
+						} else {
+							stationToPrint = station;
+						}
+						missingStationWriter.print(stationToPrint);
 					}
 					missingStationWriter.println();
 					missingStationWriter.println();
@@ -352,76 +325,68 @@ public class CompareSimualtionRealWorld {
 			}
 
 			for (String line : realWordCountsData.keySet()) {
-				if (count1.contains(line)) {
+				if (simulationLinesMatchingRealWorld.contains(line)) {
 					LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(line);
-					writer.println("Line: " + line);
-					writer.println();
+					writerResults.println("Line: " + line);
+					writerResults.println();
 					int i = 0;
 					for (String station : transit.keySet()) {
 						PersonCounts personCounts = transit.get(station);
 						if (i == 0) {
-							writer.print("Station");
-							writer.print(",");
-							writer.print("Einsteiger Outbound");
-							writer.print(",");
-							writer.print("Einsteiger Outbound Sim");
-							writer.print(",");
-							writer.print("Aussteiger Outbound");
-							writer.print(",");
-							writer.print("Aussteiger Outbound Sim");
-							writer.print(",");
-							writer.print("Einsteiger Inbound");
-							writer.print(",");
-							writer.print("Einsteiger Inbound Sim");
-							writer.print(",");
-							writer.print("Aussteiger Inbound");
-							writer.print(",");
-							writer.print("Aussteiger Inbound Sim");
-							writer.print(",");
+							writerResults.print("Station");
+							writerResults.print(",");
+							writerResults.print("Einsteiger Outbound");
+							writerResults.print(",");
+							writerResults.print("Einsteiger Outbound Sim");
+							writerResults.print(",");
+							writerResults.print("Aussteiger Outbound");
+							writerResults.print(",");
+							writerResults.print("Aussteiger Outbound Sim");
+							writerResults.print(",");
+							writerResults.print("Einsteiger Inbound");
+							writerResults.print(",");
+							writerResults.print("Einsteiger Inbound Sim");
+							writerResults.print(",");
+							writerResults.print("Aussteiger Inbound");
+							writerResults.print(",");
+							writerResults.print("Aussteiger Inbound Sim");
+							writerResults.print(",");
 						}
-						writer.println();
-						writer.print(station);
-						writer.print(",");
-						writer.print(personCounts.getEinsteigerOutbound());
-						writer.print(",");
-						writer.print(personCounts.getEinsteigerOutboundSim());
-						writer.print(",");
-						writer.print(personCounts.getAussteigerOutbound());
-						writer.print(",");
-						writer.print(personCounts.getAussteigerOutboundSim());
-						writer.print(",");
-						writer.print(personCounts.getEinsteigerInbound());
-						writer.print(",");
-						writer.print(personCounts.getEinsteigerInboundSim());
-						writer.print(",");
-						writer.print(personCounts.getAussteigerInbound());
-						writer.print(",");
-						writer.print(personCounts.getAussteigerInboundSim());
-						writer.print(",");
+						writerResults.println();
+						writerResults.print(station);
+						writerResults.print(",");
+						writerResults.print(personCounts.getEinsteigerOutbound());
+						writerResults.print(",");
+						writerResults.print(personCounts.getEinsteigerOutboundSim());
+						writerResults.print(",");
+						writerResults.print(personCounts.getAussteigerOutbound());
+						writerResults.print(",");
+						writerResults.print(personCounts.getAussteigerOutboundSim());
+						writerResults.print(",");
+						writerResults.print(personCounts.getEinsteigerInbound());
+						writerResults.print(",");
+						writerResults.print(personCounts.getEinsteigerInboundSim());
+						writerResults.print(",");
+						writerResults.print(personCounts.getAussteigerInbound());
+						writerResults.print(",");
+						writerResults.print(personCounts.getAussteigerInboundSim());
+						writerResults.print(",");
 
 						i++;
 					}
-					writer.println();
-					writer.println();
+					writerResults.println();
+					writerResults.println();
 				}
 			}
 
-			writer.flush();
-			writer.close();
+			writerResults.flush();
+			writerResults.close();
 			missingStationWriter.flush();
 			missingStationWriter.close();
-			writer2.flush();
-			writer2.close();
-			writer3.flush();
-			writer3.close();
-			writer4.flush();
-			writer4.close();
-			writer5.flush();
-			writer5.close();
 
 			System.out.println("Written file succesfully");
 			System.out.println("size of simulation lines not matching with real world lines " + missingStation.size());
-			System.out.println("size of simulation lines " + count.size());
+			System.out.println("size of simulation lines " + simulationLines.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -438,8 +403,8 @@ public class CompareSimualtionRealWorld {
 		return realWordCounts;
 	}
 
-	private static HashMap<Id<Vehicle>, String> mapVehicleIdToLineNo(HashMap<String, MyTransitObject> transitScheduleData,
-			HashMap<Id<Person>, MyPerson> simResults) { // change
+	private static HashMap<Id<Vehicle>, String> mapVehicleIdToLineNo(
+			HashMap<String, MyTransitObject> transitScheduleData, HashMap<Id<Person>, MyPerson> simResults) {
 
 		HashMap<Id<Vehicle>, String> vehicleLines = new HashMap<Id<Vehicle>, String>();
 		for (MyPerson personTest : simResults.values()) {

@@ -3,11 +3,8 @@
  */
 package org.matsim.pt;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,14 +22,13 @@ import org.xml.sax.SAXException;
  */
 public class ReadPtCounts {
 
-	public static void main(String[] args) {
-		String realWordCountsFile = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
-		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = read(realWordCountsFile);
-	}
+//	public static void main(String[] args) {
+//		String realWordCountsFile = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
+//		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = read(realWordCountsFile);
+//	}
 	static public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read(String directoryToScanForRuns) {
 
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> ptCounts = new LinkedHashMap<String, LinkedHashMap<String, PersonCounts>>();
-//		String directoryToScanForRuns = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
 		File[] files = new File(directoryToScanForRuns).listFiles(File::isFile);
 		for (int k = 0; k < files.length; k++) {
 
@@ -48,7 +44,7 @@ public class ReadPtCounts {
 				NodeList tableChildren = table.getChildNodes();
 				int count = 0;
 				for (int i = 0; i < tableChildren.getLength(); i++) {
-					//new row
+					// new row
 					PersonCounts personCounts = new PersonCounts();
 					Node tableItems = tableChildren.item(i);
 					if (tableItems.getNodeName() == "Row") {
@@ -76,7 +72,7 @@ public class ReadPtCounts {
 									}
 								}
 							}
-							if(stop != null) {
+							if (stop != null) {
 								trip.put(stop, personCounts);
 							}
 						}
@@ -98,76 +94,7 @@ public class ReadPtCounts {
 		}
 
 		System.out.println("Done, reading real world data");
-		
-		
 
-		FileWriter fwriter;
-		try {
-			fwriter = new FileWriter(new File("C:/Users/Aravind/work/Calibration" + "/realworldLines.txt"), false);
-			BufferedWriter bw = new BufferedWriter(fwriter);
-			PrintWriter writer = new PrintWriter(bw);
-			
-			PrintWriter writer1 = null;
-			for(String line : ptCounts.keySet()) {
-				FileWriter fwriter1 = new FileWriter(new File("C:/Users/Aravind/work/Calibration/testreadptcounts/" +line+".csv"), false);
-				BufferedWriter bw1 = new BufferedWriter(fwriter1);
-				writer1 = new PrintWriter(bw1);
-				
-				LinkedHashMap<String, PersonCounts> trip = ptCounts.get(line);
-				int i = 0;
-				for(String station : trip.keySet()) {
-					PersonCounts personCounts = trip.get(station);
-					if(i == 0) {
-						writer1.print("Station");
-						writer1.print(",");
-						writer1.print("Einsteiger Outbound");
-						writer1.print(",");
-						writer1.print("Aussteiger Outbound");
-						writer1.print(",");
-						writer1.print("Einsteiger Inbound");
-						writer1.print(",");
-						writer1.print("Aussteiger Inbound");
-						writer1.print(",");
-					}
-					
-					writer1.println();
-					writer1.print(station);
-					writer1.print(",");
-					writer1.print(personCounts.getEinsteigerOutbound());
-					writer1.print(",");
-					writer1.print(personCounts.getAussteigerOutbound());
-					writer1.print(",");
-					writer1.print(personCounts.getEinsteigerInbound());
-					writer1.print(",");
-					writer1.print(personCounts.getAussteigerInbound());
-					writer1.print(",");
-					
-					i++;
-				}
-				
-				writer1.println();
-				writer1.println();
-				
-				writer1.flush();
-				writer1.close();
-			}
-			
-			
-			
-			for(String key : ptCounts.keySet()) {
-				writer.println(key);
-			}
-			
-			writer.flush();
-			writer.close();
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("Done writing");
 		return ptCounts;
 	}
 }
