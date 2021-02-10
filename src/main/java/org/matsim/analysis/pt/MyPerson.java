@@ -1,4 +1,4 @@
-package org.matsim.pt;
+package org.matsim.analysis.pt;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;

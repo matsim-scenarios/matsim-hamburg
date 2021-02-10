@@ -1,4 +1,4 @@
-package org.matsim.pt;
+package org.matsim.analysis.pt;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -13,11 +13,10 @@ import java.util.List;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.pt.MyPerson.MyTransitUsage;
-import org.matsim.pt.PtFromEventsFile.MyTransitObject;
+import org.matsim.analysis.pt.PtFromEventsFile.MyTransitObject;
 import org.matsim.vehicles.Vehicle;
 
-public class CompareSimualtionRealWorld {
+public class CompareSimulationRealWorld {
 
 	public static void main(String[] args) {
 
@@ -44,7 +43,7 @@ public class CompareSimualtionRealWorld {
 
 		for (Id<Person> key : simResults.keySet()) {
 
-			for (MyTransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
+			for (MyPerson.MyTransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
 				String lineNo = vehicleLines.get(personTransitUsage.getVehicleId());
 				// transit contains all stations and corresponding person counts
 				LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(lineNo);
@@ -413,7 +412,7 @@ public class CompareSimualtionRealWorld {
 
 		HashMap<Id<Vehicle>, String> vehicleLines = new HashMap<Id<Vehicle>, String>();
 		for (MyPerson personTest : simResults.values()) {
-			for (MyTransitUsage personTransitUsage : personTest.getTransitUsageList()) {
+			for (MyPerson.MyTransitUsage personTransitUsage : personTest.getTransitUsageList()) {
 				Id<Vehicle> vehileId = personTransitUsage.getVehicleId();
 				for (MyTransitObject transitObject : transitScheduleData.values()) {
 					List<String> vehicles = transitObject.getVehicles();

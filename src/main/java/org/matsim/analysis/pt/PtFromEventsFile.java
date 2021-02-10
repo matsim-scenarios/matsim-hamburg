@@ -1,4 +1,4 @@
-package org.matsim.pt;
+package org.matsim.analysis.pt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +36,13 @@ public class PtFromEventsFile {
         return  myEventHandler.getPtUsageMap();
     }
 
-    static HashMap<String, MyTransitObject> readTransitSchedule(String transitSceduleFile) {
+    static HashMap<String, MyTransitObject> readTransitSchedule(String transitScheduleFile) {
         HashMap<String, MyTransitObject> publicTransit = new HashMap<>();
 
         Config config = ConfigUtils.createConfig();
         Scenario scenario = ScenarioUtils.createScenario(config);
         TransitScheduleReader transitScheduleReader = new TransitScheduleReader(scenario);
-        transitScheduleReader.readFile(transitSceduleFile);
+        transitScheduleReader.readFile(transitScheduleFile);
 
         for (TransitLine transitLine : scenario.getTransitSchedule().getTransitLines().values()) {
             String id[] = transitLine.getId().toString().split("-");
