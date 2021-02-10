@@ -69,9 +69,7 @@
         <param name="stuckTime" value="30.0"/>
         <param name="trafficDynamics" value="kinematicWaves"/>
         <param name="useLanes" value="true" />
-
-        <!-- TODO: change back to modeVehicleTypesFromVehiclesData -->
-        <param name="vehiclesSource" value="defaultVehicle"/>
+        <param name="vehiclesSource" value="modeVehicleTypesFromVehiclesData"/>
         <param name="insertingWaitingVehiclesBeforeDrivingVehicles" value="true"/>
     </module>
 

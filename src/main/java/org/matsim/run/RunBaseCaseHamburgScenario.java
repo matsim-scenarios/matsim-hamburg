@@ -31,6 +31,7 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.VehicleHandlerForParking;
+import org.matsim.prepare.freight.AdjustScenarioForFreight;
 import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
@@ -88,13 +89,6 @@ public class RunBaseCaseHamburgScenario {
             }
         } );
 
-        // use AnalysisMainModeIdentifier instead of RoutingModeIdentifier
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
-            }
-        });
         // use PersonIncomeSpecificScoringFunction if is needed
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -133,6 +127,9 @@ public class RunBaseCaseHamburgScenario {
                 }
             });
         }
+
+        // add Freight
+        AdjustScenarioForFreight.adjustControlerForFreight(controler, AdjustScenarioForFreight.getFreightModes());
 
         return controler;
     }
@@ -185,6 +182,8 @@ public class RunBaseCaseHamburgScenario {
 
         }
 
+        // add Freight
+        AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
         return scenario;
     }
 
