@@ -32,8 +32,9 @@ public class CompareSimualtionRealWorld {
 		
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = readRealWorldData(
 				realWordCountsDirectory);
+		LinkedHashMap<String, String> mapLineToYear = ReadPtCounts.mapLineNoYear(realWordCountsDirectory);
 		HashMap<String, MyTransitObject> transitScheduleData = PtFromEventsFile.readTransitSchedule(transitScheduleFile);
-		HashMap<Id<Person>, MyPerson> simResults = PtFromEventsFile.readSimulationData(eventsFile); // change
+		HashMap<Id<Person>, MyPerson> simResults = PtFromEventsFile.readSimulationData(eventsFile);
 		HashMap<Id<Vehicle>, String> vehicleLines = mapVehicleIdToLineNo(transitScheduleData, simResults);
 		ArrayList<String> simulationLines = new ArrayList<String>();
 		ArrayList<String> simulationLinesMatchingRealWorld = new ArrayList<String>();
@@ -150,9 +151,10 @@ public class CompareSimualtionRealWorld {
 //								+ personTransitUsage.getStartStation().toString() + " and "
 //								+ personTransitUsage.getEndStation().toString());
 					}
-				} else {
-					System.out.println("Line No: " + lineNo + " not available in real world data");
-				}
+				} 
+//				else {
+//					System.out.println("Line No: " + lineNo + " not available in real world data");
+//				}
 			}
 		}
 
@@ -167,6 +169,7 @@ public class CompareSimualtionRealWorld {
 			BufferedWriter bwMissingStations = new BufferedWriter(fwriterMissingStations);
 			PrintWriter missingStationWriter = new PrintWriter(bwMissingStations);
 
+			//Printing missing stations
 			for (String line : realWordCountsData.keySet()) {
 				if (missingStationLines.contains(line)) {
 					LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(line);
@@ -182,7 +185,7 @@ public class CompareSimualtionRealWorld {
 					}
 					int missingStationCount = missingStation.get(line).size();
 					missingStationWriter.println();
-					missingStationWriter.println("Line: " + line);
+					missingStationWriter.println("Line: " + line + " - Year "+mapLineToYear.get(line));
 					missingStationWriter.println("No: of stations in Real world " + realWorldStationCount);
 					missingStationWriter
 							.println("No: of stations in simulation " + (simulationCounts + missingStationCount));
@@ -324,6 +327,7 @@ public class CompareSimualtionRealWorld {
 
 			}
 
+			//Printing results
 			for (String line : realWordCountsData.keySet()) {
 				if (simulationLinesMatchingRealWorld.contains(line)) {
 					LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(line);
@@ -402,7 +406,8 @@ public class CompareSimualtionRealWorld {
 
 		return realWordCounts;
 	}
-
+	
+	
 	private static HashMap<Id<Vehicle>, String> mapVehicleIdToLineNo(
 			HashMap<String, MyTransitObject> transitScheduleData, HashMap<Id<Person>, MyPerson> simResults) {
 

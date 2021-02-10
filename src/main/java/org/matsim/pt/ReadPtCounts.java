@@ -97,4 +97,17 @@ public class ReadPtCounts {
 
 		return ptCounts;
 	}
+
+	public static LinkedHashMap<String, String> mapLineNoYear(String directoryToScanForRuns) {
+			LinkedHashMap<String, String> lineYear = new LinkedHashMap<String, String>();
+			File[] files = new File(directoryToScanForRuns).listFiles(File::isFile);
+			for (int k = 0; k < files.length; k++) {
+				File file = new File(files[k].toString());
+				String[] fileNameSplit = file.getName().split("_");
+				String[] year = fileNameSplit[3].split("[.]");
+				lineYear.put(fileNameSplit[2], year[0]);
+			}
+			return lineYear;
+	}
+
 }
