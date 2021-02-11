@@ -66,7 +66,7 @@ public class RunBaseCaseHamburgScenario {
         baseCaseHH.run(args);
     }
 
-    private void run(String[] args) throws IOException {
+    void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
@@ -87,12 +87,14 @@ public class RunBaseCaseHamburgScenario {
                 install( new SwissRailRaptorModule() );
             }
         } );
+        MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler();
 
         // use AnalysisMainModeIdentifier instead of RoutingModeIdentifier
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
                 bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
+                addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
             }
         });
         // use PersonIncomeSpecificScoringFunction if is needed

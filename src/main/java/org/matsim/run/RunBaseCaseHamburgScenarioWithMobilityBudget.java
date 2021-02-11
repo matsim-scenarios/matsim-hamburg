@@ -6,6 +6,8 @@ import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.events.Event;
+import org.matsim.api.core.v01.events.PersonMoneyEvent;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
@@ -17,7 +19,10 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.controler.events.AfterMobsimEvent;
+import org.matsim.core.controler.listener.AfterMobsimListener;
 import org.matsim.core.controler.listener.ControlerListener;
+import org.matsim.core.controler.listener.StartupListener;
 import org.matsim.core.events.handler.EventHandler;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
@@ -27,6 +32,7 @@ import org.matsim.core.scoring.ScoringFunction;
 import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.core.scoring.SumScoringFunction;
 import org.matsim.core.scoring.functions.*;
+import org.matsim.core.utils.misc.Time;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -48,8 +54,8 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
     public static final int SCALE = 1;
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
-    //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
-    public static final ArrayList<Person> personsWithMobilityBudget = new ArrayList<Person>();
+    public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
+    //public static final ArrayList<Person> personsWithMobilityBudget = new ArrayList<Person>();
 
 
     public static void main(String[] args) throws ParseException {
@@ -94,12 +100,27 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
             public void install() {
                 bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
                 addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
-
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
                 }
             }
         });
+
+
+        controler.addControlerListener(new AfterMobsimListener() {
+            @Override
+            public void notifyAfterMobsim(AfterMobsimEvent afterMobsimEvent) {
+                for (Id<Person> personId : personsWithMobilityBudget.keySet()) {
+                    if (personsWithMobilityBudget.get(personId)>0) {
+                        //set time to null??
+                        afterMobsimEvent.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, personId, personsWithMobilityBudget.get(personId), null, null));
+                    }
+
+                }
+
+            }
+        });
+
 /*
         MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler();
         controler.addOverridingModule(new AbstractModule() {
@@ -132,7 +153,7 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
             person.addPlan(selectedPlan);
             person.setSelectedPlan(selectedPlan);
             if (person.getAttributes().getAttribute("mobilityBudget") != null) {
-                personsWithMobilityBudget.add(person);
+                personsWithMobilityBudget.put(person.getId(), 0.0);
             }
         }
 

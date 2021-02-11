@@ -1,53 +1,61 @@
 package org.matsim.run;
 
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverService;
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.events.PersonEntersVehicleEvent;
-import org.matsim.api.core.v01.events.PersonMoneyEvent;
-import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
-import org.matsim.api.core.v01.events.handler.PersonMoneyEventHandler;
+import org.matsim.api.core.v01.events.PersonDepartureEvent;
+import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.api.core.v01.TransportMode;
+
+
 import java.util.ArrayList;
 
 
-public class MobilityBudgetEventHandler implements PersonEntersVehicleEventHandler, PersonMoneyEventHandler {
 
+public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
+
+
+    private static final Logger log = Logger.getLogger(MobilityBudgetEventHandler.class);
     private static ArrayList<Id<Person>> personGotMobilityBudget = new ArrayList<Id<Person>>();
-
+    private static ArrayList<Id<Person>> personUsedCar = new ArrayList<>();
 
     // in case a more sophisticated implementation is needed
-    protected double calculateMobilityBudget (Person p ) {
-        double mobBudg = (double) p.getAttributes().getAttribute("mobilityBudget");
+    protected double calculateMobilityBudget (Id<Person> personId ) {
+        double mobBudg = 10;
         return mobBudg;
     }
 
+    @Override
+    public void reset(int iteration) {
+        personUsedCar.clear();
+        personGotMobilityBudget.clear();
+    }
 
-    //&& RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.contains()
 
     @Override
-    public void handleEvent(PersonEntersVehicleEvent personEntersVehicleEvent) {
-        Id<Person> pId = personEntersVehicleEvent.getPersonId();
-        if (personEntersVehicleEvent.getVehicleId().toString().startsWith("tr") && !personGotMobilityBudget.contains(pId) ) {
+    public void handleEvent(PersonDepartureEvent personDepartureEvent) {
+        Id<Person> personId = personDepartureEvent.getPersonId();
 
-           for(Person person: RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget) {
-               if(person.getId().equals(pId)) {
-                   double sum = calculateMobilityBudget(person);
-                   PersonMoneyEvent moneyEvent = new PersonMoneyEvent(personEntersVehicleEvent.getTime(), personEntersVehicleEvent.getPersonId(), sum, "mobilityBudget", null);
-                   personGotMobilityBudget.add(person.getId());
-               }
+        if (RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.containsKey(personId)) {
+
+            if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
+                // negative value so if Person already got the mobilityBudget it is removed that way
+                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, -1 * calculateMobilityBudget(personId));
+                log.info(personId + "usesd car");
+                personUsedCar.add(personId);
+            }
+
+            if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
+                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
+                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.get(personId));
+                personGotMobilityBudget.add(personId);
+            }
+
+            else {
+                log.info("");
             }
         }
-        else {
-            // nothing to Do here unless we have intermodal Routing??
-        }
 
     }
 
-    @Override
-    public void handleEvent(PersonMoneyEvent personMoneyEvent) {
-        personMoneyEvent.getPersonId();
-
-
-
-    }
 }

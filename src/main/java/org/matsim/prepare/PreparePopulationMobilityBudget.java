@@ -113,6 +113,9 @@ public class PreparePopulationMobilityBudget {
             person.getAttributes().removeAttribute("sim_carAvailability");
             person.getAttributes().removeAttribute("sim_ptAbo");
 
+            
+            createPersonMobilityBudget(person);
+
             for (Plan plan : person.getPlans()) {
                 Plan newPlan = preparePlan(plan);
                 person.removePlan(plan);
