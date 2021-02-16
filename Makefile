@@ -34,7 +34,7 @@ scenarios/input/network.osm: scenarios/input/network.osm.pbf
 	#rm network-coarse.osm.pbf
 
 
-scenarios/input/sumo.net.xml: scenarios/input/network.osm
+scenarios/input/hamburg-sumo.net.xml: scenarios/input/network.osm
 
 	$(SUMO_HOME)/bin/netconvert --geometry.remove --ramps.guess\
 	 --type-files $(SUMO_HOME)/data/typemap/osmNetconvert.typ.xml,$(SUMO_HOME)/data/typemap/osmNetconvertUrbanDe.typ.xml\
@@ -49,8 +49,10 @@ scenarios/input/sumo.net.xml: scenarios/input/network.osm
 	 --osm-files $< -o=$@
 
 
-scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/sumo.net.xml
-	java -cp $(JAR) org.matsim.prepare.CreateNetwork $< --output $@
+scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/hamburg-sumo.net.xml
+	java -cp $(JAR) org.matsim.prepare.CreateNetwork $<\
+	 --capacities ../shared-svn/projects/matsim-hamburg/hamburg-v1.0/RLHH_analyze_Q_at_LSA_all.csv\
+	 --output $@
 
 # Aggregated target
 prepare: scenarios/input/hamburg-$V-network.xml.gz
