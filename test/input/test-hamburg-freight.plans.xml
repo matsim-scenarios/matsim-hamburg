@@ -307,23 +307,6 @@
 
     <!-- ====================================================================== -->
 
-    <person id="commercial_1000030">
-        <attributes>
-            <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
-        </attributes>
-        <plan selected="yes">
-            <activity type="commercial" x="491517.8478023807" y="5887231.015034495" end_time="15:27:28" >
-            </activity>
-            <leg mode="commercial_Lfw">
-            </leg>
-            <activity type="commercial" x="500253.23318210506" y="5900525.9919088045" >
-            </activity>
-        </plan>
-
-    </person>
-
-    <!-- ====================================================================== -->
-
     <person id="commercial_1000074">
         <attributes>
             <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
