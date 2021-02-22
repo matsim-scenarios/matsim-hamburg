@@ -5,8 +5,12 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
+
+import static org.matsim.prepare.freight.CreatFreightAgents.COMMERCIAL;
+import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
 /**
  * @author zmeng
@@ -15,9 +19,9 @@ public class MergePop {
     public static void main(String[] args) {
 
         if(args.length == 0){
-            args = new String[]{"//Users/meng/work/realLabHH_meng/files/v2/hamburg-v1.0-25pct.plans.xml.gz",
-                    "//Users/meng/work/realLabHH_meng/files/v2/hamburg-freight-25pct.plans.xml.gz",
-                    "output/hamburg-v1.0-25pct.plans.xml.gz"
+            args = new String[]{"/Users/meng/work/realLabHH_meng/files/v3/h-25pct-36.output_plans.xml.gz",
+                    "/Users/meng/work/realLabHH_meng/files/v3/hamburg-commercial-25pct.plans.xml.gz",
+                    "/Users/meng/work/realLabHH_meng/files/v3/"
             };
         }
         // subpopulation: persons
@@ -51,10 +55,19 @@ public class MergePop {
         }
         for (Person person : scenario2.getPopulation().getPersons().values()) {
             population.addPerson(person);
-            population.getPersons().get(person.getId()).getAttributes().putAttribute(scenario3.getConfig().plans().getSubpopulationAttributeName(), "freight");
+            population.getPersons().get(person.getId()).getAttributes().putAttribute(scenario3.getConfig().plans().getSubpopulationAttributeName(), COMMERCIAL);
         }
 
         PopulationWriter writer = new PopulationWriter(population);
-        writer.write(populationOutputFileName);
+        writer.write(populationOutputFileName + "hamburg-" + VERSION +"-25pct.plans.xml.gz");
+
+        // downscale to 10%
+        PopulationUtils.sampleDown(population, 0.4);
+        PopulationUtils.writePopulation(population,populationOutputFileName + "hamburg-" + VERSION +"-10pct.plans.xml.gz");
+
+        // downscale to 1%
+        PopulationUtils.sampleDown(population, 0.1);
+        PopulationUtils.writePopulation(population,populationOutputFileName + "hamburg-" + VERSION +"-1pct.plans.xml.gz");
+
     }
 }

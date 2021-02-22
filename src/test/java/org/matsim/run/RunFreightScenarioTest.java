@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.matsim.prepare.freight.CreatFreightAgents.COMMERCIAL;
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
 /**
@@ -35,7 +36,7 @@ public class RunFreightScenarioTest {
                 "test/input/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "2",
                 "--config:plans.inputPlansFile" , "test-hamburg-freight.plans.xml",
-                "--config:vehicles.vehiclesFile" , "test-vehicle-types.xml"
+                "--config:vehicles.vehiclesFile" , "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/vehicle-types.xml"
         };
 
         Config config = prepareConfig(args);
@@ -43,9 +44,9 @@ public class RunFreightScenarioTest {
         config.controler().setRunId("runFreightScenarioTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
-        List<String> modes = Arrays.asList("Lfw","Lkw-g","Trans","Pkw-Lfw","Lkw-k");
-        String freight = "freight_";
-        modes = modes.stream().map(mode -> freight + mode).collect(Collectors.toList());
+        List<String> modes = Arrays.asList("Lkw-g");
+
+        modes = modes.stream().map(mode -> COMMERCIAL + "_" +  mode).collect(Collectors.toList());
 
         Scenario scenario = prepareScenario(config);
         AdjustScenarioForFreight.adjustScenarioForFreight(scenario,modes);

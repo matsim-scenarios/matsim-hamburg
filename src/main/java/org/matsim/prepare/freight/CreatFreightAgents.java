@@ -30,6 +30,7 @@ public class CreatFreightAgents {
 
     private static final Logger log = Logger.getLogger(CreatFreightAgents.class);
     private static final Random rnd = MatsimRandom.getLocalInstance();
+    public static final String COMMERCIAL = "commercial";
     private static int totalTripNum = 0;
     private final String OUTPUT;
     private final Map<String, SimpleFeature> simpleFeatures = new HashMap<>();
@@ -85,15 +86,15 @@ public class CreatFreightAgents {
         Files.createDirectories(Path.of(OUTPUT));
         // downscale to 25%
         PopulationUtils.sampleDown(population, 0.25);
-        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-freight-25pct.plans.xml.gz");
+        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-" + COMMERCIAL +"-25pct.plans.xml.gz");
 
         // downscale to 10%
         PopulationUtils.sampleDown(population, 0.4);
-        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-freight-10pct.plans.xml.gz");
+        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-" + COMMERCIAL +"-10pct.plans.xml.gz");
 
         // downscale to 1%
         PopulationUtils.sampleDown(population, 0.1);
-        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-freight-1pct.plans.xml.gz");
+        PopulationUtils.writePopulation(population,OUTPUT + "hamburg-" + COMMERCIAL +"-1pct.plans.xml.gz");
     }
 
     private void processLine(String line, Population population) throws Exception {
@@ -124,10 +125,10 @@ public class CreatFreightAgents {
             for (int i = 0; i < tripNum; i++) {
                 totalTripNum++;
 
-                Person pers = population.getFactory().createPerson(Id.create("freight_" + totalTripNum, Person.class));
+                Person pers = population.getFactory().createPerson(Id.create(COMMERCIAL + "_" + totalTripNum, Person.class));
 
                 Plan plan = population.getFactory().createPlan();
-                Activity startActivity = population.getFactory().createActivityFromCoord("freight", getRandomCoord(origin));
+                Activity startActivity = population.getFactory().createActivityFromCoord(COMMERCIAL, getRandomCoord(origin));
                 startActivity.setEndTime(getRandomTime(timeSlots));
                 plan.addActivity(startActivity);
 
@@ -135,17 +136,17 @@ public class CreatFreightAgents {
                 if(vehicleType.contains("OV"))
                     leg = population.getFactory().createLeg(TransportMode.pt);
                 else
-                    leg = population.getFactory().createLeg("freight_" + vehicleType);
+                    leg = population.getFactory().createLeg(COMMERCIAL + "_" + vehicleType);
 
                 plan.addLeg(leg);
 
-                Activity endActivity = population.getFactory().createActivityFromCoord("freight",getRandomCoord(destination));
+                Activity endActivity = population.getFactory().createActivityFromCoord(COMMERCIAL,getRandomCoord(destination));
                 plan.addActivity(endActivity);
 
                 pers.addPlan(plan);
                 population.addPerson(pers);
 
-                scenario.getPopulation().getPersons().get(pers.getId()).getAttributes().putAttribute(scenario.getConfig().plans().getSubpopulationAttributeName(), "freight");
+                scenario.getPopulation().getPersons().get(pers.getId()).getAttributes().putAttribute(scenario.getConfig().plans().getSubpopulationAttributeName(), COMMERCIAL);
 
                 log.info("person: " + pers.getId() + " time" + startActivity.getEndTime());
             }

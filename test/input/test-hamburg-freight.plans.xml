@@ -307,16 +307,16 @@
 
     <!-- ====================================================================== -->
 
-    <person id="freight_1000030">
+    <person id="commercial_1000030">
         <attributes>
-            <attribute name="subpopulation" class="java.lang.String">freight</attribute>
+            <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
         </attributes>
         <plan selected="yes">
-            <activity type="freight" x="491517.8478023807" y="5887231.015034495" end_time="15:27:28" >
+            <activity type="commercial" x="491517.8478023807" y="5887231.015034495" end_time="15:27:28" >
             </activity>
-            <leg mode="freight_Lfw">
+            <leg mode="commercial_Lfw">
             </leg>
-            <activity type="freight" x="500253.23318210506" y="5900525.9919088045" >
+            <activity type="commercial" x="500253.23318210506" y="5900525.9919088045" >
             </activity>
         </plan>
 
@@ -324,16 +324,16 @@
 
     <!-- ====================================================================== -->
 
-    <person id="freight_1000074">
+    <person id="commercial_1000074">
         <attributes>
-            <attribute name="subpopulation" class="java.lang.String">freight</attribute>
+            <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
         </attributes>
         <plan selected="yes">
-            <activity type="freight" x="487749.0798673321" y="5891533.800535473" end_time="14:53:14" >
+            <activity type="commercial" x="487749.0798673321" y="5891533.800535473" end_time="14:53:14" >
             </activity>
-            <leg mode="freight_Lkw-g">
+            <leg mode="commercial_Lkw-g">
             </leg>
-            <activity type="freight" x="488837.81420164264" y="5904492.799498616" >
+            <activity type="commercial" x="488837.81420164264" y="5904492.799498616" >
             </activity>
         </plan>
 
@@ -341,54 +341,4 @@
 
     <!-- ====================================================================== -->
 
-    <person id="freight_1000115">
-        <attributes>
-            <attribute name="subpopulation" class="java.lang.String">freight</attribute>
-        </attributes>
-        <plan selected="yes">
-            <activity type="freight" x="496202.4320894971" y="5886798.009826449" end_time="20:34:05" >
-            </activity>
-            <leg mode="freight_Trans">
-            </leg>
-            <activity type="freight" x="489083.29988876154" y="5904357.044466202" >
-            </activity>
-        </plan>
-
-    </person>
-
-    <!-- ====================================================================== -->
-
-    <person id="freight_1000130">
-        <attributes>
-            <attribute name="subpopulation" class="java.lang.String">freight</attribute>
-        </attributes>
-        <plan selected="yes">
-            <activity type="freight" x="489445.2590049413" y="5891821.178784586" end_time="06:06:16" >
-            </activity>
-            <leg mode="freight_Trans">
-            </leg>
-            <activity type="freight" x="492511.5903065153" y="5903082.623794571" >
-            </activity>
-        </plan>
-
-    </person>
-
-    <!-- ====================================================================== -->
-
-    <person id="freight_1000308">
-        <attributes>
-            <attribute name="subpopulation" class="java.lang.String">freight</attribute>
-        </attributes>
-        <plan selected="yes">
-            <activity type="freight" x="486532.8980832363" y="5888333.1871567955" end_time="19:36:06" >
-            </activity>
-            <leg mode="freight_Pkw-Lfw">
-            </leg>
-            <activity type="freight" x="516530.3728561001" y="5866631.406332986" >
-            </activity>
-        </plan>
-
-    </person>
-
-    <!-- ====================================================================== -->
 </population>

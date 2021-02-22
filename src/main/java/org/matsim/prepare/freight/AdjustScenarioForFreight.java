@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.matsim.prepare.freight.CreatFreightAgents.COMMERCIAL;
+
 /**
  * @author zmeng
  */
@@ -43,10 +45,10 @@ public class AdjustScenarioForFreight {
         config.plansCalcRoute().setNetworkModes(getModesWithFreight(modes,config.plansCalcRoute().getNetworkModes()));
         config.qsim().setMainModes(getModesWithFreight(modes,config.qsim().getMainModes()));
 
-        config.strategy().addStrategySettings(new StrategyConfigGroup.StrategySettings().setStrategyName(DefaultPlanStrategiesModule.DefaultSelector.ChangeExpBeta).setSubpopulation("freight").setWeight(0.95));
-        config.strategy().addStrategySettings(new StrategyConfigGroup.StrategySettings().setStrategyName(DefaultPlanStrategiesModule.DefaultStrategy.ReRoute).setSubpopulation("freight").setWeight(0.05));
+        config.strategy().addStrategySettings(new StrategyConfigGroup.StrategySettings().setStrategyName(DefaultPlanStrategiesModule.DefaultSelector.ChangeExpBeta).setSubpopulation(COMMERCIAL).setWeight(0.95));
+        config.strategy().addStrategySettings(new StrategyConfigGroup.StrategySettings().setStrategyName(DefaultPlanStrategiesModule.DefaultStrategy.ReRoute).setSubpopulation(COMMERCIAL).setWeight(0.05));
 
-        config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("freight").setTypicalDuration(12*3600.));
+        config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams(COMMERCIAL).setTypicalDuration(12*3600.));
 
         for (String mode : modes) {
             config.planCalcScore().addModeParams(new PlanCalcScoreConfigGroup.ModeParams(mode).setMonetaryDistanceRate(-0.0004));
@@ -61,7 +63,7 @@ public class AdjustScenarioForFreight {
     }
 
     public static List<String> getFreightModes(){
-        return modes.stream().map(mode -> "freight_" + mode).collect(Collectors.toList());
+        return modes.stream().map(mode -> COMMERCIAL + "_" + mode).collect(Collectors.toList());
     }
 
     public static void adjustControlerForFreight(Controler controler, List<String> modes){
