@@ -27,7 +27,7 @@ import org.matsim.core.events.handler.EventHandler;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.scoring.PersonIncomeBasedScoringParameters;
+
 import org.matsim.core.scoring.ScoringFunction;
 import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.core.scoring.SumScoringFunction;
@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.matsim.run.RunTravelTimeValidation.runHEREValidation;
 
 /**
  * @author zmeng
@@ -77,7 +76,7 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
         controler.run();
-        runHEREValidation(controler);
+        //runHEREValidation(controler);
         log.info("Done.");
     }
 
@@ -101,7 +100,7 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
                 bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
                 addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                    bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
+                  // bind(ScoringParametersForPerson.class).to(PersonIncomeBasedScoringParameters.class);
                 }
             }
         });
@@ -161,7 +160,7 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
         // increase flowspeed for links, where flowspeed lower than 50kmh
         for (Link link : scenario.getNetwork().getLinks().values()) {
             if (link.getFreespeed() < 25.5 / 3.6) {
-                link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeFlowFactor());
+                //link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeFlowFactor());
             }
         }
 
@@ -181,7 +180,7 @@ public class RunBaseCaseHamburgScenarioWithMobilityBudget {
 
         final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
         ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-        ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
+       // ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
 
 
         // delete default modes

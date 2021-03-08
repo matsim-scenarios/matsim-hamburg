@@ -39,8 +39,8 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
         if (RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.containsKey(personId)) {
 
             if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
-                // negative value so if Person already got the mobilityBudget it is removed that way
-                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, -1 * calculateMobilityBudget(personId));
+                // zero value so if Person already got the mobilityBudget it is removed that way
+                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, 0.0);
                 log.info(personId + "usesd car");
                 personUsedCar.add(personId);
             }
