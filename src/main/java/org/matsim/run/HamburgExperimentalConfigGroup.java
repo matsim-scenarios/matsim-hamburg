@@ -14,6 +14,9 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String USE_Link_BASED_PARK_PRESSURE = "useLinkBasedParkPressure";
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE = "parkPressureLinkAttributeFile";
     private static final String PARK_PRESSURE_BASED_PARK_TIME = "parkPressureBasedParkTime";
+    private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
+    private static final String Sample_Size = "sampleSize";
+    private static final String Filter_Commercial = "filterCommercial";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -23,8 +26,37 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean usePersonIncomeBasedScoring = false;
     private double freeSpeedFactor = 1.;
     private boolean useLinkBasedParkPressure = false;
-    private String parkPressureLinkAttributeFile = "link2parkpressure.csv";
+    private String parkPressureLinkAttributeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-link2parkpressure.csv";
     private String parkPressureBasedParkTime = "1200.,720.,0.";
+    private boolean increaseStorageCapacity = true;
+    private boolean filterCommercial = false;
+    private int sampleSize = 10;
+
+    @StringGetter(Filter_Commercial)
+    public boolean isFilterCommercial() {
+        return filterCommercial;
+    }
+    @StringSetter(Filter_Commercial)
+    public void setFilterCommercial(boolean filterCommercial) {
+        this.filterCommercial = filterCommercial;
+    }
+    @StringGetter(Sample_Size)
+    public int getSampleSize() {
+        return sampleSize;
+    }
+    @StringSetter(Sample_Size)
+    public void setSampleSize(int sampleSize) {
+        this.sampleSize = sampleSize;
+    }
+    @StringGetter(Increase_Storage_Capacity)
+    public boolean isIncreaseStorageCapacity() {
+        return increaseStorageCapacity;
+    }
+
+    @StringSetter(Increase_Storage_Capacity)
+    public void setIncreaseStorageCapacity(boolean increaseStorageCapacity) {
+        this.increaseStorageCapacity = increaseStorageCapacity;
+    }
 
     @StringGetter(USE_Link_BASED_PARK_PRESSURE)
     public boolean isUseLinkBasedParkPressure() {

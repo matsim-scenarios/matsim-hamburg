@@ -39,6 +39,7 @@ public class HereAPITravelTimeValidation {
     Config config;
     HereAPITravelTimeValidationConfigGroup hereAPITravelTimeValidationConfigGroup;
     CarTripsExtractor carTripsExtractor;
+
     public HereAPITravelTimeValidation(CarTripsExtractor carTripsExtractor, Config config) {
         this.carTripsExtractor = carTripsExtractor;
         this.config = config;

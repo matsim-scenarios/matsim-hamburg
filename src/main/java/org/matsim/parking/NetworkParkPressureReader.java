@@ -8,10 +8,9 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,11 +67,18 @@ public class NetworkParkPressureReader {
     }
 
     private void readLink2ParkPressure() throws IOException {
+        BufferedReader csvReader;
 
-        File file = new File(this.linkId2ParkPressureCSVFile);
-        log.info("read linkId2ParkPressure from" + file.getAbsolutePath());
+        log.info("read linkId2ParkPressure from " + this.linkId2ParkPressureCSVFile);
+        if(this.linkId2ParkPressureCSVFile.contains("https://")){
+            URL url = new URL(this.linkId2ParkPressureCSVFile);
+            URLConnection yc = url.openConnection();
+            csvReader = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+        } else {
+            File file = new File(this.linkId2ParkPressureCSVFile);
+            csvReader = new BufferedReader(new FileReader(file));
+        }
 
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
         String firstLine = csvReader.readLine();
         while ((firstLine = csvReader.readLine()) != null) {
             String[] income = firstLine.split(",");

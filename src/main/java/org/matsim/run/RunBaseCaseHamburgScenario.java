@@ -4,14 +4,19 @@ package org.matsim.run;
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 import com.google.inject.Provides;
 import org.apache.log4j.Logger;
-import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
+import org.matsim.analysis.PlanBasedTripsFileWriter;
+import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
+import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
+import org.matsim.api.core.v01.population.Population;
+import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -25,18 +30,17 @@ import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.qnetsimengine.ConfigurableQNetworkFactory;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QNetworkFactory;
+import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.routes.RouteFactories;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.VehicleHandlerForParking;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
-import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -48,7 +52,7 @@ public class RunBaseCaseHamburgScenario {
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v1.0";
+    public static final String VERSION = "v1.1";
     public static final int SCALE = 1;
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
@@ -60,7 +64,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml"};
+            args = new String[] {"../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-1pct/hamburg-v1.1-1pct.config.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
@@ -107,9 +111,22 @@ public class RunBaseCaseHamburgScenario {
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
-                if(ConfigUtils.addOrGetModule(scenario.getConfig(),HereAPITravelTimeValidationConfigGroup.class).isUseHereAPI())
+                if(ConfigUtils.addOrGetModule(scenario.getConfig(),HereAPITravelTimeValidationConfigGroup.class).isUseHereAPI()){
+                    CarTripsExtractor carTripsExtractor = new CarTripsExtractor(scenario.getPopulation().getPersons().keySet(), scenario.getNetwork());
+                    this.addEventHandlerBinding().toInstance(carTripsExtractor);
                     this.addControlerListenerBinding().to(HereAPIControlerListener.class);
+                    this.bind(HereAPITravelTimeValidation.class).toInstance(new HereAPITravelTimeValidation(carTripsExtractor,scenario.getConfig()));
+                }
             }
+        });
+
+
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                this.bind(PlanBasedTripsFileWriter.class).asEagerSingleton();
+                this.addControlerListenerBinding().to(PlanBasedTripsWriterControlerListener.class);
+                }
         });
 
         // use link-based park time
@@ -169,7 +186,6 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	
         	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
         		log.info("Adding missing park pressure link attributes based on provided files...");
         		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
@@ -179,11 +195,36 @@ public class RunBaseCaseHamburgScenario {
                 networkParkPressureReader.addLinkParkTimeAsAttribute(parkTime);
         		log.info("Adding missing park pressure link attributes based on provided files... Done.");
         	}
-
         }
 
-        // add Freight
-        AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
+
+        // add Freight if no filter
+        if(hamburgExperimentalConfigGroup.isFilterCommercial()){
+            List<Id<Person>> personIds = new LinkedList<>();
+            for(Person person : scenario.getPopulation().getPersons().values()) {
+                if (person.getId().toString().contains("commercial")) {
+                    personIds.add(person.getId());
+                }
+            }
+            for (Id<Person> personId: personIds) {
+                scenario.getPopulation().removePerson(personId);
+            }
+        } else
+            AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
+
+
+
+        if (hamburgExperimentalConfigGroup.isIncreaseStorageCapacity()) {
+            for (Link link: scenario.getNetwork().getLinks().values()) {
+                double originalStorageCapacity = link.getLength() / 15 * link.getNumberOfLanes() * hamburgExperimentalConfigGroup.getSampleSize()
+                        / 100.0;
+                int minimumLaneRequred = (int) (1 / originalStorageCapacity + 1);
+                if (originalStorageCapacity < 1) {
+                    link.setNumberOfLanes(minimumLaneRequred);
+                }
+            }
+        }
+
         return scenario;
     }
 
