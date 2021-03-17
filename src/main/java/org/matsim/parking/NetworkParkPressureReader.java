@@ -36,6 +36,7 @@ public class NetworkParkPressureReader {
         Network network = scenario.getNetwork();
         NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(network,"/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0/network_specific_info/link2parkpressure.csv");
         networkParkPressureReader.addLinkParkTimeAsAttribute(new Double[]{1200.,720.,0.});
+//        networkParkPressureReader.addLinkParkTimeAsAttribute(new Double[]{1.,0.5,0.});
 
         for (Link link :
                 network.getLinks().values()) {
