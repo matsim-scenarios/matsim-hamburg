@@ -36,18 +36,18 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
     public void handleEvent(PersonDepartureEvent personDepartureEvent) {
         Id<Person> personId = personDepartureEvent.getPersonId();
 
-        if (RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.containsKey(personId)) {
+        if (RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.containsKey(personId)) {
 
             if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
                 // zero value so if Person already got the mobilityBudget it is removed that way
-                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, 0.0);
+                RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.replace(personId, 0.0);
                 log.info(personId + "usesd car");
                 personUsedCar.add(personId);
             }
 
             if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
-                RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
-                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseHamburgScenarioWithMobilityBudget.personsWithMobilityBudget.get(personId));
+                RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
+                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.get(personId));
                 personGotMobilityBudget.add(personId);
             }
 

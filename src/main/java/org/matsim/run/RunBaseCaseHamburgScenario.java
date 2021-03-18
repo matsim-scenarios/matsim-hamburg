@@ -72,7 +72,7 @@ public class RunBaseCaseHamburgScenario {
         baseCaseHH.run(args);
     }
 
-    private void run(String[] args) throws IOException {
+    void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
@@ -99,9 +99,6 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                	
-                	// old approach which is nicer but requires a large amount of memory
-                	// bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
                 	
                 	// new approach which is maybe not so nice but should require less memory
                 	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
