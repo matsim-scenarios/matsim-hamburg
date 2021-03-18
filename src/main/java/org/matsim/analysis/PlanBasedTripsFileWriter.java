@@ -12,9 +12,8 @@ import org.matsim.core.router.MainModeIdentifierImpl;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author zmeng
@@ -69,7 +68,8 @@ public class PlanBasedTripsFileWriter {
         String fileName = ".output_trips_from_plans.csv.gz";
 
         try {
-            BufferedWriter writer = new BufferedWriter( new FileWriter(outputFolder + config.controler().getRunId() + fileName));
+            FileOutputStream output = new FileOutputStream(outputFolder + config.controler().getRunId() + fileName);
+            Writer writer = new OutputStreamWriter(new GZIPOutputStream(output), "UTF-8");
             writer.write("person" + split + "trip_number" + split + "trip_id" + split + "main_mode");
 
             for (Person person : population.getPersons().values()) {
@@ -79,7 +79,7 @@ public class PlanBasedTripsFileWriter {
                 var trips = TripStructureUtils.getTrips(plan);
                 int i = 1;
                 for (TripStructureUtils.Trip trip : trips) {
-                    writer.newLine();
+                    writer.write('\n');
                     writer.write(personId + split + i + split + personId + "_" + i + split + TripStructureUtils.identifyMainMode(trip.getTripElements()));
                     i++;
                 }
