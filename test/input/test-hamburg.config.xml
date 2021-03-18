@@ -22,26 +22,24 @@
     </module>
 
     <module name="network">
-        <param name="inputNetworkFile" value="D:/Gregor/Uni/TUCloud/Masterarbeit/MATSim/input/hamburg-v1.0-network-with-pt.xml/hamburg-v1.0-network-with-pt.xml"/>
+        <param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz"/>
     </module>
 
     <module name="plans">
-        <!-- TODO: change to 1pct -->
-        <param name="inputPlansFile"
-               value="./test-hamburg.plans.xml"/>
+        <!-- plans file is not public, the link below requires access-->
+        <param name="inputPlansFile" value="test-hamburg.plans.xml"/>
         <param name="removingUnnecessaryPlanAttributes" value="true"/>
     </module>
 
     <module name="vehicles">
-        <!-- TODO: change to 1pct -->
-        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/vehicle-types.xml"/>
+        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-vehicle-types.xml"/>
     </module>
 
     <module name="transit">
         <param name="transitScheduleFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/transit/v1.0/hamburg-v1.0-transitSchedule.xml.gz"/>
+               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitSchedule.xml.gz"/>
         <param name="vehiclesFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/transit/v1.0/hamburg-v1.0-transitVehicles.xml.gz"/>
+               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitVehicles.xml.gz"/>
         <param name="useTransit" value="true"/>
     </module>
 
@@ -69,9 +67,7 @@
         <param name="stuckTime" value="30.0"/>
         <param name="trafficDynamics" value="kinematicWaves"/>
         <param name="useLanes" value="true" />
-
-        <!-- TODO: change back to modeVehicleTypesFromVehiclesData -->
-        <param name="vehiclesSource" value="defaultVehicle"/>
+        <param name="vehiclesSource" value="modeVehicleTypesFromVehiclesData"/>
         <param name="insertingWaitingVehiclesBeforeDrivingVehicles" value="true"/>
     </module>
 
