@@ -25,7 +25,7 @@ public class GenerateHamburgCounts {
 		Counts<Link> countspkw = new Counts<>();
 		Counts<Link> countslkw = new Counts<>();
 		Counts<Link> countssum = new Counts<>();
-		String stationName = "test";
+		String stationName = "";
 		countspkw.setYear(2019);
 		countspkw.setName("2019");
 		countslkw.setYear(2019);
@@ -33,14 +33,15 @@ public class GenerateHamburgCounts {
 		countssum.setYear(2019);
 		countssum.setName("2019");
 
-		String outputpkw = "D:/Work/Count mapping for Hamburg/Generate counts file/counts-pkw.xml";
-		String outputlkw = "D:/Work/Count mapping for Hamburg/Generate counts file/counts-lkw.xml";
-		String outputsum = "D:/Work/Count mapping for Hamburg/Generate counts file/counts-sum.xml";
-
-		String fileName = "D:/Work/Count mapping for Hamburg/Generate counts file/DZS-FHH-2019_Einzelne-Richtungen1.csv";
-		HashMap<String, String> mapMatch = readMapMatchFile();
+		String outputpkw = args[0];
+		String outputlkw = args[1];
+		String outputsum = args[2];
+		String countsFileName = args[3];
+		String mapMatchFile = args[4];
+		
+		HashMap<String, String> mapMatch = readMapMatchFile(mapMatchFile);
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(countsFileName));
 			String line = null;
 			String nextLine = null;
 			String[] direction = null;
@@ -54,12 +55,13 @@ public class GenerateHamburgCounts {
 					String key = split[1];
 					nextLine = bufferedReader.readLine();
 					direction = nextLine.split("\\s+");
+					stationName = key +"-"+ direction[2] +"-"+ direction[4];
 					key = key + direction[2] + direction[4];
 					String newKey = key.replace(",", "");
 					final Id<Link> link = Id.create(mapMatch.get(newKey), Link.class);
-					countpkw = countspkw.createAndAddCount(link, stationName);
-					countlkw = countslkw.createAndAddCount(link, stationName);
-					countsum = countssum.createAndAddCount(link, stationName);
+					countpkw = countspkw.createAndAddCount(link, stationName.replace(",", ""));
+					countlkw = countslkw.createAndAddCount(link, stationName.replace(",", ""));
+					countsum = countssum.createAndAddCount(link, stationName.replace(",", ""));
 
 					while ((line = bufferedReader.readLine()) != null) {
 						nextLine = line;
@@ -97,9 +99,9 @@ public class GenerateHamburgCounts {
 
 	}
 
-	private static HashMap<String, String> readMapMatchFile() {
+	private static HashMap<String, String> readMapMatchFile(String mapMatchFile) {
 
-		String fileName = "D:/Work/Count mapping for Hamburg/Generate counts file/mapmatch BVM traffic counts1.csv";
+		String fileName = mapMatchFile;
 		HashMap<String, String> mapMatch = new HashMap<String, String>();
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
