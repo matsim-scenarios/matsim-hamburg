@@ -26,12 +26,12 @@ public class GenerateHamburgCounts {
 		Counts<Link> countslkw = new Counts<>();
 		Counts<Link> countssum = new Counts<>();
 		String stationName = "";
-		countspkw.setYear(2019);
-		countspkw.setName("2019");
-		countslkw.setYear(2019);
-		countslkw.setName("2019");
-		countssum.setYear(2019);
-		countssum.setName("2019");
+		countspkw.setYear(Integer.parseInt(args[5]));
+		countspkw.setName(args[6]);
+		countslkw.setYear(Integer.parseInt(args[5]));
+		countslkw.setName(args[6]);
+		countssum.setYear(Integer.parseInt(args[5]));
+		countssum.setName(args[6]);
 
 		String outputpkw = args[0];
 		String outputlkw = args[1];
