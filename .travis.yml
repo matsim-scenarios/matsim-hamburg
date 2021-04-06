@@ -12,3 +12,10 @@ env:
     - TEST=RunHamburgScenarioTest
 script:
   - mvn -Dtest=${TEST} test --batch-mode -Dmatsim.preferLocalDtds=true -Dmaven.javadoc.skip -e
+
+on:
+  push:
+    branches: [ Test_Hao ]
+  pull_request:
+    branches: [ Test_Hao ]
+  workflow_dispatch:
