@@ -73,17 +73,17 @@ public class AddMissingTripsToSNZPlans {
 
 
 
-//         Predicate<String> condition = personInHam::contains;
-        Predicate<String> condition = new Predicate<String>() {
-            @Override
-            public boolean test(String s) {
-                return true;
-            }
-        };
+        Predicate<String> condition = personInHam::contains;
+//        Predicate<String> condition = new Predicate<String>() {
+//            @Override
+//            public boolean test(String s) {
+//                return true;
+//            }
+//        };
 
         AddMissingTripsToSNZPlans addMissingTripsToSNZPlans = new AddMissingTripsToSNZPlans(plans, missingTrips, range);
         addMissingTripsToSNZPlans.run(condition);
-        PopulationUtils.writePopulation(addMissingTripsToSNZPlans.getPopulation(), outputFolder + "test-hamburg-addtrips.plans.xml.gz");
+        PopulationUtils.writePopulation(addMissingTripsToSNZPlans.getPopulation(), outputFolder + "hamburg-add-"+missingTrips+"-trips.plans.xml.gz");
 
         long totalTrips = addMissingTripsToSNZPlans.population.getPersons().values().stream().filter(person -> condition.test(person.getId().toString()))
                 .map(HasPlansAndId::getSelectedPlan)

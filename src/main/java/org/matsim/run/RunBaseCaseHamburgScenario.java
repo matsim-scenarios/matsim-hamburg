@@ -24,6 +24,9 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.MainModeIdentifier;
+import org.matsim.core.router.MainModeIdentifierImpl;
+import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
@@ -67,6 +70,26 @@ public class RunBaseCaseHamburgScenario {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
+
+        // TODO: 04.04.21 delete when generate new commercial plans
+        //<-------------------------------------------------------------------------------------------->
+//        List<Id<Person>> personIds = new LinkedList<>();
+//        for(Person person : scenario.getPopulation().getPersons().values()) {
+//            if (person.getId().toString().contains("commercial")) {
+//                Plan plan = scenario.getPopulation().getPersons().get(person.getId()).getSelectedPlan();
+//                TripStructureUtils.Trip trip = TripStructureUtils.getTrips(plan.getPlanElements()).get(0);
+//                MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
+//                String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+//
+//                if(mode.contains("PWV_IV") || mode.contains("Pkw-Lfw") || mode.equals(TransportMode.pt))
+//                    personIds.add(person.getId());
+//            }
+//        }
+//        for (Id<Person> personId: personIds) {
+//            scenario.getPopulation().removePerson(personId);
+//        }
+        //<-------------------------------------------------------------------------------------------->
+
         Controler controler = prepareControler(scenario);
 
         controler.run();
@@ -174,7 +197,7 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
+        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != "") {
         		log.info("Adding missing park pressure link attributes based on provided files...");
         		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
                 networkParkPressureReader.addLinkParkTimeAsAttribute();

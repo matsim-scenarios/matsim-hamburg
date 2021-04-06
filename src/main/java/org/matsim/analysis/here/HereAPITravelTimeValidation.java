@@ -10,6 +10,9 @@ import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+import org.matsim.api.core.v01.Coord;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTrip;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.HereMapsRouteValidator;
@@ -17,16 +20,22 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
+import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
+import org.matsim.core.utils.gis.ShapeFileReader;
 import org.matsim.core.utils.io.IOUtils;
+import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +55,7 @@ public class HereAPITravelTimeValidation {
         this.hereAPITravelTimeValidationConfigGroup = ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
     }
 
-    public void run() throws ParseException {
+    public void run() throws ParseException, MalformedURLException {
 
         CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(config.global().getCoordinateSystem(), TransformationFactory.WGS84);
 
@@ -79,7 +88,7 @@ public class HereAPITravelTimeValidation {
 
         while(var5.hasNext()) {
             CarTrip trip = (CarTrip)var5.next();
-            if (trip.getDepartureTime() >= time1 && trip.getDepartureTime() <= time2) {
+            if (trip.getDepartureTime() >= time1 && trip.getDepartureTime() <= time2 && tripInResearchArea(trip)) {
                 Tuple<Double, Double> timeDistance = travelTimeValidator.getTravelTime(trip);
                 double validatedTravelTime = timeDistance.getFirst();
                 trip.setValidatedTravelTime(validatedTravelTime);
@@ -98,6 +107,42 @@ public class HereAPITravelTimeValidation {
             }
         }
         this.writeTravelTimeValidation(carTrips,time1,time2);
+    }
+
+    private boolean tripInResearchArea(CarTrip trip) throws MalformedURLException {
+        if(hereAPITravelTimeValidationConfigGroup.getResearchAreaShapeFile() == null)
+            return true;
+        else {
+            Coord coord1 = trip.getDepartureLocation();
+            Coord coord2 = trip.getArrivalLocation();
+
+            boolean coord1InArea = false;
+            boolean coord2InArea = false;
+
+            Collection<SimpleFeature> simpleFeatures;
+            if(hereAPITravelTimeValidationConfigGroup.getResearchAreaShapeFile().contains("http")){
+                simpleFeatures = ShapeFileReader.getAllFeatures(new URL(hereAPITravelTimeValidationConfigGroup.getResearchAreaShapeFile()));
+            } else {
+                simpleFeatures = ShapeFileReader.getAllFeatures(hereAPITravelTimeValidationConfigGroup.getResearchAreaShapeFile());
+            }
+
+            for (SimpleFeature simpleFeature : simpleFeatures) {
+                if(coord1InArea && coord2InArea)
+                    break;
+                Geometry geometry = (Geometry) simpleFeature.getDefaultGeometry();
+
+                if(!coord1InArea){
+                    Point point1 = MGC.coord2Point(coord1);
+                    coord1InArea = point1.within(geometry);
+                }
+
+                if(!coord2InArea){
+                    Point point2 = MGC.coord2Point(coord2);
+                    coord2InArea = point2.within(geometry);
+                }
+            }
+            return coord1InArea && coord2InArea;
+        }
     }
 
     private String seconds2hhmmss(long seconds) {
