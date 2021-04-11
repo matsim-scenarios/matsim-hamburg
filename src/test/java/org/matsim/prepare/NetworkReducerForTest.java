@@ -36,7 +36,7 @@ public class NetworkReducerForTest {
 
         if(args.length == 0){
             networkInputFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
-            networkOutputFile = "test/input/test/test-hamburg-v1.1-network-with-pt.xml.gz";
+            networkOutputFile = "test/input/Test/test-hamburg-v1.1-network-with-pt.xml.gz";
         } else {
             networkInputFile = args[0];
             networkOutputFile = args[1];
@@ -79,6 +79,36 @@ public class NetworkReducerForTest {
         transportModeNetworkFilterCar.filter(carScenario.getNetwork(), new HashSet<>(Arrays.asList(TransportMode.car)));
         (new NetworkCleaner()).run(carScenario.getNetwork());
         log.info("Finished creating and cleaning car subnetwork");
+
+/*        // Store remaining car links after cleaning in list
+        List<Id<Link>> remainingCarlinksAfterCleaning = new ArrayList<>();
+        for (Link link : carScenario.getNetwork().getLinks().values()) {
+            remainingCarlinksAfterCleaning.add(link.getId());
+        }
+        log.info("There are " + remainingCarlinksAfterCleaning.size() + " car links left.");*/
+
+        // Add car mode to all links where appropriate
+        int counter = 0;
+        int divisor = 1;
+        for (Link link : carScenario.getNetwork().getLinks().values()) {
+            Set<String> allowedModesAfter = new HashSet<>();
+            for (String mode : link.getAllowedModes()) {
+                allowedModesAfter.add(TransportMode.car); // This is the carInternal list, so carInternal needs to be re-added
+                allowedModesAfter.add(TransportMode.ride); // Checked: All (previous) car links were also ride links before, so re-add this mode
+                allowedModesAfter.add(TransportMode.bike);
+                allowedModesAfter.add("freight"); // Checked: All (previous) car links were also freight links before, so re-add this mode
+            }
+            /*if (remainingCarlinksAfterCleaning.contains(link.getId())) {
+                allowedModesAfter.add(TransportMode.car);
+            }*/
+            link.setAllowedModes(allowedModesAfter);
+            counter++;
+            if (counter % divisor == 0) {
+                log.info(counter + " links handled.");
+                divisor = divisor * 2;
+            }
+        }
+        log.info("Finished adding car back to links where required");
 
         // Add pt back into the other network
         // *** Note: Customized attributes are not considered here ***
