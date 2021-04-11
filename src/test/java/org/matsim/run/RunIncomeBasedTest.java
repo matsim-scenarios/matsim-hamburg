@@ -25,7 +25,7 @@ public class RunIncomeBasedTest {
     @Test
     public void incomeBasedTest() throws IOException {
         String args[] = new String[]{
-                "test/input/test-hamburg.config_Test_Hao.xml",
+                "test/input/Test/test-hamburg.config.xml",
                 "--config:controler.lastIteration" , "5"
         };
 
