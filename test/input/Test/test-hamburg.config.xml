@@ -27,7 +27,7 @@
 
     <module name="plans">
         <!-- plans file is not public, the link below requires access-->
-        <param name="inputPlansFile" value="test-hamburg.plans.xml"/>
+        <param name="inputPlansFile" value="test/input/test-hamburg.plans.xml"/>
         <param name="removingUnnecessaryPlanAttributes" value="true"/>
     </module>
 
