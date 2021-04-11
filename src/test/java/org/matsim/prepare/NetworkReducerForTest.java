@@ -5,7 +5,6 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.algorithms.NetworkCleaner;
@@ -73,8 +72,6 @@ public class NetworkReducerForTest {
             }
         }
         log.info("remove links.............: " + numOfRemovedLinks + "....end");
-
-        //todo @Hao: please find a way to clean the network with pt lines
 
         // Get car subnetwork and clean it
         Scenario carScenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());

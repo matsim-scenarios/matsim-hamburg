@@ -24,7 +24,7 @@ public class TransitReducerForTest {
 
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
-        List<TransitLine> reTrs = new LinkedList<TransitLine>();
+        List<TransitLine> reTrs = new LinkedList<>();
         for(TransitLine tr: scenario.getTransitSchedule().getTransitLines().values()){
             if(!tr.getName().equals("u8")){
                 reTrs.add(tr);

@@ -22,7 +22,7 @@
     </module>
 
     <module name="network">
-        <param name="inputNetworkFile" value="Test/test-hamburg-v1.1-network-with-pt.xml.gz"/>
+        <param name="inputNetworkFile" value="test-hamburg-v1.1-network-with-pt.xml.gz"/>
     </module>
 
     <module name="plans">
