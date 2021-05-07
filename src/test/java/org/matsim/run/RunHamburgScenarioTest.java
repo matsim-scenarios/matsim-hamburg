@@ -34,7 +34,7 @@ public class RunHamburgScenarioTest {
     public void runTest() throws IOException {
 
         String args[] = new String[]{
-                "test/input/Test/test-hamburg.config.xml" ,
+                "test/input/Test/WithLessPTLines/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "1",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
@@ -45,7 +45,7 @@ public class RunHamburgScenarioTest {
                 "--config:HereAPITravelTimeValidation.timeBin","3600",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "test-hamburg-freight.plans.xml",
+                "--config:plans.inputPlansFile" , "../test-hamburg-freight.plans.xml",
 
         };
 
