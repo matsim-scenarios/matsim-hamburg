@@ -21,13 +21,13 @@
         <!-- Repository for MATSim releases (MATSim is not on Maven central) -->
         <repository>
             <id>matsim</id>
-            <url>https://dl.bintray.com/matsim/matsim</url>
+            <url>https://repo.matsim.org/repository/matsim/</url>
         </repository>
 
-        <repository>
-            <id>SBB</id>
-            <url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>SBB</id>-->
+<!--            <url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>-->
+<!--        </repository>-->
 
         <repository>
             <id>jitpack.io</id>
