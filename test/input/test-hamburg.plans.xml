@@ -21,6 +21,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+			<attribute name="income" class="java.lang.Double">9736.416965</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_59400.0" x="597163.9269612308" y="5984292.652443141" end_time="09:04:00" >
@@ -71,6 +72,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+			<attribute name="income" class="java.lang.Double">9736.416965</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_86400.0" x="596964.9221933321" y="5984433.177637921" >
@@ -93,6 +95,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+			<attribute name="income" class="java.lang.Double">9736.416965</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
@@ -240,8 +243,234 @@
         </plan>
 
     </person>
+	
+	<!-- ====================================================================== -->
 
-    <!-- ====================================================================== -->
+	<person id="116960">
+		<attributes>
+			<attribute name="IPD_actEndTimes" class="java.lang.String">26880.0;58200.0;61320.0;-Infinity</attribute>
+			<attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;30180.0;58980.0;64200.0</attribute>
+			<attribute name="IPD_actTypes" class="java.lang.String">home;work;errands;home</attribute>
+			<attribute name="age" class="java.lang.Integer">59</attribute>
+			<attribute name="carAvail" class="java.lang.String">always</attribute>
+			<attribute name="gender" class="java.lang.String">f</attribute>
+			<attribute name="income" class="java.lang.Double">51027.78334</attribute>
+			<attribute name="marginalUtilityOfMoney" class="java.lang.Double">0.48841271636057343</attribute>
+			<attribute name="sim_regionType" class="java.lang.String">oberzentrum500flach</attribute>
+			<attribute name="subpopulation" class="java.lang.String">person</attribute>
+		</attributes>
+		<plan score="81.05777863028896" selected="yes">
+			<activity type="home_49200.0" link="1378805920007f" x="609849.5087045061" y="5974297.455543319" end_time="05:47:09" >
+			</activity>
+			<leg mode="walk" dep_time="05:47:09">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="1378805920007f" end_link="pt_20045" trav_time="01:00:31" distance="3832.2050919755293"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_20045" x="609063.680583709" y="5971456.277230684" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="06:47:40">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_20045" end_link="pt_20047" trav_time="00:05:20" distance="1335.7471661243035">{"transitRouteId":"7650---2217_3_0","boardingTime":"06:48:00","transitLineId":"7650---2217_3","accessFacilityId":"900000600741","egressFacilityId":"900000600011"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_20047" x="609807.3727796061" y="5970346.713675714" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="06:53:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_20047" end_link="pt_24968" trav_time="00:05:27" distance="350.0"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_24968" x="609798.3738204523" y="5970077.82124369" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="06:58:32">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_24968" end_link="pt_25220" trav_time="00:52:28" distance="57628.11032897536">{"transitRouteId":"RE8---7777_2_5","boardingTime":"07:08:00","transitLineId":"RE8---7777_2","accessFacilityId":"000008000237.1","egressFacilityId":"000008002549.5"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_25220" x="566707.2632221497" y="5934232.555493819" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="07:51:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_25220" end_link="pt_25367" trav_time="00:00:42" distance="49.0"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_25367" x="566744.2484910502" y="5934238.55275332" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="07:51:47">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_25367" end_link="pt_25368" trav_time="00:27:49" distance="19470.7892473541">{"transitRouteId":"S21---9474_109_5","boardingTime":"07:53:48","transitLineId":"S21---9474_109","accessFacilityId":"000002549004.1","egressFacilityId":"000005016002"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_25368" x="583104.6636211667" y="5929546.276772761" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="08:19:36">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_25368" end_link="2147388050006f" trav_time="00:18:40" distance="1181.4059853946808"></route>
+			</leg>
+			<activity type="work_28200.0" link="2147388050006f" x="584009.8230819394" y="5929627.247345237" end_time="15:04:53" >
+			</activity>
+			<leg mode="bike" dep_time="15:04:53">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">bike</attribute>
+				</attributes>
+				<route type="generic" start_link="2147388050006f" end_link="322365580007f" trav_time="00:18:48" distance="3541.060076600402"></route>
+			</leg>
+			<activity type="errands_2400.0" link="322365580007f" x="581671.2756534391" y="5931023.952593155" end_time="16:38:19" >
+			</activity>
+			<leg mode="car" dep_time="16:38:19">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">car</attribute>
+				</attributes>
+				<route type="links" start_link="322365580007f" end_link="1378805920007f" trav_time="00:44:36" distance="59685.15380271541" vehicleRefId="116960">322365580007f 1523037600005r 466747300009f 466747790000f 466747870000f 6869642050000f 6869642040001f 6869642020000f 6869642030003f 6869642010003f 466747640015f 6869642000004f 466747610005f 6869641710004f 6869641680000f 6869641990005f 6869641610000f 466747890006f 6869641590000f 6869641560001f 6869641530000f 3244779360001f 6663833150000f 6281145950001f 6663833140000f 370238430001f 1785592260000f 6663833130000f 6663833180001f 6663833170000f 3244779460001f 6663833160000f 3244779550000f 1785592250000f 370238440000f 5270074190000f 5270074180000f 83233630000f 6945686040002f 5135450980002f 5135451000002f 377721120000f 377721130010f 6806304750001f 6806304740001r 6806304730003r 3190376620006r 2383666130002r 6663765280003f 3190376790002r 104808480001r 104808490004f 3190376450000f 3190376420000f 104808500000f 252063700000f 106500630000f 106500640013f 3244778980000f 3244778950000f 104835070000f 104835080001f 3244779030023f 40974030006f 3244779100003f 3244779140002f 3244778960001f 3244778940013f 4289230520002f 258728440003f 3774511580000f 3905759280003f 3905759270001f 3774511570013f 3245473240000f 3245473300001f 3245473250000f 3245473310003f 2422500490013f 104883770000f 104883790007f 590436270000f 590436250000f 3243421390000f 3243421420000f 520195720000f 3243449790000f 3975229850001f 3243421300010f 40974020000f 106495920000f 106495940001f 3774505970000f 3774505960004f 569843150000f 569843090005f 50008100000f 50008090008f 2270706040000f 2270706030001f 3243421400000f 3243421440002f 3243421430000f 3243421810000f 6730606060008f 242696120000f 1905685040001f 269505060011f 6061353400003f 493399260001f 40914760004f 493399230000f 269505070001f 1537758660000f 1537758630000f 1537758640000f 1537758040002f 5514699350000f 1685192060003f 493399430000f 493399200007f 3146796130000f 3146796160001f 3146796180001f 3146796140001f 40973990001f 3146796190002f 119865580000f 119865620000f 119865700000f 119865710001f 119865410000f 119865440003f 43974100001f 119941770000f 43974110000f 43037060002f 3146880080002f 2818490030000f 43037080003f 386582350000f 378068480004f 322841690000f 449633380005f 3145794540003f 1508922290001f 1508922280003f 1434250790024r 1434250790021r 1434250790019r 1434250790015r 1434250790010r 1434250860003r 1181765880015r 1181765880003r 1506156460022r 1506156460001r 4052100040000r 304929560000f 1663864220000f 304929520000f 208600390000f 1658278490000f 842393790001f 521526380000f 3261397320000f 3261397350002f 3261397350008f 521526370006f 223288620002f 1378805920007f</route>
+			</leg>
+			<activity type="home_49200.0" link="1378805920007f" x="609849.5087045061" y="5974297.455543319" >
+			</activity>
+		</plan>
+
+	</person>
+
+<!-- ====================================================================== -->
+
+    
+	
+	<!-- ====================================================================== -->
+
+	<person id="116174">
+		<attributes>
+			<attribute name="IPD_actEndTimes" class="java.lang.String">26760.0;60180.0;70740.0;-Infinity</attribute>
+			<attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;29460.0;62700.0;71700.0</attribute>
+			<attribute name="IPD_actTypes" class="java.lang.String">home;work;work;home</attribute>
+			<attribute name="age" class="java.lang.Integer">50</attribute>
+			<attribute name="carAvail" class="java.lang.String">always</attribute>
+			<attribute name="gender" class="java.lang.String">m</attribute>
+			<attribute name="income" class="java.lang.Double">27488.28615</attribute>
+			<attribute name="marginalUtilityOfMoney" class="java.lang.Double">0.9066632286548798</attribute>
+			<attribute name="sim_regionType" class="java.lang.String">mittelzentrumFlach</attribute>
+			<attribute name="subpopulation" class="java.lang.String">person</attribute>
+		</attributes>
+		<plan score="27.948433698526223" selected="yes">
+			<activity type="home_42000.0" link="848047550001f" x="610103.553064373" y="5976227.945343838" end_time="07:26:00" >
+			</activity>
+			<leg mode="walk" dep_time="07:26:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="848047550001f" end_link="pt_20042" trav_time="01:31:24" distance="5788.499769297972"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_20042" x="607889.1586732899" y="5972364.925192798" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="08:57:24">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_20042" end_link="pt_20047" trav_time="00:56:36" distance="2882.639613136551">{"transitRouteId":"7650---2217_3_3","boardingTime":"09:44:00","transitLineId":"7650---2217_3","accessFacilityId":"900000557981","egressFacilityId":"900000600011"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_20047" x="609807.3727796061" y="5970346.713675714" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="09:54:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_20047" end_link="pt_24968" trav_time="00:05:27" distance="350.0"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_24968" x="609798.3738204523" y="5970077.82124369" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="09:59:32">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_24968" end_link="pt_25220" trav_time="00:51:28" distance="57628.11032897536">{"transitRouteId":"RE8---7777_2_5","boardingTime":"10:08:00","transitLineId":"RE8---7777_2","accessFacilityId":"000008000237.1","egressFacilityId":"000008002549.5"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_25220" x="566707.2632221497" y="5934232.555493819" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="10:51:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_25220" end_link="194090450001f" trav_time="00:06:50" distance="432.5404312917826"></route>
+			</leg>
+			<activity type="work_12000.0" link="194090450001f" x="566388.2379350215" y="5934138.068812956" end_time="11:35:26" >
+			</activity>
+			<leg mode="walk" dep_time="11:35:26">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">walk</attribute>
+				</attributes>
+				<route type="generic" start_link="194090450001f" end_link="1868210350003f" trav_time="00:04:37" distance="292.99013113531504"></route>
+			</leg>
+			<activity type="other_1800.0" link="1868210350003f" x="566547.6035569804" y="5934297.434434915" end_time="12:11:51" >
+			</activity>
+			<leg mode="walk" dep_time="12:11:51">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">walk</attribute>
+				</attributes>
+				<route type="generic" start_link="1868210350003f" end_link="194090450001f" trav_time="00:04:37" distance="292.99013113531504"></route>
+			</leg>
+			<activity type="work_16200.0" link="194090450001f" x="566388.2379350215" y="5934138.068812956" end_time="16:43:00" >
+			</activity>
+			<leg mode="walk" dep_time="16:43:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="194090450001f" end_link="pt_24716" trav_time="00:06:50" distance="432.5404312917826"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_24716" x="566707.2632221497" y="5934232.555493819" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="16:49:50">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_24716" end_link="pt_24955" trav_time="00:58:10" distance="57628.11032897537">{"transitRouteId":"RE8---7777_2_1","boardingTime":"17:04:00","transitLineId":"RE8---7777_2","accessFacilityId":"000008002549.1","egressFacilityId":"000008000237"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_24955" x="609798.3738204523" y="5970077.82124369" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="17:48:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_24955" end_link="pt_21849" trav_time="00:02:47" distance="181.0"></route>
+			</leg>
+			<activity type="pt interaction" link="pt_21849" x="609847.3530077207" y="5969947.87272169" max_dur="00:00:00" >
+			</activity>
+			<leg mode="pt" dep_time="17:50:52">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="default_pt" start_link="pt_21849" end_link="pt_22510" trav_time="00:30:08" distance="978.633854365005">{"transitRouteId":"8710---4648_3_3","boardingTime":"18:18:00","transitLineId":"8710---4648_3","accessFacilityId":"900000600212","egressFacilityId":"900000600116"}</route>
+			</leg>
+			<activity type="pt interaction" link="pt_22510" x="610805.9679669685" y="5969750.942325825" max_dur="00:00:00" >
+			</activity>
+			<leg mode="walk" dep_time="18:21:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="pt_22510" end_link="44265710003f" trav_time="00:11:09" distance="705.7368078978459"></route>
+			</leg>
+			<activity type="work_7800.0" link="44265710003f" x="611150.9467679532" y="5969331.773726741" end_time="19:39:00" >
+			</activity>
+			<leg mode="walk" dep_time="19:39:00">
+				<attributes>
+					<attribute name="routingMode" class="java.lang.String">pt</attribute>
+				</attributes>
+				<route type="generic" start_link="44265710003f" end_link="848047550001f" trav_time="02:23:10" distance="9067.834689563937"></route>
+			</leg>
+			<activity type="home_42000.0" link="848047550001f" x="610103.553064373" y="5976227.945343838" >
+			</activity>
+		</plan>
+
+	</person>
+
+<!-- ====================================================================== -->
+	
+	
 
     <person id="113f02">
         <attributes>
@@ -255,6 +484,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+			<attribute name="income" class="java.lang.Double">9736.416965</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" end_time="05:31:23" >

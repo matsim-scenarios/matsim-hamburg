@@ -11839,7 +11839,7 @@
 		</parameterset>
 	</module>
 	<module name="plans" >
-		<param name="inputPlansFile" value="test-hamburg-freight.plans.xml" />
+		<param name="inputPlansFile" value="C:/Users/Gregor/IdeaProjects/matsim-hamburg/test/input/test-hamburg.plans.xml" />
 		<!-- (not tested) will remove plan attributes that are presumably not used, such as activityStartTime. default=false. Use with Caution! -->
 		<param name="removingUnnecessaryPlanAttributes" value="true" />
 	</module>

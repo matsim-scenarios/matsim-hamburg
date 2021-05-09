@@ -1,3 +1,0 @@
-Iteration	bike_travel	bike_wait	car_travel	car_wait	commercial_Lkw-g_travel	commercial_Lkw-g_wait	pt_travel	pt_wait	ride_travel	ride_wait	stageActivity_travel	stageActivity_wait	walk_travel	walk_wait
-0	0	0	3	0	1	0	0	0	0	0	0	0	3	0
-1	0	0	3	0	1	0	0	0	0	0	0	0	3	0

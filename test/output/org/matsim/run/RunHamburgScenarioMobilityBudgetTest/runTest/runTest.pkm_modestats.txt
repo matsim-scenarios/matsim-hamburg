@@ -1,3 +1,0 @@
-Iteration	bike	car	commercial_Lkw-g	pt	ride	walk
-0	1	138	15	7	26	12
-1	1	138	15	7	26	12

@@ -9,16 +9,26 @@ business_4800.0---business_1200.0	0	0	1	0	0	0	0	0	0	0	0	0	0
 business_6000.0---business_2400.0	0	0	0	0	0	0	0	0	0	0	0	1	0
 business_8400.0---business_2400.0	1	0	0	0	0	0	0	0	0	0	0	0	0
 business_8400.0---business_8400.0	0	0	0	1	0	0	0	0	0	0	0	0	0
-commercial---commercial	0	0	0	0	0	0	0	1	0	0	0	0	0
+errands_2400.0---home_49200.0	0	0	0	0	0	0	0	0	0	1	0	0	0
 home_1800.0---leisure_600.0	1	0	0	0	0	0	0	0	0	0	0	0	0
 home_23400.0---work_36600.0	0	1	0	0	0	0	0	0	0	0	0	0	0
 home_36600.0---business_6000.0	0	0	0	0	0	1	0	0	0	0	0	0	0
+home_42000.0---pt interaction	0	0	0	0	0	0	0	0	0	0	0	0	1
+home_49200.0---pt interaction	0	0	0	0	0	0	0	0	0	0	0	0	1
 home_59400.0---business_8400.0	0	0	0	0	1	0	0	0	0	0	0	0	0
 leisure_12000.0---home_23400.0	0	1	0	0	0	0	0	0	0	0	0	0	0
 leisure_600.0---leisure_12000.0	0	0	0	1	0	0	0	0	0	0	0	0	0
 leisure_600.0---leisure_600.0	0	0	0	0	0	0	0	0	0	0	0	0	1
+other_1800.0---work_16200.0	1	0	0	0	0	0	0	0	0	0	0	0	0
 pt interaction---business_2400.0	0	0	0	1	0	0	0	0	0	0	0	0	0
-pt interaction---pt interaction	0	0	0	1	0	0	0	0	0	0	0	0	0
+pt interaction---pt interaction	3	2	0	1	0	0	2	0	0	0	4	0	0
+pt interaction---work_12000.0	0	1	0	0	0	0	0	0	0	0	0	0	0
+pt interaction---work_28200.0	0	0	0	1	0	0	0	0	0	0	0	0	0
+pt interaction---work_7800.0	0	0	1	0	0	0	0	0	0	0	0	0	0
+work_12000.0---other_1800.0	1	0	0	0	0	0	0	0	0	0	0	0	0
+work_16200.0---pt interaction	0	1	0	0	0	0	0	0	0	0	0	0	0
+work_28200.0---errands_2400.0	0	0	0	1	0	0	0	0	0	0	0	0	0
 work_36600.0---home_1800.0	1	0	0	0	0	0	0	0	0	0	0	0	0
+work_7800.0---home_42000.0	0	0	0	0	0	0	0	0	0	0	0	0	1
 
-average trip duration: 1422.904761904762 seconds = 00:23:42
+average trip duration: 1664.3333333333333 seconds = 00:27:44

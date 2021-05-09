@@ -49,7 +49,7 @@ public class RunHamburgScenarioTest {
         };
 
         Config config = prepareConfig(args);
-
+        config.plans().setInputFile("C:/Users/Gregor/IdeaProjects/matsim-hamburg/test/input/test-hamburg.plans.xml");
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 

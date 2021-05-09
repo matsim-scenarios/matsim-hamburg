@@ -49,13 +49,12 @@ public class RunHamburgScenarioMobilityBudgetTest {
         };
 
         Config config = prepareConfig(args);
+        config.plans().setInputFile("D:/Gregor/IdeaProjects/matsim-hamburg/test/input/test-hamburg.plans.xml");
 
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
-
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
-
         controler.run();
 
 

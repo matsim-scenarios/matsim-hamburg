@@ -63,6 +63,7 @@ public class RunBaseCaseWithMobilityBudget {
         public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
         public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
         public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
+        public static double totalSumMobilityBudget = 0;
 
         public static void main(String[] args) throws ParseException, IOException {
 
@@ -73,7 +74,6 @@ public class RunBaseCaseWithMobilityBudget {
             if (args.length == 0) {
                 args = new String[] {"../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-1pct/hamburg-v1.1-1pct.config.xml"};
             }
-
             RunBaseCaseWithMobilityBudget baseCaseHH = new RunBaseCaseWithMobilityBudget();
             baseCaseHH.run(args);
         }
@@ -83,7 +83,6 @@ public class RunBaseCaseWithMobilityBudget {
             Config config = prepareConfig(args);
             Scenario scenario = prepareScenario(config);
             org.matsim.core.controler.Controler controler = prepareControler(scenario);
-
             controler.run();
             log.info("Done.");
         }
@@ -99,6 +98,14 @@ public class RunBaseCaseWithMobilityBudget {
                     install( new SwissRailRaptorModule() );
                 }
             } );
+
+            MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler();
+            controler.addOverridingModule(new AbstractModule() {
+                @Override
+                public void install() {
+                    addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
+                }
+            });
 
             // use AnalysisMainModeIdentifier instead of RoutingModeIdentifier
             controler.addOverridingModule(new AbstractModule() {
@@ -163,17 +170,15 @@ public class RunBaseCaseWithMobilityBudget {
                 public void notifyAfterMobsim(AfterMobsimEvent afterMobsimEvent) {
                     for (Id<Person> personId : personsWithMobilityBudget.keySet()) {
                         if (personsWithMobilityBudget.get(personId)>0) {
-                            //set time to null??
                             log.info("Throwing money event" + "Person_Id:" + personId);
                             afterMobsimEvent.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, personId, personsWithMobilityBudget.get(personId), null, null));
+                            totalSumMobilityBudget = totalSumMobilityBudget + personsWithMobilityBudget.get(personId);
                         }
-
                     }
-
                 }
+
             });
-
-
+            log.info("This iteration the totalSumMobilityBudget paid to the Agents was:" + totalSumMobilityBudget);
             return controler;
         }
 
@@ -195,13 +200,14 @@ public class RunBaseCaseWithMobilityBudget {
 
             org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), hamburgExperimentalConfigGroup.getPopulationDownsampleFactor());
 
-            for (Person person :
-                    scenario.getPopulation().getPersons().values()) {
+            for (Person person : scenario.getPopulation().getPersons().values()) {
                 Plan selectedPlan = person.getSelectedPlan();
                 person.getPlans().clear();
                 person.addPlan(selectedPlan);
                 person.setSelectedPlan(selectedPlan);
-                personsWithMobilityBudget.put(person.getId(), 0.0);
+                person.getAttributes().putAttribute("income", Math.random()*100);
+                double income = (double) person.getAttributes().getAttribute("income");
+                personsWithMobilityBudget.put(person.getId(), income);
             }
 
             // increase flowspeed for links, where flowspeed lower than 50kmh
