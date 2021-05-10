@@ -10,10 +10,9 @@
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-<!--         <matsim.version>12.0</matsim.version>-->
-<!--        <matsim.version>13.0-2021w05-SNAPSHOT</matsim.version>-->
-<!--        <matsim.version>13.0-SNAPSHOT</matsim.version>-->
+        <!--         <matsim.version>12.0</matsim.version>-->
         <matsim.version>13.0</matsim.version>
+        <!--        <matsim.version>13.0-SNAPSHOT</matsim.version>-->
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
     </properties>
 
@@ -23,13 +22,13 @@
         <repository>
             <id>matsim</id>
             <url>https://repo.matsim.org/repository/matsim/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <!--            <url>https://dl.bintray.com/matsim/matsim</url>-->
         </repository>
+
+        <!--        <repository>-->
+        <!--            <id>SBB</id>-->
+        <!--            <url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>-->
+        <!--        </repository>-->
 
         <repository>
             <id>jitpack.io</id>
@@ -37,43 +36,29 @@
         </repository>
 
         <repository>
+            <!-- Geotools is not on Maven central -->
             <id>osgeo</id>
-            <name>OSGeo Release Repository</name>
-            <url>https://repo.osgeo.org/repository/release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <name>Geotools repository</name>
+            <url>https://repo.osgeo.org/repository/release</url>
         </repository>
+
+        <!--        <repository>-->
+        <!--            &lt;!&ndash; Required for MATSim snaphots &ndash;&gt;-->
+        <!--            <id>ojo-snapshots</id>-->
+        <!--            <url>http://oss.jfrog.org/libs-snapshot</url>-->
+        <!--        </repository>-->
 
         <!-- Temporarily needed for the osm reader -->
         <repository>
             <id>topobyte</id>
-            <url>https://mvn.topobyte.de</url>
+            <url>http://mvn.topobyte.de</url>
         </repository>
         <repository>
             <id>slimjars</id>
-            <url>https://mvn.slimjars.com</url>
-        </repository>
-
-        <!-- Needed by DVRP -->
-        <repository>
-            <id>SBB</id>
-            <url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>
+            <url>http://mvn.slimjars.com</url>
         </repository>
 
     </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/matsim-scenarios/matsim-duesseldorf</url>
-        </repository>
-    </distributionManagement>
-
 
     <dependencies>
 
@@ -82,25 +67,6 @@
             <groupId>org.matsim</groupId>
             <artifactId>matsim</artifactId>
             <version>${matsim.version}</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.matsim.contrib</groupId>-->
-<!--            <artifactId>application</artifactId>-->
-<!--            <version>${matsim.version}</version>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>8.4.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.matsim.contrib</groupId>
-            <artifactId>sumo</artifactId>
-            <version>${matsim.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -146,6 +112,34 @@
         </dependency>
 
         <dependency>
+            <groupId>org.matsim.contrib</groupId>
+            <artifactId>osm</artifactId>
+            <version>${matsim.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.matsim.contrib</groupId>
+            <artifactId>sumo</artifactId>
+            <version>${matsim.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.4.4</version>
+        </dependency>
+
+        <!-- Include the JUnit testing library.  Not transitive. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <!--MATSim test infrastructure.  Not transitive.-->
             <groupId>org.matsim</groupId>
             <artifactId>matsim</artifactId>
@@ -183,25 +177,25 @@
             <version>${matsim.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.matsim-vsp</groupId>
-            <artifactId>drt-speed-up</artifactId>
-            <!-- for some reason jitpack does not like release v0.0.2, but is happy with the commit id of the very same release -->
-            <version>83d661919a</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.matsim-vsp</groupId>-->
+        <!--            <artifactId>drt-speed-up</artifactId>-->
+        <!--            &lt;!&ndash; for some reason jitpack does not like release v0.0.2, but is happy with the commit id of the very same release &ndash;&gt;-->
+        <!--            <version>83d661919a</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.matsim-vsp</groupId>
             <artifactId>matsim-analysis</artifactId>
             <!-- <version>v2.5</version> -->
-            <version>v3.2</version>
+            <version>eb419155c2</version>
         </dependency>
 
         <!-- Command line parser -->
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.3.2</version>
+            <version>4.2.0</version>
         </dependency>
 
         <dependency>
@@ -221,16 +215,8 @@
                 </exclusion>
 
             </exclusions>
+
         </dependency>
-
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -244,18 +230,25 @@
                     <showWarnings>false</showWarnings>
                     <showDeprecation>false</showDeprecation>
                     <encoding>UTF-8</encoding>
+                    <!-- configure initial and maximal memory for compiling -->
+                    <fork>true</fork>
+                    <meminitial>128m</meminitial>
+                    <maxmem>512m</maxmem>
+                    <compilerArguments>
+                        <Xmaxwarns>4000</Xmaxwarns>
+                        <Xmaxerrs>100</Xmaxerrs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-<!--                <version>3.0.0-M5</version>-->
                 <version>2.19</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <!-- avoid out of memory errors: -->
-                    <argLine>-Xmx9500m -Djava.awt.headless=true -Dmatsim.preferLocalDtds=true</argLine>
+                    <argLine>-Xmx12000m -Djava.awt.headless=true -Dmatsim.preferLocalDtds=true</argLine>
                     <!--necessary in tu berlin gitlab. BUT not good in other places, so solve by command line switch only where needed.  kai, nov'18-->
                     <!--<useSystemClassLoader>false</useSystemClassLoader>-->
                 </configuration>
@@ -275,59 +268,10 @@
                             <outputFile>${project.basedir}/${project.build.finalName}.jar</outputFile>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.matsim.run.RunDuesseldorfScenario</mainClass>
+                                    <mainClass>${mainClass}</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
-                            <filters>
-                                <!-- Avoid signature checking -->
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                                <!-- Force some inclusion because of minimizing -->
-                                <filter>
-                                    <artifact>org.apache.logging.log4j:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>xerces:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.hibernate.validator:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.glassfish:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.sun.xml.bind:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.jfree:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                            </filters>
-                            <minimizeJar>false</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
@@ -371,6 +315,36 @@
                     <version>2.3.0.1</version>
                 </dependency>
             </dependencies>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <defaultGoal>assembly:assembly</defaultGoal>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <configuration>
+                                <descriptors>
+                                    <descriptor>src/main/assembly/assembly-release.xml</descriptor>
+                                </descriptors>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <configuration>
+                                <archive>
+                                    <manifest>
+                                        <addClasspath>true</addClasspath>
+                                        <classpathPrefix>libs/</classpathPrefix>
+                                    </manifest>
+                                </archive>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
     </profiles>
 

@@ -118,7 +118,7 @@ public class TransitReducerForTest {
             scenario.getTransitSchedule().removeTransitLine(tr);
         }
 
-        /*List<TransitRoute> reTrsRoute = new LinkedList<>();
+/*        List<TransitRoute> reTrsRoute = new LinkedList<>();
         for(TransitLine tr: scenario.getTransitSchedule().getTransitLines().values()){
             if(tr.getId().equals(Id.create("S1---5111_109",TransitLine.class))){
                 for(TransitRoute trRoute: tr.getRoutes().values()) {
@@ -131,7 +131,8 @@ public class TransitReducerForTest {
         }
 
         for (TransitRoute tr : reTrsRoute) {
-            scenario.getTransitSchedule().getTransitLines().;
+            scenario.getTransitSchedule().getTransitLines().values().;
+            scenario.getTransitSchedule().getFactory().
         }*/
 
 /*        //---change transit stops
