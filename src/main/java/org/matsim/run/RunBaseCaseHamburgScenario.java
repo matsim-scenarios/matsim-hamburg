@@ -71,25 +71,6 @@ public class RunBaseCaseHamburgScenario {
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
 
-        // TODO: 04.04.21 delete when generate new commercial plans
-        //<-------------------------------------------------------------------------------------------->
-//        List<Id<Person>> personIds = new LinkedList<>();
-//        for(Person person : scenario.getPopulation().getPersons().values()) {
-//            if (person.getId().toString().contains("commercial")) {
-//                Plan plan = scenario.getPopulation().getPersons().get(person.getId()).getSelectedPlan();
-//                TripStructureUtils.Trip trip = TripStructureUtils.getTrips(plan.getPlanElements()).get(0);
-//                MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
-//                String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
-//
-//                if(mode.contains("PWV_IV") || mode.contains("Pkw-Lfw") || mode.equals(TransportMode.pt))
-//                    personIds.add(person.getId());
-//            }
-//        }
-//        for (Id<Person> personId: personIds) {
-//            scenario.getPopulation().removePerson(personId);
-//        }
-        //<-------------------------------------------------------------------------------------------->
-
         Controler controler = prepareControler(scenario);
 
         controler.run();
@@ -113,11 +94,6 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                	
-                	// old approach which is nicer but requires a large amount of memory
-                	// bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class);
-                	
-                	// new approach which is maybe not so nice but should require less memory
                 	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                 }
             }
@@ -206,7 +182,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
 
-        // add Freight if no filter
+        // add Freight traffic
         if(hamburgExperimentalConfigGroup.isFilterCommercial()){
             List<Id<Person>> personIds = new LinkedList<>();
             for(Person person : scenario.getPopulation().getPersons().values()) {
@@ -272,10 +248,7 @@ public class RunBaseCaseHamburgScenario {
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_other_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("educ_kiga_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(18. * 3600.));
         }
-        
-//        config.qsim().setTrafficDynamics(TrafficDynamics.kinematicWaves);
-//        config.qsim().setTrafficDynamicsCorrectionApproach(TrafficDynamicsCorrectionApproach.INCREASE_NUMBER_OF_LANES);
-        
+
         return config;
     }
 }
