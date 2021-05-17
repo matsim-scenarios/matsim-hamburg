@@ -22,7 +22,7 @@
     </module>
 
     <module name="network">
-        <param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz"/>
+        <param name="inputNetworkFile" value="test-hamburg-with-pt-network.xml.gz"/>
     </module>
 
     <module name="plans">
@@ -37,9 +37,9 @@
 
     <module name="transit">
         <param name="transitScheduleFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitSchedule.xml.gz"/>
+               value="test-hamburg-transitSchedule.xml.gz"/>
         <param name="vehiclesFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitVehicles.xml.gz"/>
+               value="test-hamburg-transitVehicles.xml.gz"/>
         <param name="useTransit" value="true"/>
     </module>
 
