@@ -45,7 +45,6 @@ public class RunBaseCaseHamburgScenario {
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
     public static final String VERSION = "v1.1";
-    public static final int SCALE = 1;
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
@@ -56,7 +55,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-1pct/hamburg-v1.1-1pct.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
@@ -170,7 +169,7 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != "") {
+        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
         		log.info("Adding missing park pressure link attributes based on provided files...");
         		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
                 networkParkPressureReader.addLinkParkTimeAsAttribute();

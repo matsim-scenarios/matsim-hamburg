@@ -5,8 +5,6 @@
 This repository provides an open MATSim transport model for Hamburg, provided by the [Transport Systems Planning and Transport Telematics group](https://www.vsp.tu-berlin.de) of [Technische Universität Berlin](http://www.tu-berlin.de).
 
 
-> Currently the model is work in progress and no release version is available.
-
 ### Licenses
 
 The **MATSim program code** in this repository is distributed under the terms of the [GNU General Public License as published by the Free Software Foundation (version 2)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html). The MATSim program code are files that reside in the `src` directory hierarchy and typically end with `*.java`.
@@ -21,3 +19,78 @@ The **MATSim input files, output files, analysis data and visualizations** are l
 Handling of large files within git is not without problems (git lfs files are not included in the zip download; we have to pay; ...).  In consequence, large files, both on the input and on the output side, reside at https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg .  
 
 ----
+### Simple things (without installing/running MATSim)
+
+<!--
+##### Movies
+1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/metropole-ruhr/.
+1. Inside there, look for movie files.  You can't view them directly, but you there are various ways to download them, and you can view them then.  Try that.
+-->
+
+##### Run VIA on output files
+
+1. Get VIA from https://www.simunto.com/via/.  (There is a free license for a small number of agents; that will probably work but only display a small number of vehicles/agents.)
+1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1/.
+1. Inside there, decide for a scenario that you find interesting (e.g. hamburg-v1.1-10pct) and go into that directory. look for an `output-*` directory that you find interesting and go into that directory.
+1. Download `*.output_network.xml.gz` and `*.output_events.xml.gz`.  Best make sure that they do not uncompress, e.g. by "Download linked file as ...".
+1. Get these files into VIA.  This can be achieved in various ways; one is to open VIA and then drag the files from a file browser into VIA.
+1. Run VIA and enjoy.
+
+### Downloading the repository alternative 1: Download ZIP
+
+1. Click on `Clone or download` and then on `Download ZIP`.
+1. Unzip the repository.
+1. Go to "Run the scenario" below.
+
+### Downloading the repository alternative 2: Clone the repository
+
+##### Initial stuff (needs to be done once)
+
+1. Install git for the command line.
+1. Type `git clone https://github.com/matsim-scenarios/matsim-hamburg.git` in the command line.
+
+(Or use your IDE, e.g. Eclipse, IntelliJ, to clone the repository.)
+
+This will result in a new `matsim-hamburg` directory.  Memorize where you have put it.  You can move it, as a whole, to some other place.
+
+##### Update your local clone of the repository.
+
+1. Go into the `matsim-hamburg` directory.
+1. Type `git pull`
+
+(Or use your IDE, e.g. Eclipse, IntelliJ, to update the repository.)
+
+This will update your repository to the newest version.
+
+### Run the scenario
+(Requires either cloning or downloading the repository.)
+
+##### ... using a runnable jar file (only available for releases)
+1. You can build an executable jar-file by executing one of the following commands in the top directory.
+   This will download all necessary dependencies (it might take a while the first time it is run) and dump the jar into the top directory.
+    1. `./mvnw clean package -DskipTests=true`
+    1. or on Windows: `mvnw.cmd clean package -DskipTests=true`
+1. Double-click on that .jar file (in a file system browser). Alternatively, try opening it with the following command:``
+   java -jar [FILENAME].jar
+   ``
+
+1. In the GUI, click on the "Choose" button for configuration file.  Navigate to one of the `scenario` directories and load one of the configuration files.
+1. Increase memory in the GUI.
+1. Press the "Start MATSim" button.  This should run MATSim.  Note that MATSim accepts URLs as filenames in its config, so while the config files are part of the git repo, running them will pull additional material from our server.
+1. "Open" the output directory.  You can drag files into VIA as was already done above.
+1. "Edit..." (in the GUI) the config file.  Re-run MATSim.
+
+##### ... using an IDE, e.g. Eclipse, IntelliJ
+1. Set up the project in your IDE.
+1. Make sure the project is configured as maven project.
+1. Run the JAVA class `src/main/java/org/matsim/run/RunBaseCaseHamburgScenario.java` or `src/main/java/org/matsim/gui/MATSimGUI.java`.
+1. "Open" the output directory.  You can drag files into VIA as was already done above.
+1. Edit the config file or adjust the run class. Re-run MATSim.
+
+### More information
+
+For more information about MATSim, see here: https://www.matsim.org/.
+
+### Acknowledgements
+
+The travel demand data for the metropolitan area Ruhr is provided by Senozon Deutschland GmbH (https://senozon.com).

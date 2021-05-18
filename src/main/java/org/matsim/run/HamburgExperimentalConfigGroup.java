@@ -27,7 +27,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean usePersonIncomeBasedScoring = false;
     private double freeSpeedFactor = 1.;
     private boolean useLinkBasedParkPressure = false;
-    private String parkPressureLinkAttributeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-link2parkpressure.csv";
+    private String parkPressureLinkAttributeFile = null;
     private String parkPressureScoreParams = "1.,0.7,0.";
     private double parkPressureScoreConstant = 0.;
     private boolean increaseStorageCapacity = true;

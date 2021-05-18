@@ -37,7 +37,7 @@ public class ScenarioReducer {
         if(args.length > 0 ){
             configFile = args[0];
         } else
-            configFile = "test/input/test-hamburg.config.xml";
+            configFile = "scenarios/input/hamburg-v1.1-10pct.config.xml";
 
         ScenarioReducer scenarioReducer = new ScenarioReducer(configFile);
 

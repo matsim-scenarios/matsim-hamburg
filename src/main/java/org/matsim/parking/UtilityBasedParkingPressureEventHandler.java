@@ -32,7 +32,10 @@ public class UtilityBasedParkingPressureEventHandler implements PersonArrivalEve
 	public void handleEvent(PersonArrivalEvent event) {
 
 		if (scenario.getPopulation().getPersons().containsKey(event.getPersonId()) && event.getLegMode().equals(parkingRelevantTransportMode)) {
-			
+
+			if(!scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAsMap().containsKey(parkPressureAttributeName)){
+				throw new RuntimeException(parkPressureAttributeName + " is not found as an attribute in link: " + event.getLinkId());
+			}
 			double parkPressureScore = (double) scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAttribute(parkPressureAttributeName);
 
 			if (parkPressureScore != 0){

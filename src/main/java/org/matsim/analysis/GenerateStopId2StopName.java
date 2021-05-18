@@ -20,7 +20,7 @@ public class GenerateStopId2StopName {
         BufferedWriter bw = new BufferedWriter(outputStreamWriter);
         bw.write("id" + splitSymbol + "name" );
 
-        Config config = ConfigUtils.loadConfig("../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.0-1pct.config.xml");
+        Config config = ConfigUtils.loadConfig("../shared-svn/projects/RealLabHH/matsim-input-files/v1/hamburg-v1.1-1pct.config.xml");
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
         for (TransitStopFacility tr :
