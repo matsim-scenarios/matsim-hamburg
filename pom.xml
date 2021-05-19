@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>1.1</version>
+    <version>2.x-SNAPSHOT</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
