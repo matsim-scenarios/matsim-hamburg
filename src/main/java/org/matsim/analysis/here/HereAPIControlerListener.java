@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.matsim.core.controler.events.ShutdownEvent;
 import org.matsim.core.controler.listener.ShutdownListener;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
 
 /**
@@ -18,7 +19,7 @@ public class HereAPIControlerListener implements ShutdownListener {
     public void notifyShutdown(ShutdownEvent shutdownEvent) {
         try {
             hereAPITravelTimeValidation.run();
-        } catch (ParseException e) {
+        } catch (ParseException | MalformedURLException e) {
             e.printStackTrace();
         }
     }

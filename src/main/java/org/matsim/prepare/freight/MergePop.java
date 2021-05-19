@@ -27,7 +27,7 @@ public class MergePop {
         // subpopulation: persons
         final String inputFile1 = args[0];
 
-        // subpopulation: freight
+        // subpopulation: commercial
         final String inputFile2 = args[1];
 
         final String populationOutputFileName = args[2];

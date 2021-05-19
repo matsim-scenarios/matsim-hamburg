@@ -13,7 +13,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String FREE_SPEED_FACTOR = "freeSpeedFactor";
     private static final String USE_Link_BASED_PARK_PRESSURE = "useLinkBasedParkPressure";
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE = "parkPressureLinkAttributeFile";
-    private static final String PARK_PRESSURE_BASED_PARK_TIME = "parkPressureBasedParkTime";
+    private static final String PARK_PRESSURE_SCORE_PARAMS = "parkPressureScoreParams";
+    private static final String PARK_PRESSURE_SCORE_CONSTANT = "parkPressureScoreConstant";
     private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
@@ -27,7 +28,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private double freeSpeedFactor = 1.;
     private boolean useLinkBasedParkPressure = false;
     private String parkPressureLinkAttributeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-link2parkpressure.csv";
-    private String parkPressureBasedParkTime = "1200.,720.,0.";
+    private String parkPressureScoreParams = "1.,0.7,0.";
+    private double parkPressureScoreConstant = 0.;
     private boolean increaseStorageCapacity = true;
     private boolean filterCommercial = false;
     private int sampleSize = 10;
@@ -74,13 +76,21 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public void setParkPressureLinkAttributeFile(String parkPressureLinkAttributeFile) {
         this.parkPressureLinkAttributeFile = parkPressureLinkAttributeFile;
     }
-    @StringGetter(PARK_PRESSURE_BASED_PARK_TIME)
-    public String getParkPressureBasedParkTime() {
-        return parkPressureBasedParkTime;
+    @StringGetter(PARK_PRESSURE_SCORE_PARAMS)
+    public String getParkPressureScoreParams() {
+        return parkPressureScoreParams;
     }
-    @StringSetter(PARK_PRESSURE_BASED_PARK_TIME)
-    public void setParkPressureBasedParkTime(String parkPressureBasedParkTime) {
-        this.parkPressureBasedParkTime = parkPressureBasedParkTime;
+    @StringSetter(PARK_PRESSURE_SCORE_PARAMS)
+    public void setParkPressureScoreParams(String parkPressureScoreParams) {
+        this.parkPressureScoreParams = parkPressureScoreParams;
+    }
+    @StringGetter(PARK_PRESSURE_SCORE_CONSTANT)
+    public double getParkPressureScoreConstant() {
+        return parkPressureScoreConstant;
+    }
+    @StringSetter(PARK_PRESSURE_SCORE_CONSTANT)
+    public void setParkPressureScoreConstant(double parkPressureScoreConstant) {
+        this.parkPressureScoreConstant = parkPressureScoreConstant;
     }
 
     @StringGetter(POPULATION_DOWNSAMPLE_FACTOR)

@@ -2,7 +2,6 @@ package org.matsim.run;
 
 
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
-import com.google.inject.Provides;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
@@ -15,27 +14,22 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.Population;
 import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
-import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
-import org.matsim.core.config.groups.QSimConfigGroup.TrafficDynamics;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.mobsim.qsim.AbstractQSimModule;
-import org.matsim.core.mobsim.qsim.QSim;
-import org.matsim.core.mobsim.qsim.qnetsimengine.ConfigurableQNetworkFactory;
-import org.matsim.core.mobsim.qsim.qnetsimengine.QNetworkFactory;
-import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.MainModeIdentifier;
+import org.matsim.core.router.MainModeIdentifierImpl;
+import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.parking.NetworkParkPressureReader;
-import org.matsim.parking.VehicleHandlerForParking;
+import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
 
 import java.io.IOException;
@@ -76,6 +70,26 @@ public class RunBaseCaseHamburgScenario {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
+
+        // TODO: 04.04.21 delete when generate new commercial plans
+        //<-------------------------------------------------------------------------------------------->
+//        List<Id<Person>> personIds = new LinkedList<>();
+//        for(Person person : scenario.getPopulation().getPersons().values()) {
+//            if (person.getId().toString().contains("commercial")) {
+//                Plan plan = scenario.getPopulation().getPersons().get(person.getId()).getSelectedPlan();
+//                TripStructureUtils.Trip trip = TripStructureUtils.getTrips(plan.getPlanElements()).get(0);
+//                MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
+//                String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+//
+//                if(mode.contains("PWV_IV") || mode.contains("Pkw-Lfw") || mode.equals(TransportMode.pt))
+//                    personIds.add(person.getId());
+//            }
+//        }
+//        for (Id<Person> personId: personIds) {
+//            scenario.getPopulation().removePerson(personId);
+//        }
+        //<-------------------------------------------------------------------------------------------->
+
         Controler controler = prepareControler(scenario);
 
         controler.run();
@@ -127,18 +141,14 @@ public class RunBaseCaseHamburgScenario {
                 }
         });
 
-        // use link-based park time
+        // use link-based park pressure
         if(ConfigUtils.addOrGetModule(controler.getConfig(),HamburgExperimentalConfigGroup.class).isUseLinkBasedParkPressure()){
 
-            controler.addOverridingQSimModule(new AbstractQSimModule() {
+            controler.addOverridingModule(new AbstractModule() {
 
-                protected void configureQSim() {
-                }
-                @Provides
-                QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
-                    ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
-                    factory.setVehicleHandler(new VehicleHandlerForParking(qSim, scenario));
-                    return factory;
+                @Override
+                public void install() {
+                    this.addEventHandlerBinding().to(UtilityBasedParkingPressureEventHandler.class);
                 }
             });
         }
@@ -184,13 +194,10 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
+        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != "") {
         		log.info("Adding missing park pressure link attributes based on provided files...");
-        		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
-                Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
-                        .map(Double::parseDouble)
-                        .toArray(Double[]::new);
-                networkParkPressureReader.addLinkParkTimeAsAttribute(parkTime);
+        		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
+                networkParkPressureReader.addLinkParkTimeAsAttribute();
         		log.info("Adding missing park pressure link attributes based on provided files... Done.");
         	}
         }
