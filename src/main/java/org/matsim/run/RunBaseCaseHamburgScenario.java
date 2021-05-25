@@ -8,6 +8,9 @@ import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
 import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
+import org.matsim.analysis.pt.PtValidator;
+import org.matsim.analysis.pt.PtValidatorConfigGroup;
+import org.matsim.analysis.pt.PtValidatorControlerListener;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -106,6 +109,16 @@ public class RunBaseCaseHamburgScenario {
                 }
             }
         });
+
+        // use pt validation
+//        controler.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                PtValidator ptValidator = new PtValidator();
+//                this.addEventHandlerBinding().toInstance(ptValidator);
+//                this.addControlerListenerBinding().toInstance(new PtValidatorControlerListener(ptValidator));
+//            };
+//        });
 
 
         controler.addOverridingModule(new AbstractModule() {

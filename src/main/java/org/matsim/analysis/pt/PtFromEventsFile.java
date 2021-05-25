@@ -24,8 +24,8 @@ public class PtFromEventsFile {
 
     public static HashMap<Id<Person>, MyPerson> readSimulationData(String eventsFile) {
         EventsManager eventsManager = EventsUtils.createEventsManager();
-        MyEventHandler myEventHandler = new MyEventHandler();
-        eventsManager.addHandler(myEventHandler);
+        PtValidator ptValidator = new PtValidator();
+        eventsManager.addHandler(ptValidator);
         MatsimEventsReader reader = new MatsimEventsReader(eventsManager);
         eventsManager.initProcessing();
         reader.readFile(eventsFile);
@@ -33,7 +33,7 @@ public class PtFromEventsFile {
 
         System.out.println("Done, reading simulation data");
 
-        return  myEventHandler.getPtUsageMap();
+        return  ptValidator.getPtUsageMap();
     }
 
     static HashMap<String, MyTransitObject> readTransitSchedule(String transitScheduleFile) {

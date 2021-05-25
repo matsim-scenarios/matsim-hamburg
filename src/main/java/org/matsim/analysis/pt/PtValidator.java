@@ -14,10 +14,16 @@ import org.matsim.vehicles.Vehicle;
 
 import java.util.HashMap;
 
-public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler {
+public class PtValidator implements VehicleArrivesAtFacilityEventHandler,  PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler {
 
     HashMap<Id<Person>, MyPerson> ptUsageMap = new HashMap<>();
     HashMap<Id<Vehicle>, Id<TransitStopFacility>> movingVehicle = new HashMap<>();
+
+    @Override
+    public void reset(int iteration) {
+        ptUsageMap.clear();
+        movingVehicle.clear();
+    }
 
     @Override
     public void handleEvent(VehicleArrivesAtFacilityEvent event) {
