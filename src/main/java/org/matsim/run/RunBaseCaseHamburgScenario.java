@@ -24,9 +24,6 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
-import org.matsim.core.router.MainModeIdentifier;
-import org.matsim.core.router.MainModeIdentifierImpl;
-import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
@@ -48,7 +45,6 @@ public class RunBaseCaseHamburgScenario {
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
     public static final String VERSION = "v1.1";
-    public static final int SCALE = 1;
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
@@ -59,36 +55,17 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-1pct/hamburg-v1.1-1pct.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
         baseCaseHH.run(args);
     }
 
-    void run(String[] args) throws IOException {
+    private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
-
-        // TODO: 04.04.21 delete when generate new commercial plans
-        //<-------------------------------------------------------------------------------------------->
-//        List<Id<Person>> personIds = new LinkedList<>();
-//        for(Person person : scenario.getPopulation().getPersons().values()) {
-//            if (person.getId().toString().contains("commercial")) {
-//                Plan plan = scenario.getPopulation().getPersons().get(person.getId()).getSelectedPlan();
-//                TripStructureUtils.Trip trip = TripStructureUtils.getTrips(plan.getPlanElements()).get(0);
-//                MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
-//                String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
-//
-//                if(mode.contains("PWV_IV") || mode.contains("Pkw-Lfw") || mode.equals(TransportMode.pt))
-//                    personIds.add(person.getId());
-//            }
-//        }
-//        for (Id<Person> personId: personIds) {
-//            scenario.getPopulation().removePerson(personId);
-//        }
-        //<-------------------------------------------------------------------------------------------->
 
         Controler controler = prepareControler(scenario);
 
@@ -113,8 +90,6 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                	
-                	// new approach which is maybe not so nice but should require less memory
                 	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                 }
             }
@@ -194,7 +169,7 @@ public class RunBaseCaseHamburgScenario {
 
         // add parkPressureAttribute
         if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != "") {
+        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
         		log.info("Adding missing park pressure link attributes based on provided files...");
         		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
                 networkParkPressureReader.addLinkParkTimeAsAttribute();
@@ -203,7 +178,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
 
-        // add Freight if no filter
+        // add Freight traffic
         if(hamburgExperimentalConfigGroup.isFilterCommercial()){
             List<Id<Person>> personIds = new LinkedList<>();
             for(Person person : scenario.getPopulation().getPersons().values()) {
@@ -269,10 +244,7 @@ public class RunBaseCaseHamburgScenario {
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_other_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("educ_kiga_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(18. * 3600.));
         }
-        
-//        config.qsim().setTrafficDynamics(TrafficDynamics.kinematicWaves);
-//        config.qsim().setTrafficDynamicsCorrectionApproach(TrafficDynamicsCorrectionApproach.INCREASE_NUMBER_OF_LANES);
-        
+
         return config;
     }
 }
