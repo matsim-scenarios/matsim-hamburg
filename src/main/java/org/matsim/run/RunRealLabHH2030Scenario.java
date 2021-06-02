@@ -82,9 +82,7 @@ public class RunRealLabHH2030Scenario {
 
         // drt + dvrp module
 
-        controler.addOverridingModule(new MultiModeDrtModule());
-        controler.addOverridingModule(new DvrpModule());
-        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
+
 
         controler.addOverridingModule(new AbstractModule() {
 
@@ -102,9 +100,14 @@ public class RunRealLabHH2030Scenario {
             }
         });
         // TODO: 02.06.21 report bugs
-        //controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
+        controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
         //todo: write our hamburg PtIntermodalRoutingModesModule,which can deal with all the pt+x(s). Ask Gregor why not multi-routingmode in config?
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
+
+        // TODO: 02.06.21 ask why didn't work here
+        controler.addOverridingModule(new MultiModeDrtModule());
+        controler.addOverridingModule(new DvrpModule());
+        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
 
         // add eScooter router
         EScooterConfigGroup eScooterConfigGroup = ConfigUtils.addOrGetModule(controler.getConfig(), EScooterConfigGroup.class);
@@ -172,10 +175,6 @@ public class RunRealLabHH2030Scenario {
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
                         drtServiceAreaShapeFile,
                         "stopFilter", "station_S/U/RE/RB",
-                        // some S+U stations are located slightly outside the shp File, e.g. U7 Neukoelln, U8
-                        // Hermannstr., so allow buffer around the shape.
-                        // This does not mean that a drt vehicle can pick the passenger up outside the service area,
-                        // rather the passenger has to walk the last few meters from the drt drop off to the station.
                         200.0); //
             }
         }
