@@ -306,3 +306,8 @@ hs_err_pid*
 /.classpath
 /.project
 /matsim-hamburg-data-analysis/
+
+# i added this manually - tschlenther june '21
+.idea/*
+lsp/*
+matsim-hamburg.iml
