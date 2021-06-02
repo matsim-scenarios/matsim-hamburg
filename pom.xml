@@ -171,6 +171,12 @@
             <version>master-933a6dd4ce-1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.matsim-vsp</groupId>
+            <artifactId>pt-extensions</artifactId>
+            <version>67dec05d3b</version>
+        </dependency>
+
         <!-- Command line parser -->
         <dependency>
             <groupId>info.picocli</groupId>

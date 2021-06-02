@@ -27,6 +27,7 @@ public class HamburgFreightMainModeIdentifier implements AnalysisMainModeIdentif
         this.modeHierarchy.add("bicycle");
         this.modeHierarchy.add("ride");
         this.modeHierarchy.add("car");
+        this.modeHierarchy.add("eScooter");
         Iterator var1 = this.drtModes.iterator();
 
         while(var1.hasNext()) {

@@ -18,6 +18,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
+    private static final String TAG_DRT_LINKS_BUFFER_AROUND_SERVICE_AREA_SHP = "tagDrtLinksBufferAroundServiceAreaShp";
+    private static final String E_SCOOTER_SERVICE_AREA = "eScooterServiceArea";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -33,6 +35,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean increaseStorageCapacity = true;
     private boolean filterCommercial = false;
     private int sampleSize = 10;
+    private double tagDrtLinksBufferAroundServiceAreaShp = 2000.0;
+    private String eScooterServiceArea = null;
 
     @StringGetter(Filter_Commercial)
     public boolean isFilterCommercial() {
@@ -116,5 +120,23 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     @StringSetter(FREE_SPEED_FACTOR)
     public void setFreeSpeedFactor(double freeSpeedFactor) {
         this.freeSpeedFactor = freeSpeedFactor;
+    }
+
+    @StringGetter(TAG_DRT_LINKS_BUFFER_AROUND_SERVICE_AREA_SHP)
+    public double getTagDrtLinksBufferAroundServiceAreaShp() {
+        return tagDrtLinksBufferAroundServiceAreaShp;
+    }
+
+    @StringSetter(TAG_DRT_LINKS_BUFFER_AROUND_SERVICE_AREA_SHP)
+    public void setTagDrtLinksBufferAroundServiceAreaShp(double tagDrtLinksBufferAroundServiceAreaShp) {
+        this.tagDrtLinksBufferAroundServiceAreaShp = tagDrtLinksBufferAroundServiceAreaShp;
+    }
+    @StringGetter(E_SCOOTER_SERVICE_AREA)
+    public String getEScooterServiceArea() {
+        return eScooterServiceArea;
+    }
+    @StringSetter(E_SCOOTER_SERVICE_AREA)
+    public void setEScooterServiceArea(String eScooterServiceArea) {
+        this.eScooterServiceArea = eScooterServiceArea;
     }
 }
