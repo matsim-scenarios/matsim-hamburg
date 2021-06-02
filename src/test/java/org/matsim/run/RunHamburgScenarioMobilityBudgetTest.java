@@ -20,7 +20,7 @@ import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
+import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
 
 /**
  * @author zmeng

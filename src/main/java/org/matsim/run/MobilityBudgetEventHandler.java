@@ -21,7 +21,7 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
 
     // in case a more sophisticated implementation is needed
     protected double calculateMobilityBudget (Id<Person> personId ) {
-        double mobBudg = RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.get(personId);
+        double mobBudg = RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId);
         return mobBudg;
     }
 
@@ -36,20 +36,20 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
     public void handleEvent(PersonDepartureEvent personDepartureEvent) {
         Id<Person> personId = personDepartureEvent.getPersonId();
 
-        if (RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.containsKey(personId)) {
+        if (RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.containsKey(personId)) {
 
 
             if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
                 // zero value so if Person already got the mobilityBudget it is removed that way
-                RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.replace(personId, 0.0);
+                RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, 0.0);
                 log.info(personId + " usesd car");
                 personUsedCar.add(personId);
             }
 
             if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
-                RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
-                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.get(personId));
-                System.out.println("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudget.personsWithMobilityBudget.get(personId));
+                RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
+                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId));
+                System.out.println("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId));
                 personGotMobilityBudget.add(personId);
             }
 

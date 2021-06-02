@@ -10,57 +10,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.matsim:matsim:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-main:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.6" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-referencing:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-metadata:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-opengis:21.5" level="project" />
-    <orderEntry type="library" name="Maven: systems.uom:systems-common-java8:0.7.2" level="project" />
-    <orderEntry type="library" name="Maven: tec.uom:uom-se:1.0.8" level="project" />
-    <orderEntry type="library" name="Maven: javax.measure:unit-api:1.0" level="project" />
-    <orderEntry type="library" name="Maven: tec.uom.lib:uom-lib-common:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: si.uom:si-quantity:0.7.1" level="project" />
-    <orderEntry type="library" name="Maven: si.uom:si-units-java8:0.7.1" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-shapefile:21.5" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.geotools:gt-epsg-hsql:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:dvrp:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:otfvis:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:locationchoice:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:sbb-extensions:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:av:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:taxi:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:emissions:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:accidents:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools.jdbc:gt-jdbc-postgis:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-jdbc:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:vsp:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:multimodal:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:parking:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:accessibility:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:matrixbasedptrouter:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:minibus:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:noise:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.geotools:gt-geojson:21.5" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:signals:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:cadytsIntegration:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim:matsim-examples:13.0-2021w05-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:mac:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac:11.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:osm:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:sumo:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.matsim:matsim:test-jar:tests:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:common:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:analysis:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:roadpricing:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:drt:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:ev:13.0-2021w05-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: com.github.matsim-vsp:drt-speed-up:83d661919a" level="project" />
-    <orderEntry type="library" name="Maven: jgridshift:jgridshift:1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.matsim-vsp:matsim-analysis:eb419155c2" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:decongestion:12.0-2020w03-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.matsim.contrib:freight:13.0-2021w05-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.matsim:matsim:13.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.13.3" level="project" />
@@ -205,9 +157,6 @@
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.54" level="project" />
     <orderEntry type="library" name="Maven: org.matsim:matsim-examples:13.0" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:11.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:11.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:11.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:11.0.2" level="project" />

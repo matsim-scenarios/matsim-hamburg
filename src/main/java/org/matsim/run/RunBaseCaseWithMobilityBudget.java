@@ -1,3 +1,4 @@
+/*
 package org.matsim.run;
 
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
@@ -51,9 +52,11 @@ public class RunBaseCaseWithMobilityBudget {
 
 
 
-    /**
+    */
+/**
      * @author zmeng
-     */
+     *//*
+
 
         private static final Logger log = Logger.getLogger(org.matsim.run.RunBaseCaseHamburgScenario.class);
 
@@ -184,11 +187,13 @@ public class RunBaseCaseWithMobilityBudget {
 
         public static Scenario prepareScenario(Config config) throws IOException {
 
-            /*
+            */
+/*
              * We need to set the DrtRouteFactory before loading the scenario. Otherwise DrtRoutes in input plans are loaded
              * as GenericRouteImpls and will later cause exceptions in DrtRequestCreator. So we do this here, although this
              * class is also used for runs without drt.
-             */
+             *//*
+
             final Scenario scenario = ScenarioUtils.createScenario( config );
 
             RouteFactories routeFactories = scenario.getPopulation().getFactory().getRouteFactories();
@@ -315,3 +320,4 @@ public class RunBaseCaseWithMobilityBudget {
 
 
 
+*/

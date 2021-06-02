@@ -27,6 +27,11 @@
       <option name="url" value="https://repo.osgeo.org/repository/release" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="SBB" />
+      <option name="name" value="SBB" />
+      <option name="url" value="https://schweizerischebundesbahnen.bintray.com/simba.mvn" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
@@ -37,9 +42,19 @@
       <option name="url" value="http://mvn.topobyte.de" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="ojo-snapshots" />
+      <option name="name" value="ojo-snapshots" />
+      <option name="url" value="http://oss.jfrog.org/libs-snapshot" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="matsim" />
       <option name="name" value="matsim" />
       <option name="url" value="https://repo.matsim.org/repository/matsim/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="matsim" />
+      <option name="name" value="matsim" />
+      <option name="url" value="https://dl.bintray.com/matsim/matsim" />
     </remote-repository>
   </component>
 </project>
