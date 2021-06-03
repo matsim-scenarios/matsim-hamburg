@@ -1,6 +1,8 @@
 package org.matsim.analysis.pt;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,6 +15,13 @@ import java.util.List;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.matsim.analysis.pt.PtFromEventsFile.MyTransitObject;
 import org.matsim.vehicles.Vehicle;
 
@@ -23,15 +32,16 @@ public class CompareSimulationRealWorld {
 		//Takes from arguments
 		String transitScheduleFile = args[0];
 		String eventsFile = args[1];
-		String realWordCountsDirectory = args[2];
+		String realWorldCountsDirectory = args[2];
 		String outputResultsDirectory = args[3];
 		String outputMissingStationsDirectory = args[4];
+		int scalingFactor = Integer.valueOf(args[5]);
 		
 		
 		
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = readRealWorldData(
-				realWordCountsDirectory);
-		LinkedHashMap<String, String> mapLineToYear = ReadPtCounts.mapLineNoYear(realWordCountsDirectory);
+				realWorldCountsDirectory);
+		LinkedHashMap<String, String> mapLineToYear = ReadPtCounts.mapLineNoYear(realWorldCountsDirectory);
 		HashMap<String, MyTransitObject> transitScheduleData = PtFromEventsFile.readTransitSchedule(transitScheduleFile);
 		HashMap<Id<Person>, MyPerson> simResults = PtFromEventsFile.readSimulationData(eventsFile);
 		HashMap<Id<Vehicle>, String> vehicleLines = mapVehicleIdToLineNo(transitScheduleData, simResults);
@@ -333,6 +343,12 @@ public class CompareSimulationRealWorld {
 					writerResults.println("Line: " + line);
 					writerResults.println();
 					int i = 0;
+					int einsteigerOutboundSim = 0;
+					int einsteigerInboundSim = 0;
+					DefaultCategoryDataset datasetEinsteiger = new DefaultCategoryDataset();
+					DefaultCategoryDataset datasetAussteiger = new DefaultCategoryDataset();
+					DefaultCategoryDataset percentageChangeEinsteigerOutbound = new DefaultCategoryDataset();
+					DefaultCategoryDataset percentageChangeEinsteigerInbound = new DefaultCategoryDataset();
 					for (String station : transit.keySet()) {
 						PersonCounts personCounts = transit.get(station);
 						if (i == 0) {
@@ -361,24 +377,57 @@ public class CompareSimulationRealWorld {
 						writerResults.print(personCounts.getEinsteigerOutbound());
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerOutboundSim());
+						einsteigerOutboundSim += personCounts.getEinsteigerOutboundSim();
+						datasetEinsteiger.addValue(personCounts.getEinsteigerOutboundSim(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerOutbound());
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerOutboundSim());
+						datasetAussteiger.addValue(personCounts.getAussteigerOutboundSim(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerInbound());
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerInboundSim());
+						einsteigerInboundSim += personCounts.getEinsteigerInboundSim();
+						datasetEinsteiger.addValue(personCounts.getEinsteigerInboundSim(), "Inbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerInbound());
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerInboundSim());
+						datasetAussteiger.addValue(personCounts.getAussteigerInboundSim(), "Ibound", station);
 						writerResults.print(",");
-
+						
+						if(personCounts.getEinsteigerOutbound() + personCounts.getEinsteigerOutboundSim() > 0) {
+							double scaling = personCounts.getEinsteigerOutboundSim()*scalingFactor;
+							double einsteigerOutCount = personCounts.getEinsteigerOutbound();
+							double diff = scaling - einsteigerOutCount;
+							double sum = scaling + einsteigerOutCount;
+							double percChangeEinsteigerOutbound = (diff/sum)*100;
+							percentageChangeEinsteigerOutbound.addValue(percChangeEinsteigerOutbound, "Outbound", station);
+						}
+						if(personCounts.getEinsteigerInbound() + personCounts.getEinsteigerInboundSim() > 0) {
+							double scaling = personCounts.getEinsteigerInboundSim()*scalingFactor;
+							double einsteigerInCount = personCounts.getEinsteigerInbound();
+							double diff = scaling - einsteigerInCount;
+							double sum = scaling + einsteigerInCount;
+							double percChangeEinsteigerInbound = (diff/sum)*100;
+							percentageChangeEinsteigerInbound.addValue(percChangeEinsteigerInbound, "Inbound", station);
+						}
+						
 						i++;
 					}
 					writerResults.println();
 					writerResults.println();
+					
+					DefaultCategoryDataset datasetTotalPtUsageEinsteiger = new DefaultCategoryDataset();
+					datasetTotalPtUsageEinsteiger.addValue(einsteigerOutboundSim, "persons", "Outbound");
+					datasetTotalPtUsageEinsteiger.addValue(einsteigerInboundSim, "persons", "Inbound");
+					
+					generateLineChartDataset(datasetEinsteiger, outputResultsDirectory, line, "Einsteiger");
+					generateLineChartDataset(datasetAussteiger, outputResultsDirectory, line, "Aussteiger");
+					generateBarChartTotalPtUsage(datasetTotalPtUsageEinsteiger, outputResultsDirectory, line, "BarChart");
+					generateBarChartPercentageChange(percentageChangeEinsteigerOutbound, outputResultsDirectory, line, "percentageChangeEinsteigerOutbound");
+					generateBarChartPercentageChange(percentageChangeEinsteigerInbound, outputResultsDirectory, line, "percentageChangeEinsteigerInbound");
 				}
 			}
 
@@ -423,6 +472,69 @@ public class CompareSimulationRealWorld {
 			}
 		}
 		return vehicleLines;
+	}
+	
+	private static void generateLineChartDataset(DefaultCategoryDataset dataset, String outputResultsDirectory,
+			String line, String fileName) throws IOException {
+
+		JFreeChart lineChartDatasetEinsteiger = ChartFactory.createLineChart(fileName + " for outbound and Inbound",
+				"stops", "No of passengers", dataset, PlotOrientation.HORIZONTAL, true, true, false);
+
+		CategoryPlot lineEinsteigerCategoryPlot = lineChartDatasetEinsteiger.getCategoryPlot();
+		lineEinsteigerCategoryPlot.getRenderer().setDefaultSeriesVisibleInLegend(true);
+
+		int lineChartWidth = 1000; /* Width of the image */
+		int lineChartHeight = 600; /* Height of the image */
+		File directory = new File(outputResultsDirectory + "/" + line);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		File lineChartTransitEinsteigerPath = new File(directory + "/transit" + fileName + ".jpeg");
+		ChartUtils.saveChartAsJPEG(lineChartTransitEinsteigerPath, lineChartDatasetEinsteiger, lineChartWidth,
+				lineChartHeight);
+
+	}
+	
+	private static void generateBarChartTotalPtUsage(DefaultCategoryDataset dataset, String outputResultsDirectory,
+			String line, String fileName) throws IOException {
+
+		JFreeChart totalPtUsagebarChart = ChartFactory.createBarChart(fileName + " for outbound and Inbound", "stops",
+				"No of passengers", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+		CategoryPlot categoryPlot = totalPtUsagebarChart.getCategoryPlot();
+		BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer();
+		barRenderer.setMaximumBarWidth(0.10);
+		barRenderer.setSeriesPaint(0, Color.BLUE);
+		int width = 480; /* Width of the image */
+		int height = 480; /* Height of the image */
+		File directory = new File(outputResultsDirectory + "/" + line);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		File barChartPath = new File(directory + "/TotalPtUsage" + fileName + ".jpeg");
+		ChartUtils.saveChartAsJPEG(barChartPath, totalPtUsagebarChart, width, height);
+
+	}
+	
+	private static void generateBarChartPercentageChange(DefaultCategoryDataset dataset, String outputResultsDirectory,
+			String line, String fileName) throws IOException {
+
+		JFreeChart percentageChangebarChart = ChartFactory.createBarChart(fileName + " compared to real world", "stops",
+				"No of passengers", dataset, PlotOrientation.HORIZONTAL, true, true, false);
+
+		CategoryPlot categoryPlot = percentageChangebarChart.getCategoryPlot();
+		BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer();
+		barRenderer.setMaximumBarWidth(0.10);
+		barRenderer.setSeriesPaint(0, Color.BLUE);
+		int width = 900; /* Width of the image */
+		int height = 520; /* Height of the image */
+		File directory = new File(outputResultsDirectory + "/" + line);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		File barChartPath = new File(directory + "/PercentageChange" + fileName + ".jpeg");
+		ChartUtils.saveChartAsJPEG(barChartPath, percentageChangebarChart, width, height);
+
 	}
 
 }

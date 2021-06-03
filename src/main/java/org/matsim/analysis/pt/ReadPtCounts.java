@@ -22,10 +22,6 @@ import org.xml.sax.SAXException;
  */
 public class ReadPtCounts {
 
-//	public static void main(String[] args) {
-//		String realWordCountsFile = "C:/Users/Aravind/work/Calibration/HVV-counts/HVV Fahrgastzahlen 2014-2020";
-//		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = read(realWordCountsFile);
-//	}
 	static public LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> read(String directoryToScanForRuns) {
 
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> ptCounts = new LinkedHashMap<String, LinkedHashMap<String, PersonCounts>>();
