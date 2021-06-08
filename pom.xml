@@ -59,7 +59,7 @@
             <groupId>org.matsim.contrib</groupId>
             <artifactId>dvrp</artifactId>
             <version>${matsim.version}</version>
-            <scope>compile</scope>
+<!--            <scope>compile</scope>-->
         </dependency>
 
         <dependency>
@@ -203,6 +203,13 @@
             </exclusions>
 
         </dependency>
+
+        <dependency>
+            <groupId>com.github.eqasim-org</groupId>
+            <artifactId>matsim-sharing</artifactId>
+            <version>-4acae13b9d-1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
