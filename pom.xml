@@ -207,7 +207,7 @@
         <dependency>
             <groupId>com.github.eqasim-org</groupId>
             <artifactId>matsim-sharing</artifactId>
-            <version>-4acae13b9d-1</version>
+            <version>757c51944b</version>
         </dependency>
 
     </dependencies>
