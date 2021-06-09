@@ -173,7 +173,8 @@ public class RunBaseCaseHamburgScenario {
             person.setSelectedPlan(selectedPlan);
         }
 
-        // increase flowspeed for links, where flowspeed lower than 50kmh
+        // increase flowspeed for links, where flowspeed lower than 25kmh
+        // bc HERE validation has shown that vehicles travel faster in reality
         for (Link link : scenario.getNetwork().getLinks().values()) {
             if (link.getFreespeed() < 25.5 / 3.6) {
                 link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeSpeedFactor());
