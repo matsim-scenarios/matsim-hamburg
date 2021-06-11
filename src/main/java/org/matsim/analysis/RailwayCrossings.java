@@ -13,62 +13,68 @@ import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.network.algorithms.NetworkTransform;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
+import org.matsim.core.utils.collections.Tuple;
+import org.matsim.core.utils.geometry.CoordinateTransformation;
+import org.matsim.core.utils.geometry.geotools.MGC;
+import org.matsim.core.utils.geometry.transformations.TransformationFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.FileReader;
 import java.util.*;
 
 public class RailwayCrossings {
 
-    private static String inputFile ="D:/Arbeit/shared-svn/projects/realLabHH/data/Bahnübergänge/loaded_lcs.csv";
-    private static String networkFile ="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
-    private static String eventFile = "";
+    private static String eventFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/hamburg-v1.1-10pct.output_events.xml.gz";
     //static HashMap<Tuple, Tuple> pair = new HashMap();
     static HashMap<Id, Double> carLinkMap = new HashMap<>();
-    static HashMap<Id, Double> carLinkTimeMap = new HashMap<>();
+    static HashMap<Id, List<Double>> carLinkTimeMap = new HashMap<>();
     static HashMap<Id, Double> ptLinkMap = new HashMap<>();
-    static HashMap<Id, Double> ptLinkTimeMap = new HashMap<>();
-    static HashMap<Id, Id> conection = new HashMap<>();
+    static HashMap<Id, List<Double>> ptLinkTimeMap = new HashMap<>();
+    static HashMap<Id, Id> connection = new HashMap<>();
+    static double offSet = 10.0;
 
 
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         //read input csv file
+        String inputFile = "D:/Arbeit/shared-svn/projects/realLabHH/data/Bahnübergänge/loaded_lcs.csv";
         List<Coord> coordinates = readCsv(inputFile);
         //read in networks and filter for modes car and pt
+        String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
         Network network = NetworkUtils.readNetwork(networkFile);
         TransportModeNetworkFilter transportModeNetworkFilter = new TransportModeNetworkFilter(network);
         Network ptNetwork = NetworkUtils.createNetwork();
-        transportModeNetworkFilter.filter(ptNetwork, new HashSet(Arrays.asList(TransportMode.pt)));
-
+        transportModeNetworkFilter.filter(ptNetwork, new HashSet(Collections.singletonList(TransportMode.pt)));
         Network carNetwork = NetworkUtils.createNetwork();
-        transportModeNetworkFilter.filter(carNetwork, new HashSet(Arrays.asList(TransportMode.car)));
+        transportModeNetworkFilter.filter(carNetwork, new HashSet(Collections.singletonList(TransportMode.car)));
+
+        //TODO @TS CoordSystem Transformation
+        CoordinateReferenceSystem test = MGC.getCRS("EPSG:25832");
+        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation("EPSG:25832", TransformationFactory.WGS84);
+        new NetworkTransform(transformation).run(network);
+        new NetworkTransform(transformation).run(ptNetwork);
 
 
-
-
-        for (int i = 0; i < coordinates.size(); i++) {
-            Link l = NetworkUtils.getNearestLink(carNetwork, coordinates.get(i));
-            Link nearestPtLink = NetworkUtils.getNearestLink(ptNetwork, coordinates.get(i));
+        for (Coord coordinate : coordinates) {
+            Link l = NetworkUtils.getNearestLink(carNetwork, coordinate);
+            Link nearestPtLink = NetworkUtils.getNearestLink(ptNetwork, coordinate);
             calculateIntersection(l, nearestPtLink);
         }
 
         EventsManager events = EventsUtils.createEventsManager();
-        RailwayCrossingsEventHandler railwayCrossingsEventHandler = new RailwayCrossingsEventHandler(carLinkMap,carLinkTimeMap,ptLinkMap,ptLinkTimeMap, conection );
+        RailwayCrossingsEventHandler railwayCrossingsEventHandler = new RailwayCrossingsEventHandler(carLinkMap,carLinkTimeMap,ptLinkMap,ptLinkTimeMap );
         events.addHandler(railwayCrossingsEventHandler);
         new MatsimEventsReader(events).readFile(eventFile);
-
 
         }
 
 
+    private static void calculateIntersection(Link carLink, Link ptLink) {
 
-
-
-    private static Coord calculateIntersection(Link carLink, Link ptLink) {
-
-        Coord coordOfIntersection = null;
+        Coord coordOfIntersection;
 
         //transforming Coord into linear equations
         double a1 = carLink.getToNode().getCoord().getY() - carLink.getFromNode().getCoord().getY();
@@ -95,13 +101,37 @@ public class RailwayCrossings {
                 double distance2 = NetworkUtils.getEuclideanDistance(ptLink.getFromNode().getCoord(), coordOfIntersection);
                 ptLinkMap.put(ptLink.getId(), distance2);
                 //Tuple<Link, Link> distanceTuple = new Tuple(distance1 , distance2 );
+                connection.put(carLink.getId(), ptLink.getId());
 
             }
 
-            System.out.println("Lines dont cross on link");
-
+            System.out.println("no match");
         }
-        return coordOfIntersection;
+    }
+
+
+    private static void calculateTimeDiff() {
+        HashMap<Tuple<Id, Id>, Integer> amountOfCriticalPassings = new HashMap<>();
+
+
+        for (Id linkId: carLinkTimeMap.keySet()) {
+            List<Double> listOfCar = carLinkTimeMap.get(linkId);
+            Id correspondingPtLink = connection.get(linkId);
+            List <Double> listOfPt = ptLinkTimeMap.get(correspondingPtLink);
+            int counter = 0;
+
+            for (double timeCar : listOfCar) {
+                for (Double aDouble : listOfPt) {
+                    double diff = timeCar - aDouble;
+                    if (diff > 0 && diff <= offSet) {
+                        counter++;
+                    }
+                }
+                Tuple linkTuple = new Tuple(linkId, correspondingPtLink);
+                amountOfCriticalPassings.put(linkTuple, counter);
+            }
+        }
+
     }
 
 
