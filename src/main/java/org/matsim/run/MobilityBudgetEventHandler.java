@@ -42,14 +42,11 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
             if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
                 // zero value so if Person already got the mobilityBudget it is removed that way
                 RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, 0.0);
-                log.info(personId + " usesd car");
                 personUsedCar.add(personId);
             }
 
             if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
                 RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
-                log.info("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId));
-                System.out.println("Person: " + personId + "MobilityBudget" + RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId));
                 personGotMobilityBudget.add(personId);
             }
 
