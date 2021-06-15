@@ -19,6 +19,7 @@ import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
+import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.FileReader;
@@ -40,7 +41,7 @@ public class RailwayCrossings {
     public static void main(String[] args) throws Exception {
 
         //read input csv file
-        String inputFile = "D:/Arbeit/shared-svn/projects/realLabHH/data/Bahnübergänge/loaded_lcs.csv";
+        String inputFile = "C:/Users/Gregor/Documents/shared-svn/projects/realLabHH/data/Bahnübergänge/loaded_lcs.csv";
         List<Coord> coordinates = readCsv(inputFile);
         //read in networks and filter for modes car and pt
         String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
@@ -50,19 +51,16 @@ public class RailwayCrossings {
         transportModeNetworkFilter.filter(ptNetwork, new HashSet(Collections.singletonList(TransportMode.pt)));
         Network carNetwork = NetworkUtils.createNetwork();
         transportModeNetworkFilter.filter(carNetwork, new HashSet(Collections.singletonList(TransportMode.car)));
+        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(TransformationFactory.WGS84_UTM31N, RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-        //TODO @TS CoordSystem Transformation
-        CoordinateReferenceSystem test = MGC.getCRS("EPSG:25832");
-        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation("EPSG:25832", TransformationFactory.WGS84);
-        new NetworkTransform(transformation).run(network);
-        new NetworkTransform(transformation).run(ptNetwork);
 
 
         for (Coord coordinate : coordinates) {
+            coordinate = transformation.transform(coordinate);
             Link l = NetworkUtils.getNearestLink(carNetwork, coordinate);
             Link nearestPtLink = NetworkUtils.getNearestLink(ptNetwork, coordinate);
             calculateIntersection(l, nearestPtLink);
-        }
+       }
 
         EventsManager events = EventsUtils.createEventsManager();
         RailwayCrossingsEventHandler railwayCrossingsEventHandler = new RailwayCrossingsEventHandler(carLinkMap,carLinkTimeMap,ptLinkMap,ptLinkTimeMap );
@@ -72,7 +70,7 @@ public class RailwayCrossings {
         }
 
 
-    private static void calculateIntersection(Link carLink, Link ptLink) {
+    public static void calculateIntersection(Link carLink, Link ptLink) {
 
         Coord coordOfIntersection;
 
@@ -88,7 +86,7 @@ public class RailwayCrossings {
         double det = a1*b2- a2*b1;
 
         if (det == 0) {
-            //Lines are parallel
+            System.out.println("lines are parallel");
         } else {
             double x = (b2 * c1 - b1 * c2) / det;
             double y = (a1 * c2 - a2 * c1) / det;
@@ -102,10 +100,11 @@ public class RailwayCrossings {
                 ptLinkMap.put(ptLink.getId(), distance2);
                 //Tuple<Link, Link> distanceTuple = new Tuple(distance1 , distance2 );
                 connection.put(carLink.getId(), ptLink.getId());
-
+                System.out.println(coordOfIntersection);
             }
-
-            System.out.println("no match");
+            else {
+                System.out.println("no match");
+            }
         }
     }
 
@@ -145,7 +144,7 @@ public class RailwayCrossings {
                 List<String[]> r = reader.readAll();
                 for (int i = 0; i<r.size(); i++) {
                     String[] test = r.get(i);
-                    Coord coord = new Coord(Double.parseDouble(test[3]), Double.parseDouble(test[4]));
+                    Coord coord = new Coord(Double.parseDouble(test[4]), Double.parseDouble(test[3]));
                     coordsOfCrossings.add(coord);
                 }
             return coordsOfCrossings;
