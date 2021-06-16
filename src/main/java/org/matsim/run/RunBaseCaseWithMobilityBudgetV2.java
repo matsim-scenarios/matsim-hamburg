@@ -16,8 +16,10 @@ import org.matsim.core.utils.misc.Time;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -32,7 +34,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
-    public static final ArrayList<Id<Person>> personsWithMobilityBudget = new ArrayList<>();
+    public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
     public static double totalSumMobilityBudget = 0;
     static double dailyMobilityBudget;
 
@@ -64,49 +66,31 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
 
-        MobilityBudgetEventHandlerV2 mobilityBudgetEventHandler = new MobilityBudgetEventHandlerV2();
+        MobilityBudgetEventHandlerV2 mobilityBudgetEventHandler = new MobilityBudgetEventHandlerV2(personsEligibleForMobilityBudget);
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
                 addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
+                addControlerListenerBinding().toInstance(mobilityBudgetEventHandler);
             }
         });
-
-        controler.addControlerListener(new AfterMobsimListener() {
-            @Override
-            public void notifyAfterMobsim(AfterMobsimEvent afterMobsimEvent) {
-                for (Id<Person> personId : personsWithMobilityBudget) {
-                    //if (personsWithMobilityBudget.get(personId)>0) {
-                        log.info("Throwing money event" + "Person_Id:" + personId);
-                        afterMobsimEvent.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, personId, dailyMobilityBudget, null, null));
-                        totalSumMobilityBudget = totalSumMobilityBudget + dailyMobilityBudget;
-                    //}
-                }
-            }
-
-        });
-
-        log.info("This iteration the totalSumMobilityBudget paid to the Agents was:" + totalSumMobilityBudget);
-
         return controler;
     }
 
     public static Scenario prepareScenario(Config config) throws IOException {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
-
         for (Person person : scenario.getPopulation().getPersons().values()) {
             Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
-                personsWithMobilityBudget.add(personId);
+                //TODO filter car users in selected base case output plans
+                personsEligibleForMobilityBudget.put(personId, 1000000000.);
             }
         }
-
         return scenario;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
-
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
         dailyMobilityBudget = Double.parseDouble(args[6]);
         log.info(dailyMobilityBudget);

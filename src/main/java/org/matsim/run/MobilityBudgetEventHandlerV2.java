@@ -4,42 +4,52 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.events.PersonDepartureEvent;
+import org.matsim.api.core.v01.events.PersonMoneyEvent;
 import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.core.controler.events.AfterMobsimEvent;
+import org.matsim.core.controler.listener.AfterMobsimListener;
+import org.matsim.core.utils.misc.Time;
 
-import java.util.ArrayList;
+import java.util.*;
 
-public class MobilityBudgetEventHandlerV2  implements PersonDepartureEventHandler {
+class MobilityBudgetEventHandlerV2  implements PersonDepartureEventHandler, AfterMobsimListener {
 
-    private static ArrayList<Id<Person>> personGotMobilityBudget = new ArrayList<>();
-    private static ArrayList<Id<Person>> personUsedCar = new ArrayList<>();
+    Logger log = Logger.getLogger(MobilityBudgetEventHandlerV2.class);
+    private final Map<Id<Person>, Double> person2MobilityBudget;
+    private Map<Id<Person>, Double> currentIterationMobilityBudget = new HashMap<>();
 
+    MobilityBudgetEventHandlerV2(Map<Id<Person>, Double> personsEligibleForMobilityBudget2MoneyValue) {
+        this.person2MobilityBudget = personsEligibleForMobilityBudget2MoneyValue;
+    }
 
     @Override
     public void reset(int iteration) {
-        personUsedCar.clear();
-        personGotMobilityBudget.clear();
+        currentIterationMobilityBudget.clear();
+        currentIterationMobilityBudget.putAll(person2MobilityBudget);
     }
-
 
     @Override
     public void handleEvent(PersonDepartureEvent personDepartureEvent) {
         Id<Person> personId = personDepartureEvent.getPersonId();
-
-        if (RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.contains(personId)) {
-
-
-            if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
-                // zero value so if Person already got the mobilityBudget it is removed that way
-                RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.remove(personId);
-                personUsedCar.add(personId);
-            }
-
-            if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
-                //RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
-                personGotMobilityBudget.add(personId);
-            }
+        if (this.currentIterationMobilityBudget.containsKey(personId) && personDepartureEvent.getLegMode().equals(TransportMode.car)) {
+            this.currentIterationMobilityBudget.replace(personId, 0.0);
         }
+    }
+
+    @Override
+    public void notifyAfterMobsim(AfterMobsimEvent event) {
+
+        double totalSumMobilityBudget = 0.;
+        for (Map.Entry<Id<Person>, Double> idDoubleEntry : currentIterationMobilityBudget.entrySet()) {
+            Id<Person> person = idDoubleEntry.getKey();
+            Double mobilityBudget = idDoubleEntry.getValue();
+            log.info("Throwing money event" + "Person_Id:" + person);
+            event.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, person, mobilityBudget, "mobilityBudget", null));
+            totalSumMobilityBudget = totalSumMobilityBudget + mobilityBudget;
+            //}
+        }
+        log.info("This iteration the totalSumMobilityBudget paid to the Agents was:" + totalSumMobilityBudget);
 
     }
 }
