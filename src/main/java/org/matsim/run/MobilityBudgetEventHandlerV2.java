@@ -14,7 +14,6 @@ public class MobilityBudgetEventHandlerV2  implements PersonDepartureEventHandle
     private static ArrayList<Id<Person>> personGotMobilityBudget = new ArrayList<>();
     private static ArrayList<Id<Person>> personUsedCar = new ArrayList<>();
 
-
     @Override
     public void reset(int iteration) {
         personUsedCar.clear();
