@@ -13,30 +13,24 @@ import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.algorithms.NetworkTransform;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
-import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
-import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class RailwayCrossings {
 
-    private static String eventFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/hamburg-v1.1-10pct.output_events.xml.gz";
-    //static HashMap<Tuple, Tuple> pair = new HashMap();
     static HashMap<Id, Double> carLinkMap = new HashMap<>();
     static HashMap<Id, List<Double>> carLinkTimeMap = new HashMap<>();
     static HashMap<Id, Double> ptLinkMap = new HashMap<>();
     static HashMap<Id, List<Double>> ptLinkTimeMap = new HashMap<>();
     static HashMap<Id, Id> connection = new HashMap<>();
-    static double offSet = 10.0;
-
-
+    static double offSet = 100.0;
 
     public static void main(String[] args) throws Exception {
 
@@ -51,21 +45,25 @@ public class RailwayCrossings {
         transportModeNetworkFilter.filter(ptNetwork, new HashSet(Collections.singletonList(TransportMode.pt)));
         Network carNetwork = NetworkUtils.createNetwork();
         transportModeNetworkFilter.filter(carNetwork, new HashSet(Collections.singletonList(TransportMode.car)));
-        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(TransformationFactory.WGS84_UTM31N, RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
-
-
+        CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation(TransformationFactory.WGS84,"EPSG:25832");
+        List<Coord> transformedCoord = new ArrayList<>();
 
         for (Coord coordinate : coordinates) {
             coordinate = transformation.transform(coordinate);
+            transformedCoord.add(coordinate);
             Link l = NetworkUtils.getNearestLink(carNetwork, coordinate);
             Link nearestPtLink = NetworkUtils.getNearestLink(ptNetwork, coordinate);
             calculateIntersection(l, nearestPtLink);
        }
 
+        writeCoord2CSV(coordinates, transformedCoord);
+
         EventsManager events = EventsUtils.createEventsManager();
         RailwayCrossingsEventHandler railwayCrossingsEventHandler = new RailwayCrossingsEventHandler(carLinkMap,carLinkTimeMap,ptLinkMap,ptLinkTimeMap );
         events.addHandler(railwayCrossingsEventHandler);
+        String eventFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/hamburg-v1.1-10pct.output_events.xml.gz";
         new MatsimEventsReader(events).readFile(eventFile);
+        calculateTimeDiff();
 
         }
 
@@ -73,7 +71,6 @@ public class RailwayCrossings {
     public static void calculateIntersection(Link carLink, Link ptLink) {
 
         Coord coordOfIntersection;
-
         //transforming Coord into linear equations
         double a1 = carLink.getToNode().getCoord().getY() - carLink.getFromNode().getCoord().getY();
         double b1 = carLink.getFromNode().getCoord().getX() - carLink.getToNode().getCoord().getX();
@@ -93,14 +90,11 @@ public class RailwayCrossings {
             //check if intersection is on the link
             if (carLink.getFromNode().getCoord().getX() < x && x < carLink.getToNode().getCoord().getX() && carLink.getFromNode().getCoord().getY() < y && y < carLink.getToNode().getCoord().getY() ) {
                 coordOfIntersection = new Coord(x,y);
-                //Tuple<Link, Link> linkTuple = new Tuple(carLink , ptLink );
                 double distance1 = NetworkUtils.getEuclideanDistance(carLink.getFromNode().getCoord(), coordOfIntersection);
                 carLinkMap.put(carLink.getId(), distance1);
                 double distance2 = NetworkUtils.getEuclideanDistance(ptLink.getFromNode().getCoord(), coordOfIntersection);
                 ptLinkMap.put(ptLink.getId(), distance2);
-                //Tuple<Link, Link> distanceTuple = new Tuple(distance1 , distance2 );
                 connection.put(carLink.getId(), ptLink.getId());
-                System.out.println(coordOfIntersection);
             }
             else {
                 System.out.println("no match");
@@ -110,7 +104,7 @@ public class RailwayCrossings {
 
 
     private static void calculateTimeDiff() {
-        HashMap<Tuple<Id, Id>, Integer> amountOfCriticalPassings = new HashMap<>();
+        HashMap<Tuple<Id<Link>, Id<Link>>, Integer> amountOfCriticalPassings = new HashMap<>();
 
 
         for (Id linkId: carLinkTimeMap.keySet()) {
@@ -119,16 +113,39 @@ public class RailwayCrossings {
             List <Double> listOfPt = ptLinkTimeMap.get(correspondingPtLink);
             int counter = 0;
 
-            for (double timeCar : listOfCar) {
-                for (Double aDouble : listOfPt) {
-                    double diff = timeCar - aDouble;
-                    if (diff > 0 && diff <= offSet) {
-                        counter++;
+            if (listOfCar != null && listOfPt!= null  ) {
+                if (listOfCar.size()> listOfPt.size()) {
+                    for (Double ptTime : listOfPt) {
+                        for (Double carTime: listOfCar) {
+                            double diff = ptTime - carTime;
+                            if (diff > 0 && diff <= offSet) {
+                                counter++;
+                            }
+                        }
                     }
+                    Tuple linkTuple = new Tuple(linkId, correspondingPtLink);
+                    amountOfCriticalPassings.put(linkTuple, counter);
                 }
-                Tuple linkTuple = new Tuple(linkId, correspondingPtLink);
-                amountOfCriticalPassings.put(linkTuple, counter);
+
+
+                if (listOfPt.size()> listOfCar.size()) {
+                    for (double timeCar : listOfCar) {
+                        for (Double aDouble : listOfPt) {
+                            double diff = timeCar - aDouble;
+                            if (diff > 0 && diff <= offSet) {
+                                counter++;
+                            }
+                        }
+                    }
+                    Tuple linkTuple = new Tuple(linkId, correspondingPtLink);
+                    amountOfCriticalPassings.put(linkTuple, counter);
+                }
+
             }
+        }
+
+        for (Tuple i: amountOfCriticalPassings.keySet()) {
+            System.out.println(i.toString() +":" + amountOfCriticalPassings.get(i));
         }
 
     }
@@ -136,7 +153,7 @@ public class RailwayCrossings {
 
 
     private static List<Coord> readCsv(String fileName) throws Exception {
-        List<Coord> coordsOfCrossings = new ArrayList<Coord>();
+        List<Coord> coordsOfCrossings = new ArrayList<>();
         CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build();
         // if your csv file doesn't have header line, remove withSkipLines(1)
         try (CSVReader reader = new CSVReaderBuilder(
@@ -151,5 +168,15 @@ public class RailwayCrossings {
         }
     }
 
+    private static void writeCoord2CSV (List<Coord> originalCoordList, List<Coord> transformedCoordList ) throws IOException {
+        FileWriter writer = new FileWriter("C:/Users/Gregor/Documents/VSP_Arbeit/test.csv");
+        writer.write("originalX"+","+"originalY"+","+"transX"+","+"transY");
+        writer.append("\n");
 
+        for (int i = 0; i < originalCoordList.size(); i++) {
+            writer.append(originalCoordList.get(i).getX()+","+originalCoordList.get(i).getY()+","+transformedCoordList.get(i).getX()+","+transformedCoordList.get(i).getY());
+            writer.append("\n");
+        }
+        writer.close();
+    }
 }

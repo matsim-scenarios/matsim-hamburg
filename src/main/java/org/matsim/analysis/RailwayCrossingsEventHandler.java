@@ -4,8 +4,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.LinkEnterEvent;
 import org.matsim.api.core.v01.events.handler.LinkEnterEventHandler;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class RailwayCrossingsEventHandler implements LinkEnterEventHandler {
 
@@ -28,11 +27,25 @@ public class RailwayCrossingsEventHandler implements LinkEnterEventHandler {
         Id linkId = linkEnterEvent.getLinkId();
 
         if (carLinkMap.containsKey(linkId)) {
-            carLinkTimeMap.get(linkId).add(linkEnterEvent.getTime());
+            double time = linkEnterEvent.getTime();
+            if (!carLinkTimeMap.containsKey(linkId)) {
+                List<Double> timeList = new ArrayList<>();
+                carLinkTimeMap.put(linkId, timeList);
+            }
+            if (carLinkTimeMap.containsKey(linkId)) {
+                carLinkTimeMap.get(linkId).add(time);
+            }
         }
 
         if (ptLinkMap.containsKey(linkId)) {
-            ptLinkTimeMap.get(linkId).add(linkEnterEvent.getTime());
+            double time = linkEnterEvent.getTime();
+            if (!ptLinkTimeMap.containsKey(linkId)) {
+                List<Double> timeList = new ArrayList<>();
+                ptLinkTimeMap.put(linkId, timeList);
+            }
+            if (ptLinkTimeMap.containsKey(linkId)) {
+                ptLinkTimeMap.get(linkId).add(time);
+            }
         }
     }
 
