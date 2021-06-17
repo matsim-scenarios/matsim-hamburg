@@ -1,4 +1,4 @@
-/*package org.matsim.run;
+package org.matsim.run;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -21,7 +21,7 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
 
     // in case a more sophisticated implementation is needed
     protected double calculateMobilityBudget (Id<Person> personId ) {
-        double mobBudg = RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.get(personId);
+        double mobBudg = RunBaseCaseWithMobilityBudgetV2.personsEligibleForMobilityBudget.get(personId);
         return mobBudg;
     }
 
@@ -36,17 +36,17 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
     public void handleEvent(PersonDepartureEvent personDepartureEvent) {
         Id<Person> personId = personDepartureEvent.getPersonId();
 
-        if (RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.containsKey(personId)) {
+        if (RunBaseCaseWithMobilityBudgetV2.personsEligibleForMobilityBudget.containsKey(personId)) {
 
 
             if (personDepartureEvent.getLegMode().equals(TransportMode.car)) {
                 // zero value so if Person already got the mobilityBudget it is removed that way
-                RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, 0.0);
+                RunBaseCaseWithMobilityBudgetV2.personsEligibleForMobilityBudget.replace(personId, 0.0);
                 personUsedCar.add(personId);
             }
 
             if (!personDepartureEvent.getLegMode().equals(TransportMode.car) && !personGotMobilityBudget.contains(personId) && !personUsedCar.contains(personId)) {
-                RunBaseCaseWithMobilityBudgetV2.personsWithMobilityBudget.replace(personId, calculateMobilityBudget(personId));
+                RunBaseCaseWithMobilityBudgetV2.personsEligibleForMobilityBudget.replace(personId, calculateMobilityBudget(personId));
                 personGotMobilityBudget.add(personId);
             }
 
@@ -60,4 +60,4 @@ public class MobilityBudgetEventHandler implements PersonDepartureEventHandler {
 }
 
 
- */
+
