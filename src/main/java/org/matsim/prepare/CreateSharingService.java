@@ -63,7 +63,6 @@ public class CreateSharingService {
 			stationId++;
 			vehicleId++;
 		}
-		
 		new SharingServiceWriter(service).write(outputPath);
 		System.out.println("done!!");
 	}
