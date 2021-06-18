@@ -3,6 +3,7 @@ package org.matsim.run;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
 import org.apache.log4j.Logger;
+import org.matsim.analysis.TransportPlanningMainModeIdentifier;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -91,7 +92,7 @@ public class RunRealLabHH2030Scenario {
                 //TODO: write our hamburg mainModeIdentifier,which can deal with all the pt+x(s)
 
                 //HamburgFreightMainModeIdentifier was already bound
-                bind(MainModeIdentifier.class).to(AnalysisMainModeIdentifier.class);
+//                bind(MainModeIdentifier.class).toInstance(new TransportPlanningMainModeIdentifier());
 //                bind(AnalysisMainModeIdentifier.class).to(HamburgFreightMainModeIdentifier.class);
 
                 bind(RaptorIntermodalAccessEgress.class).to(EnhancedRaptorIntermodalAccessEgress.class);
