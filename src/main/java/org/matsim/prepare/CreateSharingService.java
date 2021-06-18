@@ -66,7 +66,6 @@ public class CreateSharingService {
 		
 		new SharingServiceWriter(service).write(outputPath);
 		System.out.println("done!!");
-
 	}
 
 }
