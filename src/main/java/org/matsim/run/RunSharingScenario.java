@@ -1,40 +1,17 @@
 package org.matsim.run;
 
-import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
-import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
-import org.matsim.contrib.drt.run.DrtConfigGroup;
-import org.matsim.contrib.drt.run.DrtConfigs;
-import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
-import org.matsim.contrib.drt.run.MultiModeDrtModule;
-import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
-import org.matsim.contrib.dvrp.run.DvrpModule;
-import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
-import org.matsim.contrib.sharing.io.DefaultSharingServiceSpecification;
-import org.matsim.contrib.sharing.io.ImmutableSharingStationSpecification;
-import org.matsim.contrib.sharing.io.SharingServiceSpecification;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
 import org.matsim.contrib.sharing.run.SharingModule;
 import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
-import org.matsim.contrib.sharing.service.SharingStation;
 import org.matsim.contrib.sharing.service.SharingUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
-import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.escooter.EScooterCharger;
-import org.matsim.escooter.EScooterConfigGroup;
-import org.matsim.escooter.EScooterTeleportationRoutingModule;
-import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsModule;
-import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
-import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
-import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesModule;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -120,7 +97,7 @@ public class RunSharingScenario {
         // add sharing modes to mode choice
         List<String> modes = new ArrayList<>(Arrays.asList(config.subtourModeChoice().getModes()));
         modes.add(SharingUtils.getServiceMode(carSharingConfig));
- //       modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
+        modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
         config.subtourModeChoice().setModes(modes.toArray(new String[modes.size()]));
 
         // We need to add interaction activity types to scoring

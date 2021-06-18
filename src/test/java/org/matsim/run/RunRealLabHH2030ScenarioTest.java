@@ -4,9 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
-import org.matsim.escooter.EScooterConfigGroup;
 import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
@@ -35,8 +33,6 @@ public class RunRealLabHH2030ScenarioTest {
         };
 
         Config config = prepareConfig(args);
-
-        ConfigUtils.addOrGetModule(config, EScooterConfigGroup.class).setEScooterServiceArea(null);
 
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());

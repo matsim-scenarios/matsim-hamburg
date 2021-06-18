@@ -2,13 +2,10 @@ package org.matsim.run;
 
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
-import com.google.common.collect.ImmutableSet;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.contrib.drt.optimizer.insertion.DrtInsertionSearchParams;
 import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
@@ -21,17 +18,12 @@ import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.algorithms.MultimodalNetworkCleaner;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifier;
-import org.matsim.escooter.EScooterCharger;
-import org.matsim.escooter.EScooterConfigGroup;
-import org.matsim.escooter.EScooterTeleportationRoutingModule;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsModule;
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
@@ -43,7 +35,6 @@ import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -112,23 +103,13 @@ public class RunRealLabHH2030Scenario {
         //todo: write our hamburg PtIntermodalRoutingModesModule,which can deal with all the pt+x(s). Ask Gregor why not multi-routingmode in config?
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
 
-        // add eScooter router
-        EScooterConfigGroup eScooterConfigGroup = ConfigUtils.addOrGetModule(controler.getConfig(), EScooterConfigGroup.class);
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.addRoutingModuleBinding(eScooterConfigGroup.getMode()).toInstance(new EScooterTeleportationRoutingModule(eScooterConfigGroup.getMode(), scenario,eScooterConfigGroup.getTeleportedSpeed(),eScooterConfigGroup.getBeelineDistanceFactor()));
-                this.addEventHandlerBinding().to(EScooterCharger.class);
-            }
-        });
-
         return controler;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         ConfigGroup[] customModulesToAdd = new ConfigGroup[] { new DvrpConfigGroup(), new MultiModeDrtConfigGroup(),
                 new SwissRailRaptorConfigGroup(), new IntermodalTripFareCompensatorsConfigGroup(),
-                new PtIntermodalRoutingModesConfigGroup(), new EScooterConfigGroup()};
+                new PtIntermodalRoutingModesConfigGroup()};
         ConfigGroup[] customModulesAll = new ConfigGroup[customModules.length + customModulesToAdd.length];
 
         int counter = 0;
@@ -145,12 +126,6 @@ public class RunRealLabHH2030Scenario {
 
         //configure DRT feeder system and intermodal pt router
         configureDRTFeeder(config);
-
-        // add eScooter as teleported mode
-        EScooterConfigGroup eScooterConfigGroup = ConfigUtils.addOrGetModule(config, EScooterConfigGroup.class);
-        //todo: test the parameters
-        config.plansCalcRoute().addModeRoutingParams(new PlansCalcRouteConfigGroup.ModeRoutingParams().setMode(eScooterConfigGroup.getMode()).setTeleportedModeSpeed(eScooterConfigGroup.getTeleportedSpeed()).setBeelineDistanceFactor(eScooterConfigGroup.getBeelineDistanceFactor()));
-        config.planCalcScore().addModeParams(new PlanCalcScoreConfigGroup.ModeParams(eScooterConfigGroup.getMode()));
 
         return config;
     }
