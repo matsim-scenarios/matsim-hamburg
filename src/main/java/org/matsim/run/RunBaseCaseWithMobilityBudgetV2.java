@@ -4,22 +4,22 @@ package org.matsim.run;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.events.PersonMoneyEvent;
+import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.controler.events.AfterMobsimEvent;
-import org.matsim.core.controler.listener.AfterMobsimListener;
-import org.matsim.core.utils.misc.Time;
+import org.matsim.core.router.TripStructureUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -65,7 +65,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static Controler prepareControler(Scenario scenario) {
 
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
-
         MobilityBudgetEventHandlerV2 mobilityBudgetEventHandler = new MobilityBudgetEventHandlerV2(personsEligibleForMobilityBudget);
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -80,11 +79,26 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static Scenario prepareScenario(Config config) throws IOException {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
+
+        log.info("filtering population for mobilityBudget");
+
         for (Person person : scenario.getPopulation().getPersons().values()) {
             Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
-                //TODO filter car users in selected base case output plans
-                personsEligibleForMobilityBudget.put(personId, 1000000000.);
+                Plan plan = person.getSelectedPlan();
+                List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
+                for (TripStructureUtils.Trip trip: trips) {
+                    List<Leg> listLegs = trip.getLegsOnly();
+                    List<String> transportModeList = new ArrayList<>();
+                    for (Leg leg: listLegs) {
+                        transportModeList.add(leg.getMode());
+                        if (!transportModeList.contains(TransportMode.car)) {
+                            personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
+                        }
+                    }
+                }
+
+
             }
         }
         return scenario;
