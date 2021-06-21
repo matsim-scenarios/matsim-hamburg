@@ -3,27 +3,21 @@ package org.matsim.run;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.matsim.analysis.ModeStatsControlerListener;
-import org.matsim.analysis.ScoreStatsControlerListener;
-import org.matsim.analysis.here.HereAPIControlerListener;
-import org.matsim.analysis.here.HereAPITravelTimeValidation;
-import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
 
 /**
- * @author zmeng
+ * @author Gryb
  */
 public class RunHamburgScenarioMobilityBudgetTest {
 
@@ -49,14 +43,23 @@ public class RunHamburgScenarioMobilityBudgetTest {
         };
 
         Config config = prepareConfig(args);
-        config.plans().setInputFile("C://Users//Gregor//git//matsim-hamburg//test//input//test-hamburg.plans.xml\"");
-
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
         controler.run();
 
+        Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
+        HashMap<Id<Person>, Double> scoreStatsFromBaseCase = new HashMap<>();
+        scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"),115.34333505696776);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113efb"),0.0);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"),47.10954448365045);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f02"),127.86871825413606);
+        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"),121.90659700031605);
+
+        for (Person p: persons.values()) {
+            Assert.assertEquals(scoreStatsFromBaseCase.get(p.getId()), p.getSelectedPlan().getScore(), 0);
+        }
 
     }
 

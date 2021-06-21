@@ -106,7 +106,16 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
-        dailyMobilityBudget = Double.parseDouble(args[6]);
+
+        try {
+            dailyMobilityBudget = Double.parseDouble(args[6]);
+        }
+        catch (NumberFormatException numberFormatException) {
+            dailyMobilityBudget = 10.0;
+        }
+        catch (NullPointerException nullPointerException) {
+            dailyMobilityBudget = 10.0;
+        }
         log.info(dailyMobilityBudget);
         return config;
     }
