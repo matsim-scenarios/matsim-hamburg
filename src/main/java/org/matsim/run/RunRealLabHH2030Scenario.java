@@ -76,7 +76,9 @@ public class RunRealLabHH2030Scenario {
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
 
-        // drt + dvrp module
+
+
+//        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
         controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
@@ -95,6 +97,7 @@ public class RunRealLabHH2030Scenario {
 //                bind(MainModeIdentifier.class).toInstance(new TransportPlanningMainModeIdentifier());
 //                bind(AnalysisMainModeIdentifier.class).to(HamburgFreightMainModeIdentifier.class);
 
+                //need to bind this in another overriding module than in the module where we install the SwissRailRaptorModule
                 bind(RaptorIntermodalAccessEgress.class).to(EnhancedRaptorIntermodalAccessEgress.class);
             }
         });

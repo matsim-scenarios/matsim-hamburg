@@ -76,22 +76,16 @@ public class RunBaseCaseHamburgScenario {
         log.info("Done.");
     }
 
-
     public static Controler prepareControler(Scenario scenario) {
         Controler controler = new Controler(scenario);
 
-        // use the sbb pt raptor router
-        controler.addOverridingModule( new AbstractModule() {
-            @Override
-            public void install() {
-                install( new SwissRailRaptorModule() );
-            }
-        } );
-
-        // use PersonIncomeSpecificScoringFunction if is needed
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
+                // use the sbb pt raptor router
+                install( new SwissRailRaptorModule() );
+
+                // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                 	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                 }
@@ -119,7 +113,6 @@ public class RunBaseCaseHamburgScenario {
 //                this.addControlerListenerBinding().toInstance(new PtValidatorControlerListener(ptValidator));
 //            };
 //        });
-
 
         controler.addOverridingModule(new AbstractModule() {
             @Override
