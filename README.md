@@ -93,4 +93,4 @@ For more information about MATSim, see here: https://www.matsim.org/.
 
 ### Acknowledgements
 
-The travel demand data for the metropolitan area Ruhr is provided by Senozon Deutschland GmbH (https://senozon.com).
+The travel demand data for area of Hamburg is provided by Senozon Deutschland GmbH (https://senozon.com).
