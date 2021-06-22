@@ -63,7 +63,8 @@ public class RailwayCrossings {
         events.addHandler(railwayCrossingsEventHandler);
         String eventFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/hamburg-v1.1-10pct.output_events.xml.gz";
         new MatsimEventsReader(events).readFile(eventFile);
-        calculateTimeDiff();
+        HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings = calculateTimeDiff();
+        writeResults2CSV(criticalPassings);
 
         }
 
@@ -103,7 +104,7 @@ public class RailwayCrossings {
     }
 
 
-    private static void calculateTimeDiff() {
+    private static HashMap<Tuple<Id<Link>, Id<Link>>, Integer> calculateTimeDiff() {
         HashMap<Tuple<Id<Link>, Id<Link>>, Integer> amountOfCriticalPassings = new HashMap<>();
 
 
@@ -127,7 +128,6 @@ public class RailwayCrossings {
                     amountOfCriticalPassings.put(linkTuple, counter);
                 }
 
-
                 if (listOfPt.size()> listOfCar.size()) {
                     for (double timeCar : listOfCar) {
                         for (Double aDouble : listOfPt) {
@@ -143,10 +143,8 @@ public class RailwayCrossings {
 
             }
         }
+        return amountOfCriticalPassings;
 
-        for (Tuple i: amountOfCriticalPassings.keySet()) {
-            System.out.println(i.toString() +":" + amountOfCriticalPassings.get(i));
-        }
 
     }
 
@@ -166,6 +164,19 @@ public class RailwayCrossings {
                 }
             return coordsOfCrossings;
         }
+    }
+
+
+    private static void writeResults2CSV (HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings ) throws IOException {
+        FileWriter writer = new FileWriter("C:/Users/Gregor/Documents/VSP_Arbeit/results.csv");
+        writer.write("carLink"+","+"ptLink"+","+"amountOfCrossings");
+        writer.append("\n");
+
+        for (Tuple<Id<Link>, Id<Link>> i: criticalPassings.keySet()) {
+            writer.append(i.getFirst().toString()+";"+i.getSecond().toString()+";"+criticalPassings.get(i));
+            writer.append("\n");
+        }
+        writer.close();
     }
 
     private static void writeCoord2CSV (List<Coord> originalCoordList, List<Coord> transformedCoordList ) throws IOException {
