@@ -40,6 +40,7 @@ import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.run.HamburgExperimentalConfigGroup;
 import org.matsim.vehicles.EngineInformation;
 import org.matsim.vehicles.Vehicle;
 import org.matsim.vehicles.VehicleType;
@@ -96,24 +97,30 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 	public static void main(String[] args) throws IOException {
 
-//		if (args.length == 1) {
-//			String rootDirectory = args[0];
-//			if (!rootDirectory.endsWith("/")) rootDirectory = rootDirectory + "/";
-
 		final String hbefaFileCold = "../../svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage_Bln_carOnly.csv";
 		final String hbefaFileWarm = "../..svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage_Bln_carOnly.csv";
 
-//			final String runRootDirectory = "D:/pave_runs/S3-smallFleets/";
-//			final String runRootDirectory = "D:/pave_runs/S5-smallFleets/";
+		final String runId = "hamburg-v1.1-10pct" ;
+		String runDirectory = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
+		RunOfflineAirPollutionAnalysisByEngineInformationWithDrt analysis = new RunOfflineAirPollutionAnalysisByEngineInformationWithDrt(
+				runDirectory,
+				runId,
+				hbefaFileWarm,
+				hbefaFileCold,
+				runDirectory + "emission-analysis-hbefa-v4.1");
+		try {
+			analysis.run();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		final String runRootDirectory = "D:/svn/runs-svn/pave/output-and-analysis/S2-smallFleets";
+//		processPolicyCases(hbefaFileCold, hbefaFileWarm);
+	}
 
+	private static void processPolicyCases(String hbefaFileCold, String hbefaFileWarm, String runRootDirectory) {
 		Set<String> runIds = new HashSet<>();
-
 //		runIds.add("p-baseSingleTrip");
-
 		Set<String> errors = new HashSet<>();
-
 		runIds.forEach(runId -> {
 			String runDirectory = runRootDirectory + "output-" + runId + "/";
 			RunOfflineAirPollutionAnalysisByEngineInformationWithDrt analysis = new RunOfflineAirPollutionAnalysisByEngineInformationWithDrt(
@@ -128,22 +135,21 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 				errors.add(runDirectory);
 			}
 		});
-
 		errors.forEach(run -> System.out.println("could not process " + run));
-
-//		} else {
-//			throw new RuntimeException("Please set the root directory. Aborting...");
-//		}
 	}
 
 	void run() throws IOException {
 
-		Config config = ConfigUtils.createConfig();
-		config.vehicles().setVehiclesFile(runDirectory + runId + ".output_allVehicles.xml.gz");
-		config.network().setInputFile(runDirectory + runId + ".output_network.xml.gz");
-		config.transit().setTransitScheduleFile(runDirectory + runId + ".output_transitSchedule.xml.gz");
-		config.transit().setVehiclesFile(runDirectory + runId + ".output_transitVehicles.xml.gz");
-		config.global().setCoordinateSystem("EPSG:31468");
+		//lets load the actual output config instead of filling a dummy one. Hopefully this does not size up the scenario too much. This way, we can get access to
+		//actually used values such as freeeSpeedFactor in HamburgExperimentalConfigGroup
+//		Config config = ConfigUtils.createConfig();
+		Config config = ConfigUtils.loadConfig(runDirectory + runId + ".output_config.xml");
+
+		config.vehicles().setVehiclesFile( runId + ".output_allVehicles.xml.gz");
+		config.network().setInputFile( runId + ".output_network.xml.gz");
+		config.transit().setTransitScheduleFile( runId + ".output_transitSchedule.xml.gz");
+		config.transit().setVehiclesFile( runId + ".output_transitVehicles.xml.gz");
+//		config.global().setCoordinateSystem("EPSG:25832");
 		config.plans().setInputFile(null);
 		config.parallelEventHandling().setNumberOfThreads(null);
 		config.parallelEventHandling().setEstimatedNumberOfEvents(null);
@@ -157,6 +163,8 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 		eConfig.setNonScenarioVehicles(NonScenarioVehicles.ignore);
 		eConfig.setWritingEmissionsEvents(true);
 
+		HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+
 		File folder = new File(analysisOutputDirectory);
 		folder.mkdirs();
 
@@ -169,56 +177,17 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
-		// network
-		for (Link link : scenario.getNetwork().getLinks().values()) {
+		prepareNetwork(hamburgCfg, scenario);
 
-			double freespeed = Double.NaN;
-
-			//TODO check whether this is true for Hamburg!!
-			if (link.getFreespeed() <= 13.888889) {
-				freespeed = link.getFreespeed() * 2;
-				// for non motorway roads, the free speed level was reduced
-			} else {
-				freespeed = link.getFreespeed();
-				// for motorways, the original speed levels seems ok.
-			}
-
-			if(freespeed <= 8.333333333){ //30kmh
-				link.getAttributes().putAttribute("hbefa_road_type", "URB/Access/30");
-			} else if(freespeed <= 11.111111111){ //40kmh
-				link.getAttributes().putAttribute("hbefa_road_type", "URB/Access/40");
-			} else if(freespeed <= 13.888888889){ //50kmh
-				double lanes = link.getNumberOfLanes();
-				if(lanes <= 1.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/Local/50");
-				} else if(lanes <= 2.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/Distr/50");
-				} else if(lanes > 2.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/Trunk-City/50");
-				} else{
-					throw new RuntimeException("NoOfLanes not properly defined");
-				}
-			} else if(freespeed <= 16.666666667){ //60kmh
-				double lanes = link.getNumberOfLanes();
-				if(lanes <= 1.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/Local/60");
-				} else if(lanes <= 2.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/Trunk-City/60");
-				} else if(lanes > 2.0){
-					link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-City/60");
-				} else{
-					throw new RuntimeException("NoOfLanes not properly defined");
-				}
-			} else if(freespeed <= 19.444444444){ //70kmh
-				link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-City/70");
-			} else if(freespeed <= 22.222222222){ //80kmh
-				link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-Nat./80");
-			} else if(freespeed > 22.222222222){ //faster
-				link.getAttributes().putAttribute("hbefa_road_type", "RUR/MW/>130");
-			} else{
-				throw new RuntimeException("Link not considered...");
-			}
-		}
+		//commercial vehicles = freight
+		//TODO so far, we ignore the emissions of freight vehicles. (argument: they do not change)
+		ArrayList<VehicleType> freightVehicleTypes = new ArrayList<>();
+		scenario.getVehicles().getVehicleTypes().values().stream()
+				.filter(vehicleType -> vehicleType.getId().toString().contains("commercial"))
+				.forEach(vehicleType -> {
+					VehicleUtils.setHbefaVehicleCategory( vehicleType.getEngineInformation(), HbefaVehicleCategory.NON_HBEFA_VEHICLE.toString());
+					freightVehicleTypes.add(vehicleType);
+				});
 
 		// car vehicles
 		VehicleType petrolCarVehicleType = scenario.getVehicles().getFactory().createVehicleType(Id.create("petrolCar", VehicleType.class));
@@ -280,12 +249,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 		VehicleUtils.setHbefaSizeClass( pluginHybridDieselEngineInformation, "average" );
 		VehicleUtils.setHbefaEmissionsConcept( pluginHybridDieselEngineInformation, "Plug-in Hybrid diesel/electric" );
 
-		//TODO check whether this is true for Hamburg!!
 		VehicleType defaultCarVehicleType = scenario.getVehicles().getVehicleTypes().get(Id.create("car", VehicleType.class));
-
-		//TODO check whether this is true for Hamburg!!
-		VehicleType freightVehicleType = scenario.getVehicles().getVehicleTypes().get(Id.create("freight", VehicleType.class));
-		VehicleUtils.setHbefaVehicleCategory( freightVehicleType.getEngineInformation(), HbefaVehicleCategory.NON_HBEFA_VEHICLE.toString());
 
 		for (VehicleType type : scenario.getVehicles().getVehicleTypes().values()) {
 			if (scenario.getTransitVehicles().getVehicleTypes().containsKey(type.getId())) {
@@ -296,11 +260,10 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 		List<Id<Vehicle>> vehiclesToChangeToElectric = new ArrayList<>();
 		List<Id<Vehicle>> carVehiclesToChangeToSpecificType = new ArrayList<>();
-
 		final Random rnd = MatsimRandom.getLocalInstance();
-
 		// change some vehicle types, e.g. to investigate decarbonization scenarios, or to account for electric drt vehicles
-		changeVehicleTypes(scenario, petrolCarVehicleType, dieselCarVehicleType, cngVehicleType, lpgVehicleType, electricVehicleType, pluginHybridPetrolVehicleType, pluginHybridDieselVehicleType, defaultCarVehicleType, freightVehicleType, vehiclesToChangeToElectric, carVehiclesToChangeToSpecificType, rnd);
+		// currently, freight vehicles remain the same (are not electrified) !!
+		changeVehicleTypes(scenario, petrolCarVehicleType, dieselCarVehicleType, cngVehicleType, lpgVehicleType, electricVehicleType, pluginHybridPetrolVehicleType, pluginHybridDieselVehicleType, defaultCarVehicleType, freightVehicleTypes, vehiclesToChangeToElectric, carVehiclesToChangeToSpecificType, rnd);
 
 		// the following is copy paste from the example...
 
@@ -337,6 +300,11 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 //        log.info("Closing events file...");
 //        emissionEventWriter.closeFile();
 
+		writeOutput(linkEmissionAnalysisFile, linkEmissionPerMAnalysisFile, vehicleTypeFile, scenario, vehiclesToChangeToElectric, carVehiclesToChangeToSpecificType, emissionsEventHandler);
+
+	}
+
+	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFile, Scenario scenario, List<Id<Vehicle>> vehiclesToChangeToElectric, List<Id<Vehicle>> carVehiclesToChangeToSpecificType, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
 		log.info("Total number of vehicles: " + scenario.getVehicles().getVehicles().size());
 		log.info("Number of passenger car vehicles: " + carVehiclesToChangeToSpecificType.size());
 		log.info("Number of passenger car vehicles that are changed to electric vehicles: " + vehiclesToChangeToElectric.size());
@@ -438,22 +406,20 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 			bw2.close();
 			log.info("Output written to " + vehicleTypeFile);
 		}
-
 	}
 
-	private void changeVehicleTypes(Scenario scenario, VehicleType petrolCarVehicleType, VehicleType dieselCarVehicleType, VehicleType cngVehicleType, VehicleType lpgVehicleType, VehicleType electricVehicleType, VehicleType pluginHybridPetrolVehicleType, VehicleType pluginHybridDieselVehicleType, VehicleType defaultCarVehicleType, VehicleType freightVehicleType, List<Id<Vehicle>> vehiclesToChangeToElectric, List<Id<Vehicle>> carVehiclesToChangeToSpecificType, Random rnd) {
+	private void changeVehicleTypes(Scenario scenario, VehicleType petrolCarVehicleType, VehicleType dieselCarVehicleType, VehicleType cngVehicleType, VehicleType lpgVehicleType, VehicleType electricVehicleType, VehicleType pluginHybridPetrolVehicleType, VehicleType pluginHybridDieselVehicleType, VehicleType defaultCarVehicleType, ArrayList<VehicleType> freightVehicleTypes, List<Id<Vehicle>> vehiclesToChangeToElectric, List<Id<Vehicle>> carVehiclesToChangeToSpecificType, Random rnd) {
 		for (Vehicle vehicle : scenario.getVehicles().getVehicles().values()) {
 
 			if (scenario.getTransitVehicles().getVehicles().get(vehicle.getId()) != null) {
 				// skip transit vehicles
 
-			} else if (vehicle.getType().getId().toString().equals(freightVehicleType.getId().toString())) {
+			} else if (freightVehicleTypes.contains(vehicle.getType())) {
 				// skip freight vehicles
-
-			//TODO check whether this is true for Hamburg!!
-			} else if (vehicle.getId().toString().contains("freight")) {
+				//TO DO possibly make assumptions regarding electrification of freight vehicles, too
+			} else if (vehicle.getId().toString().contains("freight") || vehicle.getId().toString().contains("commercial")) {
 				// some freight vehicles have the type "car", skip them...
-				log.info("Freight vehicle " + vehicle.getId().toString());
+				log.info("Freight/commercial vehicle is of type car! vehicleId = " + vehicle.getId().toString());
 
 			} else if (vehicle.getType().getId().toString().equals(defaultCarVehicleType.getId().toString())) {
 
@@ -463,6 +429,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 					vehiclesToChangeToElectric.add(vehicle.getId());
 				}
 
+				//drt vehicles are considered to be electric in any case
 			} else if (vehicle.getId().toString().contains("drt") || vehicle.getId().toString().contains("taxi")) {
 				vehiclesToChangeToElectric.add(vehicle.getId());
 
@@ -509,6 +476,58 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 			Vehicle vehicleNew = scenario.getVehicles().getFactory().createVehicle(id, electricVehicleType);
 			scenario.getVehicles().addVehicle(vehicleNew);
 			log.info("Type for vehicle " + id + " changed to electric.");
+		}
+	}
+
+	private void prepareNetwork(HamburgExperimentalConfigGroup hamburgCfg, Scenario scenario) {
+		// network
+		for (Link link : scenario.getNetwork().getLinks().values()) {
+
+			double freespeed = Double.NaN;
+
+			if (link.getFreespeed() <= 25.5 / 3.6) {
+				freespeed = link.getFreespeed() * hamburgCfg.getFreeSpeedFactor();
+				// for non motorway roads, the free speed level was reduced
+			} else {
+				freespeed = link.getFreespeed();
+				// for motorways, the original speed levels seems ok.
+			}
+
+			if(freespeed <= 8.333333333){ //30kmh
+				link.getAttributes().putAttribute("hbefa_road_type", "URB/Access/30");
+			} else if(freespeed <= 11.111111111){ //40kmh
+				link.getAttributes().putAttribute("hbefa_road_type", "URB/Access/40");
+			} else if(freespeed <= 13.888888889){ //50kmh
+				double lanes = link.getNumberOfLanes();
+				if(lanes <= 1.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/Local/50");
+				} else if(lanes <= 2.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/Distr/50");
+				} else if(lanes > 2.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/Trunk-City/50");
+				} else{
+					throw new RuntimeException("NoOfLanes not properly defined");
+				}
+			} else if(freespeed <= 16.666666667){ //60kmh
+				double lanes = link.getNumberOfLanes();
+				if(lanes <= 1.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/Local/60");
+				} else if(lanes <= 2.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/Trunk-City/60");
+				} else if(lanes > 2.0){
+					link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-City/60");
+				} else{
+					throw new RuntimeException("NoOfLanes not properly defined");
+				}
+			} else if(freespeed <= 19.444444444){ //70kmh
+				link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-City/70");
+			} else if(freespeed <= 22.222222222){ //80kmh
+				link.getAttributes().putAttribute("hbefa_road_type", "URB/MW-Nat./80");
+			} else if(freespeed > 22.222222222){ //faster
+				link.getAttributes().putAttribute("hbefa_road_type", "RUR/MW/>130");
+			} else{
+				throw new RuntimeException("Link not considered...");
+			}
 		}
 	}
 
