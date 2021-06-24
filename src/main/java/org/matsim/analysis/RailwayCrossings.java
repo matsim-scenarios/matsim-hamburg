@@ -65,7 +65,6 @@ public class RailwayCrossings {
         new MatsimEventsReader(events).readFile(eventFile);
         HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings = calculateTimeDiff();
         writeResults2CSV(criticalPassings);
-
         }
 
 
@@ -148,8 +147,6 @@ public class RailwayCrossings {
 
     }
 
-
-
     private static List<Coord> readCsv(String fileName) throws Exception {
         List<Coord> coordsOfCrossings = new ArrayList<>();
         CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build();
@@ -169,7 +166,7 @@ public class RailwayCrossings {
 
     private static void writeResults2CSV (HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings ) throws IOException {
         FileWriter writer = new FileWriter("C:/Users/Gregor/Documents/VSP_Arbeit/results.csv");
-        writer.write("carLink"+","+"ptLink"+","+"amountOfCrossings");
+        writer.write("carLink"+";"+"ptLink"+";"+"amountOfCrossings");
         writer.append("\n");
 
         for (Tuple<Id<Link>, Id<Link>> i: criticalPassings.keySet()) {
