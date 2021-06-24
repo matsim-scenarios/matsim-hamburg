@@ -86,19 +86,19 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
                 Plan plan = person.getSelectedPlan();
+
+                //TripStructureUtil get Legs
                 List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
                 for (TripStructureUtils.Trip trip: trips) {
                     List<Leg> listLegs = trip.getLegsOnly();
                     List<String> transportModeList = new ArrayList<>();
                     for (Leg leg: listLegs) {
                         transportModeList.add(leg.getMode());
-                        if (!transportModeList.contains(TransportMode.car)) {
-                            personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
-                        }
+                    }
+                    if (!transportModeList.contains(TransportMode.car)) {
+                        personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
                     }
                 }
-
-
             }
         }
         return scenario;
