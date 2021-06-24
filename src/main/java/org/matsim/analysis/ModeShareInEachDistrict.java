@@ -21,16 +21,15 @@ package org.matsim.analysis;
  * *********************************************************************** */
 
 
-import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.gis.ShapeFileReader;
+import org.matsim.run.HamburgFreightMainModeIdentifier;
 import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.*;
@@ -48,28 +47,26 @@ import java.util.*;
 class ModeShareInEachDistrict {
 
     private static Map<String, HashMap<String, Double>> modeStatsInEachDistrict = new HashMap<String, HashMap<String, Double>>();
-    private MainModeIdentifier mainModeIdentifier;
+    private static HamburgFreightMainModeIdentifier mainModeIdentifier;
     private static Map<String, Double> modeCnt = new HashMap<>();
     private static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
     private static String popInputFile = "D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.0-1pct.plans.xml.gz";
-    List<String> modes = (Arrays.asList(TransportMode.car, TransportMode.bike, TransportMode.ride, TransportMode.walk, TransportMode.other));
-    private final Logger log = Logger.getLogger(ModeStatsControlerListener.class);
+    static List<String> modes = (Arrays.asList(TransportMode.car, TransportMode.bike, TransportMode.ride, TransportMode.walk, TransportMode.other));
 
     public static void main(String[] args) {
 
 
-        PopulationUtils.readPopulation(popInputFile);
+        Population pop = PopulationUtils.readPopulation(popInputFile);
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
 
         for (SimpleFeature feature: features) {
             modeStatsInEachDistrict.put((String) feature.getAttribute("name"), null);
         }
-
-
+        collectModeShareInfo(pop);
     }
 
 
-    private void collectModeShareInfo(Population population) {
+    private static void collectModeShareInfo(Population population) {
 
 
         for (Person person : population.getPersons().values()) {
@@ -93,14 +90,14 @@ class ModeShareInEachDistrict {
         }
 
 
-        log.info("Mode shares over all " + sum + " trips found. MainModeIdentifier: " + mainModeIdentifier.getClass());
+        System.out.println("Mode shares over all " + sum + " trips found. MainModeIdentifier: " + mainModeIdentifier.getClass());
         for (String mode : modes) {
             Double cnt = modeCnt.getOrDefault(mode, 0.0);
             double share = 0.;
             if (cnt != null) {
                 share = cnt / sum;
             }
-            log.info("-- mode share of mode " + mode + " = " + share);
+            System.out.println("-- mode share of mode " + mode + " = " + share);
 
         }
 
