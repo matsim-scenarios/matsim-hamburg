@@ -68,6 +68,21 @@ public class RunSharingScenario {
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
 
+        controler.addOverridingModule( new AbstractModule() {
+            @Override
+            public void install() {
+//                addTravelTimeBinding("scar").to(networkTravelTime());
+//                addTravelDisutilityFactoryBinding("scar").to(carTravelDisutilityFactoryKey());
+
+                //we need to bind a routing module for the main stage of our newly introduced sharing mode. and it is PARTICULARLY IMPORTANT to bind it, before we bind the corresponding sharing module
+                //bc otherwise, the sharing module routing will be overwritten
+                addRoutingModuleBinding("scar").toProvider(new NetworkRoutingProvider("scar"));
+
+                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = (PlansCalcRouteConfigGroup.ModeRoutingParams) controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
+                addRoutingModuleBinding("sbike").toInstance(new TeleportationRoutingModule("sbike",scenario,sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
+            }
+        });
+
         controler.addOverridingModule(new SharingModule());
         controler.configureQSimComponents(SharingUtils.configureQSim(ConfigUtils.addOrGetModule(scenario.getConfig(),SharingConfigGroup.class)));
 
@@ -79,17 +94,6 @@ public class RunSharingScenario {
             }
         });
 
-        controler.addOverridingModule( new AbstractModule() {
-            @Override
-            public void install() {
-//                addTravelTimeBinding("scar").to(networkTravelTime());
-//                addTravelDisutilityFactoryBinding("scar").to(carTravelDisutilityFactoryKey());
-                addRoutingModuleBinding("scar").toProvider(new NetworkRoutingProvider("scar"));
-
-                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = (PlansCalcRouteConfigGroup.ModeRoutingParams) controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
-                addRoutingModuleBinding("sbike").toInstance(new TeleportationRoutingModule("sbike",scenario,sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
-            }
-        });
 
         return controler;
     }
