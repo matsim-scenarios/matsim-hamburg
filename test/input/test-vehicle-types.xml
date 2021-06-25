@@ -9,6 +9,14 @@
         <doorOperation mode="serial"/>
         <passengerCarEquivalents pce="1.0"/>
     </vehicleType>
+    <vehicleType id="scar">
+        <length meter="7.5"/>
+        <width meter="1.0"/>
+        <accessTime secondsPerPerson="1.0"/>
+        <egressTime secondsPerPerson="1.0"/>
+        <doorOperation mode="serial"/>
+        <passengerCarEquivalents pce="1.0"/>
+    </vehicleType>
     <vehicleType id="ride">
         <length meter="7.5"/>
         <width meter="1.0"/>

@@ -40,7 +40,10 @@ public class RunSharingScenarioTest {
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "test-hamburg-freight.plans.xml"
+               // "--config:plans.inputPlansFile" , "runTest.2.plans.xml.gz"
+               // "--config:plans.inputPlansFile" , "run.test2.plans.xml"
+                "--config:plans.inputPlansFile" , "test-scar-sharing-user.plans.xml"
+                //"--config:plans.inputPlansFile" , "test-scar-user.plans.xml"
         };
 
         Config config = prepareConfig(args);
@@ -84,6 +87,41 @@ public class RunSharingScenarioTest {
                 this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler("bike"));
             }
         });
+
+        controler.run();
+
+
+    }
+
+    @Test
+    public void runTest2() throws IOException {
+
+        String args[] = new String[]{
+                "/Users/meng/IdeaProjects/matsim-hamburg/scenarios/input/sharing/hamburg-v1.1-10pct-sharing.config.xml" ,
+                "--config:controler.lastIteration" , "20",
+                "--config:hamburgExperimental.freeSpeedFactor", "1.2",
+                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
+                "--config:HereAPITravelTimeValidation.useHereAPI","false",
+                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
+                "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
+                "--config:plans.inputPlansFile" , "/Users/meng/IdeaProjects/matsim-hamburg/test/input/test-hamburg-freight.plans.xml"
+        };
+
+        Config config = prepareConfig(args);
+        //config.network().setInputFile("/Users/meng/IdeaProjects/matsim-hamburg/test/input/test-hamburg-with-pt-network.xml.gz");
+        config.controler().setRunId("runTest2");
+        config.controler().setWriteEventsInterval(1);
+        config.controler().setWritePlansInterval(1);
+        config.controler().setOutputDirectory(utils.getOutputDirectory());
+
+        for (StrategyConfigGroup.StrategySettings strategySettings : config.strategy().getStrategySettings()) {
+            if (strategySettings.getStrategyName().equals("SubtourModeChoice") && strategySettings.getSubpopulation().equals("person"))
+                strategySettings.setWeight(100);
+        }
+
+        Scenario scenario = prepareScenario(config);
+        Controler controler = prepareControler(scenario);
+
 
         controler.run();
 

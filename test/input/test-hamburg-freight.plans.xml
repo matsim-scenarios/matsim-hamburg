@@ -8,7 +8,272 @@
     </attributes>
 
     <!-- ====================================================================== -->
+<!--    <person id="2f565e">-->
+<!--        <attributes>-->
+<!--            <attribute name="IPD_actEndTimes" class="java.lang.String">25260.0;46980.0;49800.0;68940.0;-Infinity</attribute>-->
+<!--            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;27060.0;47160.0;50100.0;70740.0</attribute>-->
+<!--            <attribute name="IPD_actTypes" class="java.lang.String">home;work;errands;work;home</attribute>-->
+<!--            <attribute name="age" class="java.lang.Integer">59</attribute>-->
+<!--            <attribute name="carAvail" class="java.lang.String">always</attribute>-->
+<!--            <attribute name="gender" class="java.lang.String">m</attribute>-->
+<!--            <attribute name="income" class="java.lang.Double">36882.77031</attribute>-->
+<!--            <attribute name="marginalUtilityOfMoney" class="java.lang.Double">0.6752801989433831</attribute>-->
+<!--            <attribute name="sim_regionType" class="java.lang.String">oberzentrum500plus</attribute>-->
+<!--            <attribute name="subpopulation" class="java.lang.String">person</attribute>-->
+<!--        </attributes>-->
 
+<!--        <plan score="115.16303217450216" selected="yes">-->
+<!--            <activity type="home_40800.0" link="43688060011f" x="555250.1275448027" y="5925004.443321925" end_time="05:35:47" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="05:35:47" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="43688060011f" end_link="43688060011f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="43688060011f" start_time="05:35:47" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="05:35:47" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="43688060011f" end_link="43688060011f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="43688060011f" start_time="05:35:47" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="05:36:47" trav_time="00:36:12">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="43688060011f" end_link="1997997150001f" trav_time="00:36:12" distance="28406.67176763143" vehicleRefId="null">43688060011f 43688060013f 43688060015f 208040020004f 1837975770002f 1837975770003f 1837975660004f 1837975750001f 1837975750003f 1837975750005f 1837975750009f 1837975750010f 1837975740008f 7010364630003f 27039930001f 27039930003f 27039930009f 27039930012f 37749860008r 37749860002r 383524780004f 5352034620003f 1837966780005f 5352034660002f 1838325520016r 1838325520013r 1838325520011r 5349746090002r 5349746060003f 6004612710000f 5349746070002f 1826206270001r 5349746100002r 5349746120004r 5349746120000r 1826206280006r 5349746130002r 306923220003r 1521318050003r 7030370800002r 5349746270002r 247166890003r 6074823490001r 6074823820001r 3140779140005r 5352231220003r 5349746400005f 1304044940006f 695953130006f 5352231240001r 5349746480001r 5349746520001r 42416800016r 19780001f 5349746540002f 5349746560002f 5349746550002f 2655247320004f 695953200005f 6074823420004f 2083542730001f 1181486890000f 43595470003f 5352231290001f 2083542660002f 2083557650002f 49436340018f 2083542610000f 5984099150000f 43891250002f 5984099120000f 47963900003f 2083567400000f 47963910000f 43891280003f 2083567390000f 2083567430002f 43891290003f 2083567370000f 7460249690000f 47964530000f 2083567350010f 47964540000f 31271280001f 106639090000f 106639110007f 2192223750005f 105892240001f 1484576370001f 2192223520000f 105942450004f 2192223550001f 2192223510000f 2192223530003f 2192223660005f 2192223720008f 1015394930004f 2192227410004f 1364830460004f 2382569050005f 280813210001f 2192223630004f 2192223600002f 6338646390000f 280813180000f 2192223610002f 4078145540003f 4078145560006f 1579362480009f 280813130003f 1364830420000f 235647950003f 235647800001f 235647930000f 6786205100000f 235647940007f 4080101310000f 4079408850004f 105892260022f 1484590810001f 6899001740008f 1810232550052f 6899001800006f 260375000003f 6899001790000f 1015066670003f 6899001780000f 5367039680001f 1114583690014f 5367039700007f 309977240001f 185746490000f 1892935880000f 185742790004f 50075690007f 50075690011f 5168502130001f 5168502120000f 43090100024f 280813280001f 227740700003f 5168641470000f 280813260002f 6833628710000f 310285010002f 5168641450001f 5168641460002f 5168641430001f 5168847250003f 310284990001r 5168846170000r 5168847200000r 5168847210005r 5168847230002f 5168847140001f 5168847130000r 310284960003r 5168846840001r 5168846800000r 5168846810001r 5168846850002r 4259521230003f 4259521220001f 5168846740000f 235054790000f 1528158350010f 5168846720001f 5168846530006f 6938352540004r 5168846540003r 6938352550006r 5168846510007f 5168846460000f 4259521210001f 5168846450000f 159108210004f 302390240000f 3706103630000f 3706103620000f 5168846220000f 302390260003f 310284390000f 5168846200000f 5168921950000r 327526210000r 1292739890000r 3517005010001r 8022186860000r 8022186870000r 2461090250007f 3517004990023f 5848533110000f 4581177030001f 4581177030003f 4934932270006f 4934932270011f 8188750490000f 2203878880001f 8188750480002f 8073114220008f 2332871130001f 6064391550000f 3144050330005f 6064391580000f 2581305900006f 2203878860000f 2084403840000f 5259492790000f 3143510250000f 3143510250001f 6064391520000f 596090710000f 1613039050001f 3143510240000f 4636708110002f 6064391380001f 6064391350003f 5547130700001f 5547064010005f 5547130710000f 605784890000f 1528139650002f 1528139860000f 385639000000f 240196720000f 240196710000f 385638990001f 97826460000f 1528139770001f 6970384330001f 605785460001f 83201410001f 6064391640001f 6992400020000f 2281863650000f 6880850800000f 6917734280000f 6880850790002f 7119529120000f 6880850730004f 6880850770002f 6880850780002f 6880850780003f 6880850610002f 6967837070000f 7119463830000f 6880850650002f 7595375730001f 6880850600001f 7119463820004f 400159660001r 403516400003r 50565390000f 197293940004f 438604380005f 1426775270001f 2149209080000f 1426775280001r 1328944990003r 1328944980000r 2387548310003r 5512848010003r 5512847990000r 242888290002r 1902907720005r 433742440003r 1426775250003f 1426775250004f 1426775250005f 1427705530007f 4868642940001f 4868642940004f 1867134260000f 1862799490004f 6031034450000f 1867134290000f 1410509750000f 1410509800001f 6031034440000f 269756230000f 7902929630013f 266267310004f 1997997150001f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="1997997150001f" start_time="05:36:47" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="05:37:47" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="work_1200.0" link="1997997150001f" x="565916.5256279005" y="5934939.268173273" end_time="06:55:03" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="06:55:03" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="1997997150001f" start_time="06:55:03" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="06:55:03" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="1997997150001f" start_time="06:55:03" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="06:56:03" trav_time="00:00:40">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="1997997150001f" end_link="1995006780006f" trav_time="00:00:40" distance="742.567624488382" vehicleRefId="null">1997997150001f 258666590004f 270641860000f 734748940000f 7115155810000f 1367000050001f 2917374060001f 1995006780006r 1995006780006f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="1995006780006f" start_time="06:56:03" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="06:57:03" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1995006780006f" end_link="1995006780006f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="other_3600.0" link="1995006780006f" x="566093.6020874745" y="5935116.344632846" end_time="08:27:32" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="08:27:32" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1995006780006f" end_link="1995006780006f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="1995006780006f" start_time="08:27:32" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="08:27:32" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1995006780006f" end_link="1995006780006f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="1995006780006f" start_time="08:27:32" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="08:28:32" trav_time="00:00:05">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="1995006780006f" end_link="1997997150001f" trav_time="00:00:05" distance="113.65790876945663" vehicleRefId="null">1995006780006f 1995006780008f 266267310004f 1997997150001f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="1997997150001f" start_time="08:28:32" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="08:29:32" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="work_14400.0" link="1997997150001f" x="565916.5256279005" y="5934939.268173273" end_time="12:38:56" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="12:38:56" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="1997997150001f" start_time="12:38:56" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="12:38:56" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1997997150001f" end_link="1997997150001f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="1997997150001f" start_time="12:38:56" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="12:39:56" trav_time="00:01:48">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="1997997150001f" end_link="29562720002f" trav_time="00:01:48" distance="1214.16892118569" vehicleRefId="null">1997997150001f 258666590004f 258666550002f 734749020001f 244831920000f 6038762350000f 374138140001f 4868642920000f 1997997160000f 489792050000f 1427705560000f 1992309120000f 1426775250005r 1426775250004r 1426775250003r 433742440003f 1902907720005f 242888290002f 5512847990000f 5512848010003f 2387548310003f 1328944980000f 1328944990003f 1426775280001f 2149209080000r 1426775270001r 438604380005r 197293940004r 50565390000r 403516400003f 400159660001f 29562720002f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="29562720002f" start_time="12:39:56" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="12:40:56" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="29562720002f" end_link="29562720002f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="errands_2400.0" link="29562720002f" x="565956.6118239458" y="5933967.337594943" end_time="14:04:17" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="14:04:17" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="29562720002f" end_link="29562720002f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="29562720002f" start_time="14:04:17" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="14:04:17" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="29562720002f" end_link="29562720002f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="29562720002f" start_time="14:04:17" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="14:05:17" trav_time="00:02:01">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="29562720002f" end_link="1411370460004f" trav_time="00:02:01" distance="1351.3405593608059" vehicleRefId="null">29562720002f 29562720002r 7119463820004r 247173490003f 7595375760000f 6880850590001f 6880850500000f 2751471810001f 4074561570005f 6880850570003f 6880850560002f 6880850550000f 6880850550002f 6880850580001f 6880850530000f 6880850510000f 6880850540001f 7119529110000f 6900604370000f 6992399980002f 6880850490001f 6880850480002f 83201410001r 605785460001r 6970384330001r 1528139770001r 97826460000r 385638990001r 240196710000r 240196720000r 385639000000r 1528139860000r 1528139650002r 605784890000r 605785320001f 5547130690000f 605784860000f 605785300004f 605785470003f 1521764060000f 6049058630002f 6049058640000r 1411370460004f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="1411370460004f" start_time="14:05:17" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="14:06:17" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1411370460004f" end_link="1411370460004f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="work_18600.0" link="1411370460004f" x="566435.2149451051" y="5933248.577275204" end_time="17:26:12" >-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="17:26:12" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1411370460004f" end_link="1411370460004f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing booking interaction" link="1411370460004f" start_time="17:26:12" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="17:26:12" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="1411370460004f" end_link="1411370460004f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing pickup interaction" link="1411370460004f" start_time="17:26:12" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="scar" dep_time="17:27:12" trav_time="00:29:26">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="links" start_link="1411370460004f" end_link="43688060011f" trav_time="00:29:26" distance="23832.890132340053" vehicleRefId="null">1411370460004f 1411370460004r 6049058640000f 269495120003f 1233426650005f 2084403830002f 2442707390007f 5621914060002f 2332871220009f 8073114200003f 2203878880001r 8188750490000r 4934932270011r 4934932270006r 8073114170000f 8073114180000f 8073114180002f 5848533100001f 5848533170000f 5848533180000f 5848533130013f 3682671860003f 8022186870000f 8022186860000f 3517005010001f 1292739890000f 327526210000f 5168921950000f 42727080000f 5168846180001f 5168846190000f 5168921990000f 343303280004f 6066963150003f 5168846330002f 5168846390000f 5168846390001f 5168846520006f 6938352550006f 5168846540003f 6938352540004f 5168846570006f 5168846620003f 5168846680007f 5168846480001f 56491750000f 1528158410001f 5168846730000f 5168846830002f 5168846850002f 5168846810001f 5168846800000f 5168846840001f 310284960003f 5168847130000f 5168847150001f 5168847110000f 5168847220002f 5168847210005f 5168847200000f 5168846170000f 310284990001f 5168847240000f 310284950003f 5168847260000f 5170454810001f 5168641440008f 310284970002f 310285000000f 5168846880000f 280813290006f 3782337190000f 3782337170002f 3782337170006f 185726400005f 1294417390002f 234436910004f 1294417400023f 185739310001f 371258770012f 6899001770000f 371258760006f 7959231420002f 1480033130010f 5367039690006f 7959231430001f 6899001760000f 7959252380000f 7959252370000f 1114583660003f 6899001750001f 1015066680003f 260374990067f 1810232540001f 4080101490003f 235670390005f 4080101500005f 4080101470001f 4080101510006f 280813160003f 280813170005f 4080101420001f 4080101440003f 4080101390000f 280813220005f 6338646380001f 280813250006f 2192223590000f 2192223580000f 2192223670006f 2192223730005f 2192278350000f 2192223650004f 1015394950004f 2192223620003f 1364830480002f 2192223680003f 2192278370003f 2192223690000f 6338646130002f 2192740840003f 306474180000f 2192448880002f 2192960890000f 281130640000f 2192740830002f 4080101380000f 105938980000f 105938980002f 234406230002f 234406240000f 3402959020005f 309978890002f 2192557730009f 2192448930007f 2192740880012f 49303250000f 49303240000f 2192740870006f 2192448940000f 2192448950002f 4080101630000r 6658755210012r 50103760006r 6658755190003r 6658755200005r 3065242790008r 3065242780003r 527211280008r 527211300019f 5477204340001f 7046219520000f 527211170001f 6658755180000f 7046219550000r 5477228410003r 5477228420005r 5477228430004r 236051880012r 236051870000r 306923300003r 5474898100004r 5474898140002r 6723560590000r 306923260001r 6723560610003r 306923240005r 6723560710002r 5497922090005f 5497921910004f 43477560002f 43477560003f 5497921890002f 5497921970002f 5497921880001f 5497921880004f 5497922010006f 5497922030000f 5497922060011f 5497922060012f 5497922060014f 5497922140003f 5497922140006f 5497922140010f 5497922140014f 5497922140017f 5497922140023f 5497922160002f 5497922170004f 306923230003f 306923230006f 306923230008f 306923230009f 306923230020f 5497530410006f 409451200002f 409451200009f 5497530420002f 5497530430003f 5497530440003f 232183790004f 5497530460002f 5497530450000f 5497530770003f 451390930001f 5497530650000f 7442537370005f 7442537360002f 7442537360005f 7442537350003f 451390920007f 49806230014f 5477290170005f 5477276550001f 52087020000f 8379295080000f 8379295070000f 5497530680003f 6828358140000f 49806320004f 1521318070009f 5352034560001f 5352108980001f 5352108810000f 5352108910002f 5352108870002f 5982740120007f 1521318030018f 5348713390003f 5348713250000f 5348713330003f 5348713400012f 5348713420002f 43688060011f</route>-->
+<!--            </leg>-->
+<!--            <activity type="sharing dropoff interaction" link="43688060011f" start_time="17:27:12" max_dur="00:01:00" >-->
+<!--                <attributes>-->
+<!--                    <attribute name="sharing:service" class="java.lang.String">car</attribute>-->
+<!--                </attributes>-->
+<!--            </activity>-->
+<!--            <leg mode="walk" dep_time="17:28:12" trav_time="00:00:00">-->
+<!--                <attributes>-->
+<!--                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>-->
+<!--                </attributes>-->
+<!--                <route type="generic" start_link="43688060011f" end_link="43688060011f" trav_time="00:00:00" distance="0.0"></route>-->
+<!--            </leg>-->
+<!--            <activity type="home_40800.0" link="43688060011f" x="555250.1275448027" y="5925004.443321925" >-->
+<!--            </activity>-->
+<!--        </plan>-->
+
+<!--    </person>-->
     <person id="113ecc">
         <attributes>
             <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>

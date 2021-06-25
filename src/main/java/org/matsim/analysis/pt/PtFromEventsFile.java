@@ -22,7 +22,7 @@ import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 
 public class PtFromEventsFile {
 
-    public static HashMap<Id<Person>, MyPerson> readSimulationData(String eventsFile) {
+    public static HashMap<Id<Person>, PtPassenger> readSimulationData(String eventsFile) {
         EventsManager eventsManager = EventsUtils.createEventsManager();
         PtValidator ptValidator = new PtValidator();
         eventsManager.addHandler(ptValidator);

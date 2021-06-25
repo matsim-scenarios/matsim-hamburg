@@ -9,6 +9,7 @@ package org.matsim.analysis.pt;
  */
 public class PersonCounts {
 
+	//outbound:
 	private int einsteigerOutbound;
 	private int aussteigerOutbound;
 	private int einsteigerInbound;

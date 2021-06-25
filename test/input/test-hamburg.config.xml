@@ -32,7 +32,7 @@
     </module>
 
     <module name="vehicles">
-        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-vehicle-types.xml"/>
+        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2-vehicle-types.xml"/>
     </module>
 
     <module name="transit">
@@ -44,10 +44,15 @@
     </module>
 
     <module name="planscalcroute">
-        <param name="networkModes" value="car,ride"/>
+        <param name="networkModes" value="scar,car,ride"/>
         <parameterset type="teleportedModeParameters">
             <param name="beelineDistanceFactor" value="1.3"/>
             <param name="mode" value="bike"/>
+            <param name="teleportedModeSpeed" value="3.1388889"/>
+        </parameterset>
+        <parameterset type="teleportedModeParameters">
+            <param name="beelineDistanceFactor" value="1.3"/>
+            <param name="mode" value="sbike"/>
             <param name="teleportedModeSpeed" value="3.1388889"/>
         </parameterset>
         <parameterset type="teleportedModeParameters">
@@ -60,12 +65,12 @@
     <module name="qsim">
         <param name="endTime" value="30:00:00"/>
         <param name="flowCapacityFactor" value="0.1"/>
-        <param name="mainMode" value="car"/>
+        <param name="mainMode" value="scar,car"/>
         <param name="numberOfThreads" value="1"/>
         <param name="startTime" value="00:00:00"/>
         <param name="storageCapacityFactor" value="0.1"/>
         <param name="stuckTime" value="30.0"/>
-        <param name="trafficDynamics" value="kinematicWaves"/>
+        <param name="trafficDynamics" value="queue"/>
         <param name="useLanes" value="true" />
         <param name="vehiclesSource" value="modeVehicleTypesFromVehiclesData"/>
         <param name="insertingWaitingVehiclesBeforeDrivingVehicles" value="true"/>
@@ -130,6 +135,13 @@
                 <param name="dailyMonetaryConstant" value="-5.3"/>
             </parameterset>
             <parameterset type="modeParams">
+                <param name="constant" value="-2.3"/>
+                <param name="marginalUtilityOfTraveling_util_hr" value="0.0"/>
+                <param name="mode" value="scar"/>
+                <param name="monetaryDistanceRate" value="-0.0002"/>
+                <param name="dailyMonetaryConstant" value="-5.3"/>
+            </parameterset>
+            <parameterset type="modeParams">
                 <param name="constant" value="-0.0"/>
                 <param name="marginalUtilityOfTraveling_util_hr" value="0.0"/>
                 <param name="mode" value="ride"/>
@@ -146,6 +158,11 @@
                 <param name="constant" value="0.0"/>
                 <param name="marginalUtilityOfTraveling_util_hr" value="-12.3"/>
                 <param name="mode" value="bike"/>
+            </parameterset>
+            <parameterset type="modeParams">
+                <param name="constant" value="0.0"/>
+                <param name="marginalUtilityOfTraveling_util_hr" value="-12.3"/>
+                <param name="mode" value="sbike"/>
             </parameterset>
             <parameterset type="modeParams">
                 <param name="marginalUtilityOfTraveling_util_hr" value="0.0"/>

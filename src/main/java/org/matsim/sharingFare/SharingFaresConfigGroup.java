@@ -29,9 +29,24 @@ public class SharingFaresConfigGroup extends ReflectiveConfigGroup {
         List<SharingServiceFaresConfigGroup> serviceFares = new LinkedList();
         Iterator var2 = this.getParameterSets("mode").iterator();
 
+
+
         while(var2.hasNext()) {
             ConfigGroup set = (ConfigGroup)var2.next();
-            serviceFares.add((SharingServiceFaresConfigGroup)set);
+            SharingServiceFaresConfigGroup sharingServiceFaresConfigGroup = new SharingServiceFaresConfigGroup();
+
+            sharingServiceFaresConfigGroup.setId(set.getParams().get("id"));
+
+            if(set.getParams().containsKey("distanceFare_m"))
+                sharingServiceFaresConfigGroup.setDistanceFare_m(Double.parseDouble(set.getParams().get("distanceFare_m")));
+            if(set.getParams().containsKey("basefare"))
+                sharingServiceFaresConfigGroup.setBasefare(Double.parseDouble(set.getParams().get("basefare")));
+            if(set.getParams().containsKey("timeFare_m"))
+                sharingServiceFaresConfigGroup.setTimeFare_m(Double.parseDouble(set.getParams().get("timeFare_m")));
+            if(set.getParams().containsKey("minFarePerTrip"))
+                sharingServiceFaresConfigGroup.setMinFarePerTrip(Double.parseDouble(set.getParams().get("minFarePerTrip")));
+
+            serviceFares.add(sharingServiceFaresConfigGroup);
         }
 
         return Collections.unmodifiableList(serviceFares);

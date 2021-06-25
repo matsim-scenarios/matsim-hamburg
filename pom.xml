@@ -10,6 +10,7 @@
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
+<!--        <matsim.version>14.0-PR1560</matsim.version>-->
         <matsim.version>13.0</matsim.version>
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
     </properties>

@@ -24,14 +24,6 @@ public class ClassifyStationType {
 
         List<Stop2type> stops = new LinkedList<>();
 
-//        List<TransitStopFacility> StopList_rsb = new ArrayList<>();
-//        List<TransitStopFacility> StopList_rs = new ArrayList<>();
-//        List<TransitStopFacility> StopList_rb = new ArrayList<>();
-//        List<TransitStopFacility> StopList_sb = new ArrayList<>();
-//        List<TransitStopFacility> StopList_r = new ArrayList<>();
-//        List<TransitStopFacility> StopList_s = new ArrayList<>();
-//        List<TransitStopFacility> StopList_b = new ArrayList<>();
-
         String configFile = "scenarios/input/hamburg-v1.1-1pct.config.xml";
         Config config = ConfigUtils.loadConfig(configFile);
         Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -83,31 +75,7 @@ public class ClassifyStationType {
             }
 
             stops.add(stop2type);
-//            if(StopList_rail.contains(transitStopFacility)&&StopList_subway.contains(transitStopFacility)&&StopList_bus.contains(transitStopFacility)){
-//                StopList_rsb.add(transitStopFacility);
-//
-//            }else if(StopList_rail.contains(transitStopFacility)&&StopList_subway.contains(transitStopFacility)&&(!StopList_bus.contains(transitStopFacility))){
-//                StopList_rs.add(transitStopFacility);
-//
-//            }else if(StopList_rail.contains(transitStopFacility)&&(!StopList_subway.contains(transitStopFacility))&&StopList_bus.contains(transitStopFacility)){
-//                StopList_rb.add(transitStopFacility);
-//
-//            }else if((!StopList_rail.contains(transitStopFacility))&&StopList_subway.contains(transitStopFacility)&&StopList_bus.contains(transitStopFacility)){
-//                StopList_sb.add(transitStopFacility);
-//
-//            }else if(StopList_rail.contains(transitStopFacility)&&(!StopList_subway.contains(transitStopFacility))&&(!StopList_bus.contains(transitStopFacility))){
-//                StopList_r.add(transitStopFacility);
-//
-//            }else if((!StopList_rail.contains(transitStopFacility))&&StopList_subway.contains(transitStopFacility)&&(!StopList_bus.contains(transitStopFacility))){
-//                StopList_s.add(transitStopFacility);
-//
-//            }else if((!StopList_rail.contains(transitStopFacility))&&(!StopList_subway.contains(transitStopFacility))&&StopList_bus.contains(transitStopFacility)){
-//                StopList_b.add(transitStopFacility);
-//
-//            }else{
-//                check2 = "There is some problem! Maybe some stations are not used and they just exits there!";
-//
-//            }
+
         }
         System.out.println("For Check2: "+check2);
 
@@ -120,27 +88,7 @@ public class ClassifyStationType {
         for (Stop2type stop : stops) {
             out.write(stop.transitStopFacility.getId().toString() + ";" + stop.transitStopFacility.getCoord().getX() + ";" + stop.transitStopFacility.getCoord().getY() + ";" + stop.transitStopFacility.getName().toString() + ";" + stop.getType() + "\n");
         }
-//        for(TransitStopFacility transitStopFacility: StopList_rsb){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "rsb\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_rs){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "rs\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_rb){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "rb\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_sb){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "sb\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_r){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "r\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_s){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "s\n" );
-//        }
-//        for(TransitStopFacility transitStopFacility: StopList_b){
-//            out.write( transitStopFacility.getId().toString() + ";" + transitStopFacility.getCoord().getX() + ";" + transitStopFacility.getCoord().getY() + ";" + transitStopFacility.getName().toString() + ";" + "s\n" );
-//        }
+
         out.close();
     }
 

@@ -1,5 +1,6 @@
 package org.matsim.sharingFare;
 
+import org.matsim.contrib.util.ReflectiveConfigGroupWithConfigurableParameterSets;
 import org.matsim.core.config.ReflectiveConfigGroup;
 
 import javax.validation.constraints.PositiveOrZero;
@@ -7,7 +8,7 @@ import javax.validation.constraints.PositiveOrZero;
 /**
  * @author zmeng
  */
-public class SharingServiceFaresConfigGroup extends ReflectiveConfigGroup {
+public class SharingServiceFaresConfigGroup extends ReflectiveConfigGroupWithConfigurableParameterSets {
 
     public static final String GROUP_MODE = "mode";
     public static final String BASEFARE = "basefare";
