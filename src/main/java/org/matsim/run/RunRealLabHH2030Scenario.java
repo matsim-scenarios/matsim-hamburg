@@ -47,6 +47,9 @@ public class RunRealLabHH2030Scenario {
 
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
+    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/Potentielle Bediengebiete - Angebotssegment A/Potentielle Bediengebiete - Angebotssegment A.shp";
+
+
 
     public static void main(String[] args) throws ParseException, IOException {
 
