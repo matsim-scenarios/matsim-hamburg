@@ -346,7 +346,9 @@ public class CompareSimulationRealWorld {
 					int einsteigerOutboundSim = 0;
 					int einsteigerInboundSim = 0;
 					DefaultCategoryDataset datasetEinsteiger = new DefaultCategoryDataset();
+					DefaultCategoryDataset datasetEinsteigerRealWorld = new DefaultCategoryDataset();
 					DefaultCategoryDataset datasetAussteiger = new DefaultCategoryDataset();
+					DefaultCategoryDataset datasetAussteigerRealWorld = new DefaultCategoryDataset();
 					DefaultCategoryDataset percentageChangeEinsteigerOutbound = new DefaultCategoryDataset();
 					DefaultCategoryDataset percentageChangeEinsteigerInbound = new DefaultCategoryDataset();
 					for (String station : transit.keySet()) {
@@ -375,23 +377,27 @@ public class CompareSimulationRealWorld {
 						writerResults.print(station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerOutbound());
+						datasetEinsteigerRealWorld.addValue(personCounts.getEinsteigerOutbound(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerOutboundSim());
 						einsteigerOutboundSim += personCounts.getEinsteigerOutboundSim();
 						datasetEinsteiger.addValue(personCounts.getEinsteigerOutboundSim(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerOutbound());
+						datasetAussteigerRealWorld.addValue(personCounts.getAussteigerOutbound(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerOutboundSim());
 						datasetAussteiger.addValue(personCounts.getAussteigerOutboundSim(), "Outbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerInbound());
+						datasetEinsteigerRealWorld.addValue(personCounts.getEinsteigerInbound(), "Inbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getEinsteigerInboundSim());
 						einsteigerInboundSim += personCounts.getEinsteigerInboundSim();
 						datasetEinsteiger.addValue(personCounts.getEinsteigerInboundSim(), "Inbound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerInbound());
+						datasetAussteigerRealWorld.addValue(personCounts.getAussteigerInbound(), "Ibound", station);
 						writerResults.print(",");
 						writerResults.print(personCounts.getAussteigerInboundSim());
 						datasetAussteiger.addValue(personCounts.getAussteigerInboundSim(), "Ibound", station);
@@ -423,8 +429,13 @@ public class CompareSimulationRealWorld {
 					datasetTotalPtUsageEinsteiger.addValue(einsteigerOutboundSim, "persons", "Outbound");
 					datasetTotalPtUsageEinsteiger.addValue(einsteigerInboundSim, "persons", "Inbound");
 					
-					generateLineChartDataset(datasetEinsteiger, outputResultsDirectory, line, "Einsteiger");
-					generateLineChartDataset(datasetAussteiger, outputResultsDirectory, line, "Aussteiger");
+					generateLineChartDataset(datasetEinsteiger, outputResultsDirectory, line, "EinsteigerSim");
+					generateLineChartDataset(datasetAussteiger, outputResultsDirectory, line, "AussteigerSim");
+					
+					generateLineChartDataset(datasetEinsteigerRealWorld, outputResultsDirectory, line, "EinsteigerRealWorld");
+					generateLineChartDataset(datasetAussteigerRealWorld, outputResultsDirectory, line, "AussteigerRealWorld");
+					
+					
 					generateBarChartTotalPtUsage(datasetTotalPtUsageEinsteiger, outputResultsDirectory, line, "BarChart");
 					generateBarChartPercentageChange(percentageChangeEinsteigerOutbound, outputResultsDirectory, line, "percentageChangeEinsteigerOutbound");
 					generateBarChartPercentageChange(percentageChangeEinsteigerInbound, outputResultsDirectory, line, "percentageChangeEinsteigerInbound");
@@ -477,11 +488,11 @@ public class CompareSimulationRealWorld {
 	private static void generateLineChartDataset(DefaultCategoryDataset dataset, String outputResultsDirectory,
 			String line, String fileName) throws IOException {
 
-		JFreeChart lineChartDatasetEinsteiger = ChartFactory.createLineChart(fileName + " for outbound and Inbound",
+		JFreeChart lineChartDataset = ChartFactory.createLineChart(fileName + " for outbound and Inbound",
 				"stops", "No of passengers", dataset, PlotOrientation.HORIZONTAL, true, true, false);
 
-		CategoryPlot lineEinsteigerCategoryPlot = lineChartDatasetEinsteiger.getCategoryPlot();
-		lineEinsteigerCategoryPlot.getRenderer().setDefaultSeriesVisibleInLegend(true);
+		CategoryPlot lineChartCategoryPlot = lineChartDataset.getCategoryPlot();
+		lineChartCategoryPlot.getRenderer().setDefaultSeriesVisibleInLegend(true);
 
 		int lineChartWidth = 1000; /* Width of the image */
 		int lineChartHeight = 600; /* Height of the image */
@@ -489,8 +500,8 @@ public class CompareSimulationRealWorld {
 		if (!directory.exists()) {
 			directory.mkdir();
 		}
-		File lineChartTransitEinsteigerPath = new File(directory + "/transit" + fileName + ".jpeg");
-		ChartUtils.saveChartAsJPEG(lineChartTransitEinsteigerPath, lineChartDatasetEinsteiger, lineChartWidth,
+		File lineChartPath = new File(directory + "/transit" + fileName + ".jpeg");
+		ChartUtils.saveChartAsJPEG(lineChartPath, lineChartDataset, lineChartWidth,
 				lineChartHeight);
 
 	}
