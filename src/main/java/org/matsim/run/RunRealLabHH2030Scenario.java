@@ -3,7 +3,6 @@ package org.matsim.run;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
 import org.apache.log4j.Logger;
-import org.matsim.analysis.TransportPlanningMainModeIdentifier;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -23,8 +22,6 @@ import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.algorithms.MultimodalNetworkCleaner;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsModule;
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
@@ -45,9 +42,10 @@ public class RunRealLabHH2030Scenario {
 
     private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
 
+    public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
-    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/Potentielle Bediengebiete - Angebotssegment A/Potentielle Bediengebiete - Angebotssegment A.shp";
+    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
 
 
 
@@ -79,8 +77,6 @@ public class RunRealLabHH2030Scenario {
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
 
-
-
 //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
@@ -105,9 +101,7 @@ public class RunRealLabHH2030Scenario {
             }
         });
 
-        // TODO: 02.06.21 report bugs
         controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
-        //todo: write our hamburg PtIntermodalRoutingModesModule,which can deal with all the pt+x(s). Ask Gregor why not multi-routingmode in config?
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
 
         return controler;
@@ -141,8 +135,6 @@ public class RunRealLabHH2030Scenario {
         config.qsim().setSimStarttimeInterpretation(QSimConfigGroup.StarttimeInterpretation.onlyUseStarttime);
         config.qsim().setSimEndtimeInterpretation(QSimConfigGroup.EndtimeInterpretation.onlyUseEndtime);
 
-        String drtFeederMode = "drt_feeder";
-
 //        DvrpConfigGroup dvrpCfg = ConfigUtils.addOrGetModule(config, DvrpConfigGroup.class);
 //        dvrpCfg.setNetworkModes(ImmutableSet.<String>builder()
 //                .add("drt_feeder")
@@ -152,11 +144,14 @@ public class RunRealLabHH2030Scenario {
         MultiModeDrtConfigGroup multiModeDrtCfg = ConfigUtils.addOrGetModule(config, MultiModeDrtConfigGroup.class);
 
         DrtConfigGroup drtFeederCfg = new DrtConfigGroup();
-        drtFeederCfg.setMode(drtFeederMode);
+        drtFeederCfg.setMode(DRT_FEEDER_MODE);
 //        drtFeederCfg.setOperationalScheme(DrtConfigGroup.OperationalScheme.serviceAreaBased);
         drtFeederCfg.setUseModeFilteredSubnetwork(false); //vehicles should be able to drive from one area to the other
         drtFeederCfg.setMaxWaitTime(300); //5 minutes as in the ReallabHH goals
         drtFeederCfg.setRejectRequestIfMaxWaitOrTravelTimeViolated(false); //no rejections please
+
+        //fleet
+        drtFeederCfg.setVehiclesFile("D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz");
 
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
@@ -181,7 +176,9 @@ public class RunRealLabHH2030Scenario {
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
         SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet params = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
-        params.setMode(drtFeederMode);
+        params.setMode(DRT_FEEDER_MODE);
+        params.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        params.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
         //TODO these values were recommended by GL based on his experiences for Berlin
         params.setInitialSearchRadius(3_000);
         params.setSearchExtensionRadius(1_000);
@@ -196,24 +193,22 @@ public class RunRealLabHH2030Scenario {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(config).getModalElements()) {
 
-            String drtServiceAreaShapeFile = drtCfg.getDrtServiceAreaShapeFile();
-            if (drtServiceAreaShapeFile != null && !drtServiceAreaShapeFile.equals("") && !drtServiceAreaShapeFile.equals("null")) {
-
                 // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
                 // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
                 // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
-                if(hamburgExperimentalConfigGroup.getTagDrtLinksBufferAroundServiceAreaShp() >= 0.0) {
-                    addDRTmode(scenario, drtCfg.getMode(), drtServiceAreaShapeFile, hamburgExperimentalConfigGroup.getTagDrtLinksBufferAroundServiceAreaShp());
+                if(hamburgExperimentalConfigGroup.getDrtOperationArea() != null){
+                    addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtOperationArea(), 0.);
                 }
 
-                //tag pt stops that are to be used for intermodal access and egress
-                //TODO restrict to the actual stations that we want to use and do not use generic solution here....
-                tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
-                        DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
-                        drtServiceAreaShapeFile,
-                        "stopFilter", "station_S/U/RE/RB",
-                        0.0); //
-            }
+                if(drtCfg.getMode().equals(DRT_FEEDER_MODE)){
+                    //tag pt stops that are to be used for intermodal access and egress
+                    //TODO restrict to the actual stations that we want to use and do not use generic solution here.... (restrict to rail stations)
+                    tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
+                            DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
+                            drtCfg.getDrtServiceAreaShapeFile(),
+                            /* "stopFilter", "station_S/U/RE/RB",*/
+                            50.0); //
+                }
         }
         return scenario;
     }
@@ -263,18 +258,18 @@ public class RunRealLabHH2030Scenario {
     private static void tagTransitStopsInServiceArea(TransitSchedule transitSchedule,
                                                      String newAttributeName, String newAttributeValue,
                                                      String drtServiceAreaShapeFile,
-                                                     String oldFilterAttribute, String oldFilterValue,
+                                                     /*String oldFilterAttribute, String oldFilterValue,*/
                                                      double bufferAroundServiceArea) {
         log.info("Tagging pt stops marked for intermodal access/egress in the service area.");
         HamburgShpUtils shpUtils = new HamburgShpUtils( drtServiceAreaShapeFile );
         for (TransitStopFacility stop: transitSchedule.getFacilities().values()) {
-            if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
-                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {
+            /*if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
+                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {*/
                     if (shpUtils.isCoordInDrtServiceAreaWithBuffer(stop.getCoord(), bufferAroundServiceArea)) {
                         stop.getAttributes().putAttribute(newAttributeName, newAttributeValue);
                     }
-                }
-            }
+//                }
+//            }
         }
     }
 }
