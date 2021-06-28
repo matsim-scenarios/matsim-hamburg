@@ -75,13 +75,14 @@ public class InitialSharingStationsVehiclesGenerator {
         int stationId = 1;
 
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.outputPath + String.format("sharingStationsAndSharingVehicles_%s.csv", this.mode)));
-        bufferedWriter.write("link;capacity");
+        bufferedWriter.write("link;x;y;capacity");
 
 
         for (SharingStation sharingStation : this.sharingStations) {
 
+            Link l = sharingStation.getLink();
             bufferedWriter.newLine();
-            bufferedWriter.write(sharingStation.getLink().getId().toString() +";" + sharingStation.getCapacity());
+            bufferedWriter.write(l.getId().toString() +";" + l.getCoord().getX() + ";" + l.getCoord().getY() + ";" + sharingStation.getCapacity());
 
             ImmutableSharingStationSpecification sharingStationSpecification = ImmutableSharingStationSpecification.newBuilder() //
                     .id(Id.create(mode+"_"+ stationId, org.matsim.contrib.sharing.service.SharingStation.class)) //
