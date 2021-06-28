@@ -16,6 +16,7 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.core.utils.gis.ShapeFileReader;
+import org.matsim.core.utils.io.IOUtils;
 import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.*;
@@ -31,58 +32,54 @@ public class InitialSharingStationsVehiclesGenerator {
 
     private static final Logger log = Logger.getLogger(InitialSharingStationsVehiclesGenerator.class);
 
-    private final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
+    private static final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
 
-    private final String SERVICE_AREA = "/Users/meng/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
+    private static final String SERVICE_AREA = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
+    private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hvv-switch-points-2030.csv";
+
     private final String COORDINATION_SYSTEM = "EPSG:25832";
 
-    private Network network;
+    private final Network network;
     private String mode;
     private List<SharingStation> sharingStations = new LinkedList<>();
     private String outputPath;
 
-    public InitialSharingStationsVehiclesGenerator(String mode, String outputPath) {
+    public InitialSharingStationsVehiclesGenerator(String mode, String outputPath, Network network) {
         this.mode = mode;
         this.outputPath = outputPath;
+        this.network = network;
     }
 
 
     public static void main(String[] args) throws IOException {
-        String csvFilePath = "/Users/meng/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hvv-switch-points-2030.csv";
         String coordinationSystem = TransformationFactory.WGS84;
 
-        InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", "scenarios/input/");
-        carSharingService.prepareNetwork();
+        Network network = prepareNetwork();
+        InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", "scenarios/input/", network);
         int vehiclesPerStation = 50;
-        carSharingService.addStationsFromCSV(csvFilePath,coordinationSystem,vehiclesPerStation);
+        carSharingService.addStationsFromCSV(SWITCH_POINTS_CSV,coordinationSystem,vehiclesPerStation);
         carSharingService.addStationsRandomlyInNetwork(2000,1);
         carSharingService.write2xmlFile();
 
-        InitialSharingStationsVehiclesGenerator bikeSharingService = new InitialSharingStationsVehiclesGenerator("sbike", "scenarios/input/");
-        bikeSharingService.prepareNetwork();
+        InitialSharingStationsVehiclesGenerator bikeSharingService = new InitialSharingStationsVehiclesGenerator("sbike", "scenarios/input/", network);
         int bikesPerStation = 50;
-        bikeSharingService.addStationsFromCSV(csvFilePath, coordinationSystem, bikesPerStation);
+        bikeSharingService.addStationsFromCSV(SWITCH_POINTS_CSV, coordinationSystem, bikesPerStation);
         bikeSharingService.addStationsRandomlyInNetwork(5000, 1);
         bikeSharingService.write2xmlFile();
 
         System.out.println("done!!");
-
-
     }
 
     private void write2xmlFile() throws IOException {
         SharingServiceSpecification service = new DefaultSharingServiceSpecification();
         int stationId = 1;
 
-        //todo: just for test
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("scenarios/input/sharing-cars.csv"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.outputPath + String.format("sharingStationsAndSharingVehicles_%s.csv", this.mode)));
         bufferedWriter.write("link;capacity");
 
 
         for (SharingStation sharingStation : this.sharingStations) {
 
-
-            //todo: just for test
             bufferedWriter.newLine();
             bufferedWriter.write(sharingStation.getLink().getId().toString() +";" + sharingStation.getCapacity());
 
@@ -106,15 +103,14 @@ public class InitialSharingStationsVehiclesGenerator {
             }
         }
 
-        //todo: delete
         bufferedWriter.close();
 
         new SharingServiceWriter(service).write(this.outputPath + String.format("sharingStationsAndSharingVehicles_%s.xml", this.mode));
     }
 
 
-    private void prepareNetwork() {
-        this.network = NetworkUtils.readNetwork(NETWORK_PATH);
+    private static Network prepareNetwork() {
+        Network network = NetworkUtils.readNetwork(NETWORK_PATH);
 
         // remove pt_links and pt_nodes
         var ptLinks = network.getLinks().keySet().stream().filter(linkId -> linkId.toString().contains("pt")).collect(Collectors.toList());
@@ -124,7 +120,7 @@ public class InitialSharingStationsVehiclesGenerator {
         log.info("remove " + ptLinks.size() + " ptlinks");
         log.info("remove " + ptNodes.size() + " ptnodes");
         NetworkUtils.runNetworkCleaner(network);
-
+        return network;
     }
 
     private void addStationsRandomlyInNetwork(int stationsNum, int vehiclesPerStation) {
@@ -163,7 +159,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
     private void addStationsFromCSV(String csvFilePath, String transformationSystem, int vehiclesPerStation) throws IOException {
 
-        BufferedReader csvReader = new BufferedReader(new FileReader(csvFilePath));
+        BufferedReader csvReader = IOUtils.getBufferedReader(IOUtils.resolveFileOrResource(csvFilePath));
         //skip first line
         String row = csvReader.readLine();
         CoordinateTransformation coordinateTransformation = TransformationFactory.getCoordinateTransformation(transformationSystem, this.COORDINATION_SYSTEM);
