@@ -33,7 +33,7 @@ public class RunSharingScenarioTest {
     public void runTest() throws IOException {
 
         String args[] = new String[]{
-                "test/input//test-hamburg.config.xml" ,
+                "test/input/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "20",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
@@ -42,8 +42,8 @@ public class RunSharingScenarioTest {
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                // "--config:plans.inputPlansFile" , "runTest.2.plans.xml.gz"
                // "--config:plans.inputPlansFile" , "run.test2.plans.xml"
-                "--config:plans.inputPlansFile" , "test-scar-sharing-user.plans.xml"
-                //"--config:plans.inputPlansFile" , "test-scar-user.plans.xml"
+//                "--config:plans.inputPlansFile" , "test-scar-sharing-user.plans.xml"
+                "--config:plans.inputPlansFile" , "test-scar-user.plans.xml"
         };
 
         Config config = prepareConfig(args);
@@ -97,14 +97,14 @@ public class RunSharingScenarioTest {
     public void runTest2() throws IOException {
 
         String args[] = new String[]{
-                "/Users/meng/IdeaProjects/matsim-hamburg/scenarios/input/sharing/hamburg-v1.1-10pct-sharing.config.xml" ,
+                "scenarios/input/sharing/hamburg-v1.1-10pct-sharing.config.xml" ,
                 "--config:controler.lastIteration" , "20",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "/Users/meng/IdeaProjects/matsim-hamburg/test/input/test-hamburg-freight.plans.xml"
+                "--config:plans.inputPlansFile" , "../../../test/input/test-hamburg-freight.plans.xml"
         };
 
         Config config = prepareConfig(args);

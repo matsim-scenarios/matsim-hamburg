@@ -131,7 +131,6 @@ public class RunRealLabHH2030Scenario {
         }
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModulesAll);
 
-        //configure DRT feeder system and intermodal pt router
         configureDRTFeeder(config);
 
         return config;
@@ -213,7 +212,7 @@ public class RunRealLabHH2030Scenario {
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
                         drtServiceAreaShapeFile,
                         "stopFilter", "station_S/U/RE/RB",
-                        200.0); //
+                        0.0); //
             }
         }
         return scenario;

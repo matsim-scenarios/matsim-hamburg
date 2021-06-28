@@ -115,7 +115,7 @@ public class RunSharingScenario {
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(null);
         //carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_scar.xml");
-        carSharingConfig.setServiceInputFile("/Users/meng/IdeaProjects/matsim-hamburg/test/input/shared_car_vehicles_stations.xml");
+        carSharingConfig.setServiceInputFile("shared_car_vehicles_stations.xml");
         carSharingConfig.setMode("scar");
 
 
@@ -127,7 +127,7 @@ public class RunSharingScenario {
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(null);
         //bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_sbike.xml");
-        bikeSharingConfig.setServiceInputFile("/Users/meng/IdeaProjects/matsim-hamburg/test/input/shared_bike_vehicles_stations.xml");
+        bikeSharingConfig.setServiceInputFile("shared_bike_vehicles_stations.xml");
         bikeSharingConfig.setMode("sbike");
 
         // add sharing modes to mode choice
