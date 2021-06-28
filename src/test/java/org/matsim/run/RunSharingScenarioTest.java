@@ -5,6 +5,8 @@ import com.google.inject.name.Names;
 import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.contrib.sharing.run.SharingConfigGroup;
+import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.StrategyConfigGroup;
@@ -48,8 +50,6 @@ public class RunSharingScenarioTest {
 
         Config config = prepareConfig(args);
 
-        ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
-
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
@@ -58,7 +58,20 @@ public class RunSharingScenarioTest {
                 strategySettings.setWeight(100);
         }
 
-        ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
+        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
+        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
+            switch (service.getMode()){
+                case "sbike":
+                    service.setServiceInputFile("shared_bike_vehicles_stations.xml");
+                    break;
+                case "scar":
+                    service.setServiceInputFile("shared_car_vehicles_stations.xml");
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
         SharingFaresConfigGroup sharingFaresConfigGroup = ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
 
         SharingServiceFaresConfigGroup sharingCarFares = new SharingServiceFaresConfigGroup();
@@ -108,6 +121,22 @@ public class RunSharingScenarioTest {
         };
 
         Config config = prepareConfig(args);
+
+        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
+        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
+            switch (service.getMode()){
+                case "sbike":
+                    service.setServiceInputFile("../../../test/input/shared_bike_vehicles_stations.xml");
+                    break;
+                case "scar":
+                    service.setServiceInputFile("../../../test/input/shared_car_vehicles_stations.xml");
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+
         //config.network().setInputFile("/Users/meng/IdeaProjects/matsim-hamburg/test/input/test-hamburg-with-pt-network.xml.gz");
         config.controler().setRunId("runTest2");
         config.controler().setWriteEventsInterval(1);
