@@ -20,6 +20,7 @@
 
 package org.matsim.analysis.emissions;
 
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -71,6 +72,22 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 	private final String hbefaColdFile;
 	private final String analysisOutputDirectory;
 
+	private final Map<String, Double> HBEFA_SHARE_2020 = Map.of(
+			"petrol",  0.512744724750519,
+			"diesel", 0.462841421365738,
+			"lpg", 0.011381645,
+			"cng", 0.0038579236716032,
+			"hybridPetrol", 0.005743607878685,
+			"hybridDiesel", 0.00014232617104426);
+
+	private final Map<String, Double> HBEFA_SHARE_2030 = Map.of(
+			"petrol",  0.512744724750519,
+			"diesel", 0.462841421365738,
+			"lpg", 0.011381645,
+			"cng", 0.0038579236716032,
+			"hybridPetrol", 0.005743607878685,
+			"hybridDiesel", 0.00014232617104426);
+
 	// provided by HBEFA for 2020
 	private final double petrolShare = 0.512744724750519;
 	private final double dieselShare = 0.462841421365738;
@@ -78,6 +95,14 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 	private final double cngShare = 0.0038579236716032;
 	private final double hybridPetrolShare = 0.005743607878685;
 	private final double hybridDieselShare = 0.00014232617104426;
+
+	// provided by HBEFA for 2030
+	private final double petrolShare_2030 = 0.512744724750519;
+	private final double dieselShare_2030 = 0.462841421365738;
+	private final double lpgShare_2030 = 0.011381645;
+	private final double cngShare_2030 = 0.0038579236716032;
+	private final double hybridPetrolShare_2030 = 0.005743607878685;
+	private final double hybridDieselShare_2030 = 0.00014232617104426;
 
 	private final static double shareOfPrivateVehiclesChangedToElectric = 0.0; // in addition to electric vehicle share in the reference case!
 
@@ -97,8 +122,11 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 	public static void main(String[] args) throws IOException {
 
-		final String hbefaFileCold = "../../svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage_Bln_carOnly.csv";
-		final String hbefaFileWarm = "../..svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage_Bln_carOnly.csv";
+		final String hbefaFileCold = "../../svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage.csv";
+		final String hbefaFileWarm = "../..svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
+
+		final String hbefaFileCold_2030 = "../../svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_ColdStart_Concept_2030_detailed_perTechAverage.csv";
+		final String hbefaFileWarm_2030 = "../..svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_HOT_Concept_2030_detailed_perTechAverage.csv";
 
 		final String runId = "hamburg-v1.1-10pct" ;
 		String runDirectory = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
@@ -140,6 +168,8 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 	void run() throws IOException {
 
+		EnumeratedDistribution distribution = new EnumeratedDistribution();
+
 		//lets load the actual output config instead of filling a dummy one. Hopefully this does not size up the scenario too much. This way, we can get access to
 		//actually used values such as freeeSpeedFactor in HamburgExperimentalConfigGroup
 //		Config config = ConfigUtils.createConfig();
@@ -180,12 +210,22 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 		prepareNetwork(hamburgCfg, scenario);
 
 		//commercial vehicles = freight
-		//TODO so far, we ignore the emissions of freight vehicles. (argument: they do not change)
 		ArrayList<VehicleType> freightVehicleTypes = new ArrayList<>();
 		scenario.getVehicles().getVehicleTypes().values().stream()
 				.filter(vehicleType -> vehicleType.getId().toString().contains("commercial"))
 				.forEach(vehicleType -> {
-					VehicleUtils.setHbefaVehicleCategory( vehicleType.getEngineInformation(), HbefaVehicleCategory.NON_HBEFA_VEHICLE.toString());
+					EngineInformation engineInfo = vehicleType.getEngineInformation();
+					if(vehicleType.getId().toString().contains("Lkw")){
+						VehicleUtils.setHbefaVehicleCategory( engineInfo, HbefaVehicleCategory.HEAVY_GOODS_VEHICLE.toString());
+						VehicleUtils.setHbefaTechnology( engineInfo, "average" );
+						VehicleUtils.setHbefaSizeClass( engineInfo, "average" );
+						VehicleUtils.setHbefaEmissionsConcept( engineInfo, "diesel" ); // according to HBEFA 99.7% of heavy good vehicles drive on diesel
+					} else {
+						VehicleUtils.setHbefaVehicleCategory( engineInfo, HbefaVehicleCategory.LIGHT_COMMERCIAL_VEHICLE.toString());
+						VehicleUtils.setHbefaTechnology( engineInfo, "average" );
+						VehicleUtils.setHbefaSizeClass( engineInfo, "average" );
+						VehicleUtils.setHbefaEmissionsConcept( engineInfo, "diesel" );
+					}
 					freightVehicleTypes.add(vehicleType);
 				});
 
@@ -261,6 +301,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 		List<Id<Vehicle>> vehiclesToChangeToElectric = new ArrayList<>();
 		List<Id<Vehicle>> carVehiclesToChangeToSpecificType = new ArrayList<>();
 		final Random rnd = MatsimRandom.getLocalInstance();
+
 		// change some vehicle types, e.g. to investigate decarbonization scenarios, or to account for electric drt vehicles
 		// currently, freight vehicles remain the same (are not electrified) !!
 		changeVehicleTypes(scenario, petrolCarVehicleType, dieselCarVehicleType, cngVehicleType, lpgVehicleType, electricVehicleType, pluginHybridPetrolVehicleType, pluginHybridDieselVehicleType, defaultCarVehicleType, freightVehicleTypes, vehiclesToChangeToElectric, carVehiclesToChangeToSpecificType, rnd);
@@ -396,7 +437,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 			for (Vehicle vehicle : scenario.getVehicles().getVehicles().values()) {
 				String emissionsConcept = "null";
 				if (vehicle.getType().getEngineInformation() != null && VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation()) != null) {
-					emissionsConcept = VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation()).toString();
+					emissionsConcept = VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation());
 				}
 
 				bw2.write(vehicle.getId() + ";" + vehicle.getType().getId().toString() + ";" + emissionsConcept);
@@ -416,7 +457,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformationWithDrt {
 
 			} else if (freightVehicleTypes.contains(vehicle.getType())) {
 				// skip freight vehicles
-				//TO DO possibly make assumptions regarding electrification of freight vehicles, too
+				//TODO possibly make assumptions regarding electrification of freight vehicles, too
 			} else if (vehicle.getId().toString().contains("freight") || vehicle.getId().toString().contains("commercial")) {
 				// some freight vehicles have the type "car", skip them...
 				log.info("Freight/commercial vehicle is of type car! vehicleId = " + vehicle.getId().toString());
