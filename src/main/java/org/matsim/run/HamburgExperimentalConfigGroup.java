@@ -127,7 +127,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
         return drtOperationArea;
     }
     @StringSetter(DRT_OPERATION_AREA)
-    public void setDrtOperationAreaEScooterServiceArea(String drtOperationArea) {      this.drtOperationArea = drtOperationArea;  }
+    public void setDrtOperationArea(String drtOperationArea) {      this.drtOperationArea = drtOperationArea;  }
 
     @StringGetter(E_SCOOTER_SERVICE_AREA)
     public String getEScooterServiceArea() {
