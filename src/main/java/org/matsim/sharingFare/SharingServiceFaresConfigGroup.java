@@ -12,15 +12,12 @@ public class SharingServiceFaresConfigGroup extends ReflectiveConfigGroupWithCon
 
     public static final String GROUP_MODE = "mode";
     public static final String BASEFARE = "basefare";
-    public static final String MINFARE_PER_TRIP = "minFarePerTrip";
     public static final String TIMEFARE = "timeFare_m";
     public static final String DISTANCEFARE = "distanceFare_m";
     public static final String ID = "id";
 
     @PositiveOrZero
     private double basefare;
-    @PositiveOrZero
-    private double minFarePerTrip = 0.0D;
     @PositiveOrZero
     private double timeFare_m;
     @PositiveOrZero
@@ -51,16 +48,6 @@ public class SharingServiceFaresConfigGroup extends ReflectiveConfigGroupWithCon
     @StringSetter("basefare")
     public void setBasefare(double basefare) {
         this.basefare = basefare;
-    }
-
-    @StringGetter("minFarePerTrip")
-    public double getMinFarePerTrip() {
-        return this.minFarePerTrip;
-    }
-
-    @StringSetter("minFarePerTrip")
-    public void setMinFarePerTrip(double minFarePerTrip) {
-        this.minFarePerTrip = minFarePerTrip;
     }
 
     @StringGetter("timeFare_m")

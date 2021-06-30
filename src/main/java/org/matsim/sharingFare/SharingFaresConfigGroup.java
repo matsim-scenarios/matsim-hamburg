@@ -43,8 +43,6 @@ public class SharingFaresConfigGroup extends ReflectiveConfigGroup {
                 sharingServiceFaresConfigGroup.setBasefare(Double.parseDouble(set.getParams().get("basefare")));
             if(set.getParams().containsKey("timeFare_m"))
                 sharingServiceFaresConfigGroup.setTimeFare_m(Double.parseDouble(set.getParams().get("timeFare_m")));
-            if(set.getParams().containsKey("minFarePerTrip"))
-                sharingServiceFaresConfigGroup.setMinFarePerTrip(Double.parseDouble(set.getParams().get("minFarePerTrip")));
 
             serviceFares.add(sharingServiceFaresConfigGroup);
         }

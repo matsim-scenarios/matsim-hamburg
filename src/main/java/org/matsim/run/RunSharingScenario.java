@@ -19,14 +19,12 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.router.*;
 import org.matsim.sharingFare.SharingFareHandler;
 import org.matsim.sharingFare.SharingFaresConfigGroup;
+import org.matsim.sharingFare.SharingServiceFaresConfigGroup;
 import org.matsim.sharingFare.TeleportedSharingFareHandler;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author zmeng
@@ -150,6 +148,53 @@ public class RunSharingScenario {
         PlanCalcScoreConfigGroup.ActivityParams bookingParams = new PlanCalcScoreConfigGroup.ActivityParams(SharingUtils.BOOKING_ACTIVITY);
         bookingParams.setScoringThisActivityAtAll(false);
         config.planCalcScore().addActivityParams(bookingParams);
+
+        // add planCalcScore for scar and sbike
+        PlanCalcScoreConfigGroup.ModeParams scarParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_CAR_MODE);
+        PlanCalcScoreConfigGroup.ModeParams sbikeParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_BIKE_MODE);
+
+        config.planCalcScore().addModeParams(sbikeParams);
+        config.planCalcScore().addModeParams(scarParams);
+
+        //add scar as network modes
+        Set<String> networkModes = new HashSet<>();
+        networkModes.addAll(config.plansCalcRoute().getNetworkModes());
+        networkModes.add(SHARING_CAR_MODE);
+        config.plansCalcRoute().setNetworkModes(networkModes);
+
+        //add sbike as a teleportation mode
+        PlansCalcRouteConfigGroup.TeleportedModeParams sbikeTeleParams = new PlansCalcRouteConfigGroup.TeleportedModeParams(SHARING_BIKE_MODE);
+        sbikeTeleParams.setBeelineDistanceFactor(1.45);
+        sbikeTeleParams.setTeleportedModeSpeed(3.138889);
+        config.plansCalcRoute().addTeleportedModeParams(sbikeTeleParams);
+
+        //add scar to mainMode in qsim
+        Set<String> mainMode = new HashSet<>();
+        mainMode.addAll(config.qsim().getMainModes());
+        mainMode.add(SHARING_CAR_MODE);
+        config.qsim().setMainModes(mainMode);
+
+        //configure sharing fares
+        SharingFaresConfigGroup sharingFaresConfigGroup = ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
+
+        SharingServiceFaresConfigGroup scarFares = new SharingServiceFaresConfigGroup();
+        scarFares.setId(SHARING_SERVICE_ID_CAR);
+        scarFares.setBasefare(1);
+        scarFares.setTimeFare_m(0.5);
+        scarFares.setDistanceFare_m(0.);
+        sharingFaresConfigGroup.addServiceFaresParams(scarFares);
+
+        SharingServiceFaresConfigGroup sbikeFares = new SharingServiceFaresConfigGroup();
+        scarFares.setId(SHARING_SERVICE_ID_BIKE);
+        scarFares.setBasefare(0.79);
+        scarFares.setTimeFare_m(0.19);
+        scarFares.setDistanceFare_m(0.);
+        sharingFaresConfigGroup.addServiceFaresParams(sbikeFares);
+
+        //add share modes to subtourModeChoice
+        List<String> subtourModes = new ArrayList(Arrays.asList(config.subtourModeChoice().getModes()));
+        modes.add(SharingUtils.getServiceMode(carSharingConfig));
+        modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
 
         return config;
     }
