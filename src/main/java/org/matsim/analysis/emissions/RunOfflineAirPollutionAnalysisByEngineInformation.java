@@ -275,16 +275,19 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 	}
 
 	private Map<String, VehicleType> createAndAddVehicleTypesForAllEmissionConcepts(Scenario scenario, HbefaVehicleCategory hbefaVehicleCategory){
+
 		Map<String,VehicleType> emissionConcept2VehicleType = new HashMap<>();
 		VehicleType petrolCarVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "petrol_" + hbefaVehicleCategory, hbefaVehicleCategory, "petrol (4S)");
 		VehicleType dieselCarVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "diesel_" + hbefaVehicleCategory, hbefaVehicleCategory, "diesel");
 		VehicleType cngHybridVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cngHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel CNG/petrol");
 		VehicleType lpgHybridVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lpgHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel LPG/petrol");
-		VehicleType cngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cng_" + hbefaVehicleCategory, hbefaVehicleCategory,"CNG");
-		VehicleType lngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lpg_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG");
 		VehicleType electricVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "electric_" + hbefaVehicleCategory,hbefaVehicleCategory, "electricity");
 		VehicleType pluginHybridPetrolVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "pluginHybridPetrol_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid petrol/electric");
 		VehicleType pluginHybridDieselVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "pluginHybridDiesel_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid diesel/electric");
+		if(hbefaVehicleCategory.equals(HbefaVehicleCategory.HEAVY_GOODS_VEHICLE) || hbefaVehicleCategory.equals(HbefaVehicleCategory.LIGHT_COMMERCIAL_VEHICLE )){
+			VehicleType cngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cng_" + hbefaVehicleCategory, hbefaVehicleCategory,"CNG");
+			VehicleType lngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lpg_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG");
+		}
 		return emissionConcept2VehicleType;
 	}
 
