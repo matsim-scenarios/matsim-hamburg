@@ -2,12 +2,6 @@
 <!DOCTYPE service SYSTEM "../dtd/sharing_service_v1.dtd">
 <service>
 	<vehicles>
-		<vehicle id="1b" startLink="235973470006f" />
-		<vehicle id="2b" startLink="235973470006f" />
-		<vehicle id="3b" startLink="3692513140011r" />
-		<vehicle id="4b" startLink="3692513140011r" />
-		<vehicle id="5b" startLink="3692513140011r" />
-		<vehicle id="6b" startLink="261715230005f" />
-		<vehicle id="7b" startLink="261715230005f" />
+		<vehicle id="sharedBike" startLink="261715230005f" />
 	</vehicles>
 </service>

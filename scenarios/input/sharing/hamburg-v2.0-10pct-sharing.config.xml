@@ -106,6 +106,7 @@
 	<module name="planscalcroute" >
 		<!-- All the modes for which the router is supposed to generate network routes (like car) -->
 		<param name="networkModes" value="scar,car,commercial_Lkw-g,commercial_Pkw-Lfw,commercial_Lkw-m,commercial_Lfw,commercial_Lkw-k,commercial_Trans,ride,commercial_PWV_IV" />
+		<param name="accessEgressType" value="accessEgressModeToLink" />
 		<parameterset type="teleportedModeParameters" >
 			<param name="beelineDistanceFactor" value="1.45" />
 			<param name="mode" value="bike" />
