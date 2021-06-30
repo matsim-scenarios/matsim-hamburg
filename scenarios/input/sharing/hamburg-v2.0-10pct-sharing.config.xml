@@ -215,23 +215,23 @@
 		<param name="considerCarAvailability" value="false" />
 		<param name="modes" value="car,pt,bike,walk,sharing:car,sharing:bike" />
 	</module>
-	<module name="swissRailRaptor" >
-		<!-- Sets whether intermodal access and egress modes are selected by least cost (default) or randomly chosen out of the available access / egress modes. -->
-		<param name="intermodalAccessEgressModeSelection" value="CalcLeastCostModePerStop" />
-		<!-- Possible values: Default, Individual -->
-		<param name="scoringParameters" value="Default" />
-		<param name="transferPenaltyBaseCost" value="0.0" />
-		<param name="transferPenaltyCostPerTravelTimeHour" value="0.0" />
-		<param name="transferPenaltyMaxCost" value="Infinity" />
-		<param name="transferPenaltyMinCost" value="-Infinity" />
-		<!-- time deducted from transfer walk leg during transfers between pt legs in order to avoid missing a vehicle by a few seconds due to delays. -->
-		<param name="transferWalkMargin" value="5.0" />
-		<!-- If true, SwissRailRaptor tries to detect when agents cannot board a vehicle in the previous iteration because it is already full and tries to find an alternative route instead. -->
-		<param name="useCapacityConstraints" value="false" />
-		<param name="useIntermodalAccessEgress" value="false" />
-		<param name="useModeMappingForPassengers" value="false" />
-		<param name="useRangeQuery" value="false" />
-	</module>
+<!--	<module name="swissRailRaptor" >-->
+<!--		&lt;!&ndash; Sets whether intermodal access and egress modes are selected by least cost (default) or randomly chosen out of the available access / egress modes. &ndash;&gt;-->
+<!--		<param name="intermodalAccessEgressModeSelection" value="CalcLeastCostModePerStop" />-->
+<!--		&lt;!&ndash; Possible values: Default, Individual &ndash;&gt;-->
+<!--		<param name="scoringParameters" value="Default" />-->
+<!--		<param name="transferPenaltyBaseCost" value="0.0" />-->
+<!--		<param name="transferPenaltyCostPerTravelTimeHour" value="0.0" />-->
+<!--		<param name="transferPenaltyMaxCost" value="Infinity" />-->
+<!--		<param name="transferPenaltyMinCost" value="-Infinity" />-->
+<!--		&lt;!&ndash; time deducted from transfer walk leg during transfers between pt legs in order to avoid missing a vehicle by a few seconds due to delays. &ndash;&gt;-->
+<!--		<param name="transferWalkMargin" value="5.0" />-->
+<!--		&lt;!&ndash; If true, SwissRailRaptor tries to detect when agents cannot board a vehicle in the previous iteration because it is already full and tries to find an alternative route instead. &ndash;&gt;-->
+<!--		<param name="useCapacityConstraints" value="false" />-->
+<!--		<param name="useIntermodalAccessEgress" value="false" />-->
+<!--		<param name="useModeMappingForPassengers" value="false" />-->
+<!--		<param name="useRangeQuery" value="false" />-->
+<!--	</module>-->
 	<module name="transit" >
 		<!-- Input file containing the transit schedule to be simulated. -->
 		<param name="transitScheduleFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitSchedule.xml.gz" />

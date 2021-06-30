@@ -35,8 +35,13 @@ public class RunSharingScenario {
 
     private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
 
+    public static final String VERSION = "v2.0";
+
     private static final String SHARING_SERVICE_ID_CAR = "car";
     private static final String SHARING_SERVICE_ID_BIKE = "bike";
+
+    private static final String SHARING_CAR_MODE = "scar";
+    private static final String SHARING_BIKE_MODE = "sbike";
 
     private static final String SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
@@ -47,7 +52,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            args = new String[] {"scenarios/input/sharing/hamburg-v2.0-10pct-sharing.config.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();
@@ -76,10 +81,10 @@ public class RunSharingScenario {
 
                 //we need to bind a routing module for the main stage of our newly introduced sharing mode. and it is PARTICULARLY IMPORTANT to bind it, before we bind the corresponding sharing module
                 //bc otherwise, the sharing module routing will be overwritten
-                addRoutingModuleBinding("scar").toProvider(new NetworkRoutingProvider("scar"));
+                addRoutingModuleBinding(SHARING_CAR_MODE).toProvider(new NetworkRoutingProvider(SHARING_CAR_MODE));
 
                 PlansCalcRouteConfigGroup.ModeRoutingParams sbike = (PlansCalcRouteConfigGroup.ModeRoutingParams) controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
-                addRoutingModuleBinding("sbike").toInstance(new TeleportationRoutingModule("sbike",scenario,sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
+                addRoutingModuleBinding(SHARING_BIKE_MODE).toInstance(new TeleportationRoutingModule(SHARING_BIKE_MODE,scenario,sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
             }
         });
 
@@ -115,7 +120,7 @@ public class RunSharingScenario {
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(null);
         carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_scar.xml");
-        carSharingConfig.setMode("scar");
+        carSharingConfig.setMode(SHARING_CAR_MODE);
 
 
         // define a bike sharing service
@@ -126,7 +131,7 @@ public class RunSharingScenario {
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(null);
         bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_sbike.xml");
-        bikeSharingConfig.setMode("sbike");
+        bikeSharingConfig.setMode(SHARING_BIKE_MODE);
 
         // add sharing modes to mode choice
         List<String> modes = new ArrayList<>(Arrays.asList(config.subtourModeChoice().getModes()));
@@ -159,9 +164,9 @@ public class RunSharingScenario {
                 HashSet<String> newAllowedModes = new HashSet<>();
                 newAllowedModes.addAll(allowedModes);
                 if(link.getAllowedModes().contains("car"))
-                    newAllowedModes.add("scar");
+                    newAllowedModes.add(SHARING_CAR_MODE);
                 if(link.getAllowedModes().contains("bike"))
-                    newAllowedModes.add("sbike");
+                    newAllowedModes.add(SHARING_BIKE_MODE);
 
                 link.setAllowedModes(newAllowedModes);
             }

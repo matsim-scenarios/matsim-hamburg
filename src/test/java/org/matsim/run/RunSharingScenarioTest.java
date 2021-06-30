@@ -1,7 +1,5 @@
 package org.matsim.run;
 
-import com.google.inject.Guice;
-import com.google.inject.name.Names;
 import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.api.core.v01.Scenario;
@@ -35,92 +33,27 @@ public class RunSharingScenarioTest {
     public void runTest() throws IOException {
 
         String args[] = new String[]{
-                "test/input/test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "20",
+                "scenarios/input/sharing/hamburg-v2.0-10pct-sharing.config.xml" ,
+                "--config:controler.lastIteration" , "0",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-               // "--config:plans.inputPlansFile" , "runTest.2.plans.xml.gz"
-               // "--config:plans.inputPlansFile" , "run.test2.plans.xml"
-//                "--config:plans.inputPlansFile" , "test-scar-sharing-user.plans.xml"
-                "--config:plans.inputPlansFile" , "test-scar-user.plans.xml"
+                "--config:network.inputNetworkFile" , "../../../test/input/test-hamburg-with-pt-network.xml.gz",
+                "--config:plans.inputPlansFile" , "test/input/plans/test-scar-sharing-user.plans.xml",
         };
 
         Config config = prepareConfig(args);
+
+
+        config.transit().setUseTransit(false);
 
         config.controler().setRunId("runTest");
+        config.controler().setWriteEventsInterval(1);
+        config.controler().setWritePlansInterval(1);
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
-        for (StrategyConfigGroup.StrategySettings strategySettings : config.strategy().getStrategySettings()) {
-            if (strategySettings.getStrategyName().equals("SubtourModeChoice") && strategySettings.getSubpopulation().equals("person"))
-                strategySettings.setWeight(100);
-        }
-
-        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
-        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
-            switch (service.getMode()){
-                case "sbike":
-                    service.setServiceInputFile("shared_bike_vehicles_stations.xml");
-                    break;
-                case "scar":
-                    service.setServiceInputFile("shared_car_vehicles_stations.xml");
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        SharingFaresConfigGroup sharingFaresConfigGroup = ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
-
-        SharingServiceFaresConfigGroup sharingCarFares = new SharingServiceFaresConfigGroup();
-        sharingCarFares.setId("car");
-        sharingCarFares.setBasefare(5.);
-        sharingCarFares.setTimeFare_m(3.);
-        sharingCarFares.setDistanceFare_m(10.);
-
-        sharingFaresConfigGroup.addParameterSet(sharingCarFares);
-
-
-        Scenario scenario = prepareScenario(config);
-        Controler controler = prepareControler(scenario);
-
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                bind(AnalysisMainModeIdentifier.class).toInstance(new RoutingModeMainModeIdentifier());
-            }
-        });
-
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.addEventHandlerBinding().toInstance(new SharingFareHandler("car"));
-                this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler("bike"));
-            }
-        });
-
-        controler.run();
-
-
-    }
-
-    @Test
-    public void runTest2() throws IOException {
-
-        String args[] = new String[]{
-                "scenarios/input/sharing/hamburg-v1.1-10pct-sharing.config.xml" ,
-                "--config:controler.lastIteration" , "20",
-                "--config:hamburgExperimental.freeSpeedFactor", "1.2",
-                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
-                "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "../../../test/input/test-hamburg-freight.plans.xml"
-        };
-
-        Config config = prepareConfig(args);
 
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
         for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
@@ -136,17 +69,6 @@ public class RunSharingScenarioTest {
             }
         }
 
-
-        //config.network().setInputFile("/Users/meng/IdeaProjects/matsim-hamburg/test/input/test-hamburg-with-pt-network.xml.gz");
-        config.controler().setRunId("runTest2");
-        config.controler().setWriteEventsInterval(1);
-        config.controler().setWritePlansInterval(1);
-        config.controler().setOutputDirectory(utils.getOutputDirectory());
-
-        for (StrategyConfigGroup.StrategySettings strategySettings : config.strategy().getStrategySettings()) {
-            if (strategySettings.getStrategyName().equals("SubtourModeChoice") && strategySettings.getSubpopulation().equals("person"))
-                strategySettings.setWeight(100);
-        }
 
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);

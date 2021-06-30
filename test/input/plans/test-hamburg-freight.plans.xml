@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE population SYSTEM "http://www.matsim.org/files/dtd/population_v6.dtd">
+
+<population>
+
+    <attributes>
+        <attribute name="coordinateReferenceSystem" class="java.lang.String">EPSG:25832</attribute>
+    </attributes>
+
+    <!-- ====================================================================== -->
+    <person id="113ecc">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
+            <attribute name="age" class="java.lang.Integer">59</attribute>
+            <attribute name="carAvail" class="java.lang.String">always</attribute>
+            <attribute name="gender" class="java.lang.String">m</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">always</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_59400.0" x="597163.9269612308" y="5984292.652443141" end_time="09:04:00" >
+            </activity>
+            <leg mode="car" dep_time="09:04:00" trav_time="00:25:34">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_8400.0" x="612093.7949747152" y="5975892.555604265" start_time="09:58:00" end_time="12:21:00" >
+            </activity>
+            <leg mode="car" dep_time="12:21:00" trav_time="00:15:03">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_8400.0" x="603550.5153375216" y="5983322.169471162" start_time="12:49:00" end_time="15:12:00" >
+            </activity>
+            <leg mode="car" dep_time="15:12:00" trav_time="00:05:11">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="603279.0788937113" y="5985821.54481456" start_time="15:19:00" end_time="15:59:00" >
+            </activity>
+            <leg mode="car" dep_time="15:59:00" trav_time="00:08:36">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="home_59400.0" x="597163.9269612308" y="5984292.652443141" start_time="16:27:00" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+    <person id="113efb">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home</attribute>
+            <attribute name="age" class="java.lang.Integer">61</attribute>
+            <attribute name="carAvail" class="java.lang.String">always</attribute>
+            <attribute name="gender" class="java.lang.String">f</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">always</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_86400.0" x="596964.9221933321" y="5984433.177637921" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+    <person id="113f00">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">36780.0;44760.0;50460.0;54000.0;71160.0;75780.0;79440.0;84840.0;-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;38940.0;47880.0;51540.0;54840.0;72360.0;76920.0;80160.0;85500.0</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;business;business;business;business;business</attribute>
+            <attribute name="age" class="java.lang.Integer">64</attribute>
+            <attribute name="carAvail" class="java.lang.String">always</attribute>
+            <attribute name="gender" class="java.lang.String">f</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">always</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
+            </activity>
+            <leg mode="car" dep_time="10:13:00" trav_time="00:19:36">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_6000.0" x="585128.1378518876" y="5980085.529591967" start_time="10:49:00" end_time="12:26:00" >
+            </activity>
+            <leg mode="car" dep_time="12:26:00" trav_time="00:52:49">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="564710.8554359305" y="5948694.418322517" start_time="13:18:00" end_time="14:01:00" >
+            </activity>
+            <leg mode="car" dep_time="14:01:00" trav_time="00:13:33">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="566209.6079807894" y="5941141.097231428" start_time="14:19:00" end_time="15:00:00" >
+            </activity>
+            <leg mode="car" dep_time="15:00:00" trav_time="00:09:17">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_16200.0" x="570029.1056456286" y="5940884.8036479205" start_time="15:14:00" end_time="19:46:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:04:01">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570045.8413889371" y="5940693.886907823" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:58">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568362.5054160662" y="5940362.036061483" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:04:50">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568355.0391508695" y="5940178.886476169" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:13:09">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570592.6628066822" y="5943495.667805306" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:57">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_3600.0" x="570579.4389866259" y="5943588.04852079" start_time="20:06:00" end_time="21:03:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:57">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570592.6628066822" y="5943495.667805306" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:07:02">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571586.0193159817" y="5944161.85319572" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:02:17">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571572.6524745874" y="5944101.673248294" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:42">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="575294.0751160298" y="5942592.351117955" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:02:46">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="575375.1131366512" y="5942616.682591716" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:13">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571132.7489873819" y="5938710.6130504245" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:00">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571132.7489873819" y="5938710.6130504245" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:07:00">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568911.6976764541" y="5937180.227601948" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:05:22">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="569045.309690704" y="5937398.605075519" start_time="21:22:00" end_time="22:04:00" >
+            </activity>
+            <leg mode="car" dep_time="22:04:00" trav_time="00:06:13">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_4800.0" x="567809.9706555195" y="5939771.877341081" start_time="22:16:00" end_time="23:34:00" >
+            </activity>
+            <leg mode="car" dep_time="23:34:00" trav_time="00:09:45">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_1200.0" x="571830.7378382357" y="5942672.291764536" start_time="23:45:00" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+    <person id="113f02">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">19883.0;56491.0;58350.0;59495.0;69118.0;81850.0;-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;20083.0;56683.0;58903.0;68503.0;70003.0;82603.0</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home;work;home;leisure;leisure;leisure;home</attribute>
+            <attribute name="age" class="java.lang.Integer">17</attribute>
+            <attribute name="carAvail" class="java.lang.String">never</attribute>
+            <attribute name="gender" class="java.lang.String">m</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">never</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" end_time="05:31:23" >
+            </activity>
+            <leg mode="bike" dep_time="05:31:23" trav_time="00:06:43">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">bike</attribute>
+                </attributes>
+            </leg>
+            <activity type="work_36600.0" x="598032.4670694929" y="5984525.721476143" start_time="05:34:43" end_time="15:41:31" >
+            </activity>
+            <leg mode="ride" dep_time="15:41:31" trav_time="00:02:11">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="home_1800.0" x="597154.5346880215" y="5984459.402417765" start_time="15:44:43" end_time="16:12:30" >
+            </activity>
+            <leg mode="ride" dep_time="16:12:30" trav_time="00:05:27">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_600.0" x="593783.5496643056" y="5984976.5887164995" start_time="16:21:43" end_time="16:31:35" >
+            </activity>
+            <leg mode="transit_walk" trav_time="02:06:49">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_600.0" x="596728.2855898713" y="5979703.683421475" start_time="19:01:43" end_time="19:11:58" >
+            </activity>
+            <leg mode="ride" dep_time="19:11:58" trav_time="00:14:10">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_12000.0" x="603029.4835282456" y="5986344.68260557" start_time="19:26:43" end_time="22:44:10" >
+            </activity>
+            <leg mode="ride" dep_time="22:44:10" trav_time="00:07:59">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" start_time="22:56:43" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+    <person id="commercial_1000074">
+        <attributes>
+            <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="commercial" x="487749.0798673321" y="5891533.800535473" end_time="14:53:14" >
+            </activity>
+            <leg mode="commercial_Lkw-g">
+            </leg>
+            <activity type="commercial" x="488837.81420164264" y="5904492.799498616" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+</population>
