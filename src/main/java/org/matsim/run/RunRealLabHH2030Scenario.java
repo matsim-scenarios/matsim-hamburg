@@ -2,40 +2,34 @@ package org.matsim.run;
 
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
-import com.google.inject.Singleton;
+import com.google.common.collect.ImmutableSet;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
 import org.matsim.contrib.drt.run.MultiModeDrtModule;
+import org.matsim.contrib.drt.speedup.DrtSpeedUpParams;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
+import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.algorithms.MultimodalNetworkCleaner;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
-import org.matsim.core.router.MainModeIdentifier;
-import org.matsim.core.scoring.functions.ScoringParametersForPerson;
-import org.matsim.escooter.EScooterCharger;
-import org.matsim.escooter.EScooterConfigGroup;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsModule;
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesModule;
-import org.matsim.escooter.EScooterTeleportationRoutingModule;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 import org.matsim.pt.transitSchedule.api.TransitStopFacility;
-import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -49,8 +43,12 @@ public class RunRealLabHH2030Scenario {
 
     private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
 
+    public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
+    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
+    private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
+
 
     public static void main(String[] args) throws ParseException, IOException {
 
@@ -59,7 +57,7 @@ public class RunRealLabHH2030Scenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v1.1-1pct.config.xml"};
         }
 
         RunRealLabHH2030Scenario realLabHH2030 = new RunRealLabHH2030Scenario();
@@ -80,9 +78,10 @@ public class RunRealLabHH2030Scenario {
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
 
-        // drt + dvrp module
-
-
+//        // drt + dvrp module
+        controler.addOverridingModule(new MultiModeDrtModule());
+        controler.addOverridingModule(new DvrpModule());
+        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
 
         controler.addOverridingModule(new AbstractModule() {
 
@@ -92,41 +91,27 @@ public class RunRealLabHH2030Scenario {
                 // the SwissRailRaptor already binds its IntermodalAwareRouterModeIdentifier, however drt obviously replaces it
                 // with its own implementation
                 // So we need our own main mode indentifier which replaces both :-(
-                //todo: write our hamburg mainModeIdentifier,which can deal with all the pt+x(s)
-//                bind(MainModeIdentifier.class).to(OpenBerlinIntermodalPtDrtRouterModeIdentifier.class);
-//                bind(AnalysisMainModeIdentifier.class).to(OpenBerlinIntermodalPtDrtRouterAnalysisModeIdentifier.class);
+                //TODO: write our hamburg mainModeIdentifier,which can deal with all the pt+x(s)
+
+                //HamburgFreightMainModeIdentifier was already bound
+//                bind(MainModeIdentifier.class).toInstance(new TransportPlanningMainModeIdentifier());
+//                bind(AnalysisMainModeIdentifier.class).to(HamburgFreightMainModeIdentifier.class);
+
+                //need to bind this in another overriding module than in the module where we install the SwissRailRaptorModule
                 bind(RaptorIntermodalAccessEgress.class).to(EnhancedRaptorIntermodalAccessEgress.class);
-
             }
         });
-        // TODO: 02.06.21 report bugs
+
         controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
-        //todo: write our hamburg PtIntermodalRoutingModesModule,which can deal with all the pt+x(s). Ask Gregor why not multi-routingmode in config?
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
-
-        // TODO: 02.06.21 ask why didn't work here
-        controler.addOverridingModule(new MultiModeDrtModule());
-        controler.addOverridingModule(new DvrpModule());
-        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
-
-        // add eScooter router
-        EScooterConfigGroup eScooterConfigGroup = ConfigUtils.addOrGetModule(controler.getConfig(), EScooterConfigGroup.class);
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.addRoutingModuleBinding(eScooterConfigGroup.getMode()).toInstance(new EScooterTeleportationRoutingModule(eScooterConfigGroup.getMode(), scenario,eScooterConfigGroup.getTeleportedSpeed(),eScooterConfigGroup.getBeelineDistanceFactor()));
-                this.addEventHandlerBinding().to(EScooterCharger.class);
-            }
-        });
-
 
         return controler;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         ConfigGroup[] customModulesToAdd = new ConfigGroup[] { new DvrpConfigGroup(), new MultiModeDrtConfigGroup(),
-                new SwissRailRaptorConfigGroup(), /*new IntermodalTripFareCompensatorsConfigGroup(),*/
-                new PtIntermodalRoutingModesConfigGroup(), new EScooterConfigGroup()};
+                new SwissRailRaptorConfigGroup(), new IntermodalTripFareCompensatorsConfigGroup(),
+                new PtIntermodalRoutingModesConfigGroup()};
         ConfigGroup[] customModulesAll = new ConfigGroup[customModules.length + customModulesToAdd.length];
 
         int counter = 0;
@@ -139,20 +124,75 @@ public class RunRealLabHH2030Scenario {
             customModulesAll[counter] = customModule;
             counter++;
         }
-        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
+        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModulesAll);
 
-        //intermodalAccessEgress == true
+        configureDRTFeeder(config);
+
+        return config;
+    }
+
+    public static Config configureDRTFeeder(Config config){
+        //when simulating dvrp, we need/should simulate from the start to the end
+        config.qsim().setSimStarttimeInterpretation(QSimConfigGroup.StarttimeInterpretation.onlyUseStarttime);
+        config.qsim().setSimEndtimeInterpretation(QSimConfigGroup.EndtimeInterpretation.onlyUseEndtime);
+
+        DvrpConfigGroup dvrpCfg = ConfigUtils.addOrGetModule(config, DvrpConfigGroup.class);
+        dvrpCfg.setNetworkModes(ImmutableSet.<String>builder()
+                .add(DRT_FEEDER_MODE)
+                .build());
+        //TODO potentially further configure dvrp. For example, travelTimeMatrix cell size etc.
+
+        MultiModeDrtConfigGroup multiModeDrtCfg = ConfigUtils.addOrGetModule(config, MultiModeDrtConfigGroup.class);
+
+        DrtConfigGroup drtFeederCfg = new DrtConfigGroup();
+        drtFeederCfg.setMode(DRT_FEEDER_MODE);
+        drtFeederCfg.setOperationalScheme(DrtConfigGroup.OperationalScheme.serviceAreaBased);
+        drtFeederCfg.setUseModeFilteredSubnetwork(true); //vehicles should be able to drive from one area to the other
+        drtFeederCfg.setMaxWaitTime(300); //5 minutes as in the ReallabHH goals
+        drtFeederCfg.setRejectRequestIfMaxWaitOrTravelTimeViolated(false); //no rejections please
+
+        //service area
+        drtFeederCfg.setDrtServiceAreaShapeFile(DRT_FEEDER_SERVICE_AREA);
+
+        //operation area (area where all drt modes are allowed on the network
+        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+        hamburgExperimentalConfigGroup.setDrtOperationArea(ALL_DRT_OPERATION_AREA);
+
+        //fleet
+        drtFeederCfg.setVehiclesFile("D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz");
+
+        //set some standard values
+        drtFeederCfg.setMaxTravelTimeAlpha(1.7);
+        drtFeederCfg.setMaxTravelTimeBeta(120);
+        drtFeederCfg.setStopDuration(60);
+
+        drtFeederCfg.addDrtInsertionSearchParams(new ExtensiveInsertionSearchParams());
+
+        multiModeDrtCfg.addDrtConfig(drtFeederCfg);
+
+        //configure drt speed-up params
+        for (DrtConfigGroup drtCfg : multiModeDrtCfg.getModalElements()) {
+            if (drtCfg.getDrtSpeedUpParams().isEmpty()) {
+                drtCfg.addParameterSet(new DrtSpeedUpParams());
+            }
+        }
+
+        //add drt stage activities
+        DrtConfigs.adjustMultiModeDrtConfig(multiModeDrtCfg, config.planCalcScore(), config.plansCalcRoute());
+
+        //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet params = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        params.setMode(DRT_FEEDER_MODE);
+        params.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        params.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
+        //TODO these values were recommended by GL based on his experiences for Berlin
+        params.setInitialSearchRadius(3_000);
+        params.setSearchExtensionRadius(1_000);
+        params.setMaxRadius(20_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(params);
 
-
-        // add eScooter as teleported mode
-        EScooterConfigGroup eScooterConfigGroup = ConfigUtils.addOrGetModule(config, EScooterConfigGroup.class);
-        //todo: test the parameters
-        config.plansCalcRoute().addModeRoutingParams(new PlansCalcRouteConfigGroup.ModeRoutingParams().setMode(eScooterConfigGroup.getMode()).setTeleportedModeSpeed(eScooterConfigGroup.getTeleportedSpeed()).setBeelineDistanceFactor(eScooterConfigGroup.getBeelineDistanceFactor()));
-        config.planCalcScore().addModeParams(new PlanCalcScoreConfigGroup.ModeParams(eScooterConfigGroup.getMode()));
-
-        DrtConfigs.adjustMultiModeDrtConfig(ConfigUtils.addOrGetModule(config,MultiModeDrtConfigGroup.class), config.planCalcScore(), config.plansCalcRoute());
         return config;
     }
 
@@ -161,21 +201,22 @@ public class RunRealLabHH2030Scenario {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(config).getModalElements()) {
 
-            String drtServiceAreaShapeFile = drtCfg.getDrtServiceAreaShapeFile();
-            if (drtServiceAreaShapeFile != null && !drtServiceAreaShapeFile.equals("") && !drtServiceAreaShapeFile.equals("null")) {
-
                 // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
                 // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
                 // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
-                if(hamburgExperimentalConfigGroup.getTagDrtLinksBufferAroundServiceAreaShp() >= 0.0) {
-                    addDRTmode(scenario, drtCfg.getMode(), drtServiceAreaShapeFile, hamburgExperimentalConfigGroup.getTagDrtLinksBufferAroundServiceAreaShp());
-                }
+            //TODO: this is not the best solution
+            if(hamburgExperimentalConfigGroup.getDrtOperationArea() != null){
+                addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtOperationArea(), 0.);
+            }
 
+            if(drtCfg.getMode().equals(DRT_FEEDER_MODE)){
+                //tag pt stops that are to be used for intermodal access and egress
+                //TODO restrict to the actual stations that we want to use and do not use generic solution here.... (restrict to rail stations)
                 tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
-                        drtServiceAreaShapeFile,
-                        "stopFilter", "station_S/U/RE/RB",
-                        200.0); //
+                        drtCfg.getDrtServiceAreaShapeFile(),
+                        /* "stopFilter", "station_S/U/RE/RB",*/
+                        50.0); //
             }
         }
         return scenario;
@@ -226,18 +267,18 @@ public class RunRealLabHH2030Scenario {
     private static void tagTransitStopsInServiceArea(TransitSchedule transitSchedule,
                                                      String newAttributeName, String newAttributeValue,
                                                      String drtServiceAreaShapeFile,
-                                                     String oldFilterAttribute, String oldFilterValue,
+                                                     /*String oldFilterAttribute, String oldFilterValue,*/
                                                      double bufferAroundServiceArea) {
         log.info("Tagging pt stops marked for intermodal access/egress in the service area.");
         HamburgShpUtils shpUtils = new HamburgShpUtils( drtServiceAreaShapeFile );
         for (TransitStopFacility stop: transitSchedule.getFacilities().values()) {
-            if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
-                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {
+            /*if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
+                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {*/
                     if (shpUtils.isCoordInDrtServiceAreaWithBuffer(stop.getCoord(), bufferAroundServiceArea)) {
                         stop.getAttributes().putAttribute(newAttributeName, newAttributeValue);
                     }
-                }
-            }
+//                }
+//            }
         }
     }
 }

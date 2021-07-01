@@ -8,7 +8,6 @@
     </attributes>
 
     <!-- ====================================================================== -->
-
     <person id="113ecc">
         <attributes>
             <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>

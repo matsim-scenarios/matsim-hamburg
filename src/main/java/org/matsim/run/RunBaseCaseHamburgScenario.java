@@ -5,6 +5,7 @@ import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
+import org.matsim.analysis.TransportPlanningMainModeIdentifier;
 import org.matsim.analysis.here.HereAPIControlerListener;
 import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
@@ -27,6 +28,7 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
@@ -76,22 +78,16 @@ public class RunBaseCaseHamburgScenario {
         log.info("Done.");
     }
 
-
     public static Controler prepareControler(Scenario scenario) {
         Controler controler = new Controler(scenario);
 
-        // use the sbb pt raptor router
-        controler.addOverridingModule( new AbstractModule() {
-            @Override
-            public void install() {
-                install( new SwissRailRaptorModule() );
-            }
-        } );
-
-        // use PersonIncomeSpecificScoringFunction if is needed
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
+                // use the sbb pt raptor router
+//                install( new SwissRailRaptorModule() );
+
+                // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                 	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                 }
@@ -119,7 +115,6 @@ public class RunBaseCaseHamburgScenario {
 //                this.addControlerListenerBinding().toInstance(new PtValidatorControlerListener(ptValidator));
 //            };
 //        });
-
 
         controler.addOverridingModule(new AbstractModule() {
             @Override

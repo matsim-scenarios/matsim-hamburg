@@ -58,7 +58,6 @@
     </person>
 
     <!-- ====================================================================== -->
-
     <person id="113efb">
         <attributes>
             <attribute name="IPD_actEndTimes" class="java.lang.String">-Infinity</attribute>

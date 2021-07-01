@@ -21,6 +21,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_59400.0" x="597163.9269612308" y="5984292.652443141" end_time="09:04:00" >
@@ -71,6 +72,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">1000.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_86400.0" x="596964.9221933321" y="5984433.177637921" >
@@ -93,6 +95,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">10.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
@@ -255,6 +258,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" end_time="05:31:23" >

@@ -43,7 +43,7 @@ import java.util.*;
 public final class HamburgShpUtils {
 
 	private Map<Integer, Geometry> serviceAreaGeometries;
-	private Map<Double, Map<Integer, Geometry>> serviceAreaGeometriesWithBuffer = new HashMap<>();
+	private final Map<Double, Map<Integer, Geometry>> serviceAreaGeometriesWithBuffer = new HashMap<>();
 
 	public HamburgShpUtils(String drtServiceAreaShapeFile) {
 		if (drtServiceAreaShapeFile != null && drtServiceAreaShapeFile != "" && drtServiceAreaShapeFile != "null" ) {
@@ -96,9 +96,8 @@ public final class HamburgShpUtils {
 		boolean coordInArea = false;
 		for (Geometry geometry : areaGeometries.values()) {
 			Point p = MGC.coord2Point(coord);
-
 			if (p.within(geometry)) {
-				coordInArea = true;
+				return true;
 			}
 		}
 		return coordInArea;

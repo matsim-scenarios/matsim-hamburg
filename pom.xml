@@ -10,7 +10,10 @@
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <matsim.version>13.0</matsim.version>
+        <matsim.version>14.0-PR1568</matsim.version>
+<!--        <matsim.version>13.0</matsim.version>-->
+<!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
+
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
     </properties>
 
@@ -59,7 +62,7 @@
             <groupId>org.matsim.contrib</groupId>
             <artifactId>dvrp</artifactId>
             <version>${matsim.version}</version>
-            <scope>compile</scope>
+<!--            <scope>compile</scope>-->
         </dependency>
 
         <dependency>
@@ -203,6 +206,13 @@
             </exclusions>
 
         </dependency>
+
+        <dependency>
+            <groupId>com.github.eqasim-org</groupId>
+            <artifactId>matsim-sharing</artifactId>
+            <version>757c51944b</version>
+        </dependency>
+
     </dependencies>
 
     <build>
