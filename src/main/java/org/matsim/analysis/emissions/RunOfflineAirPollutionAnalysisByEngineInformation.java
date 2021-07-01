@@ -175,6 +175,9 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		eConfig.setNonScenarioVehicles(NonScenarioVehicles.ignore);
 		eConfig.setWritingEmissionsEvents(true);
 
+		//TODO ?????
+		eConfig.setHbefaTableConsistencyCheckingLevel(EmissionsConfigGroup.HbefaTableConsistencyCheckingLevel.consistent);
+
 		HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
 		File folder = new File(analysisOutputDirectory);
@@ -286,7 +289,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		VehicleType pluginHybridDieselVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "pluginHybridDiesel_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid diesel/electric");
 		if(hbefaVehicleCategory.equals(HbefaVehicleCategory.HEAVY_GOODS_VEHICLE) || hbefaVehicleCategory.equals(HbefaVehicleCategory.LIGHT_COMMERCIAL_VEHICLE )){
 			VehicleType cngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cng_" + hbefaVehicleCategory, hbefaVehicleCategory,"CNG");
-			VehicleType lngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lpg_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG");
+			VehicleType lngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lng_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG");
 		}
 		return emissionConcept2VehicleType;
 	}
