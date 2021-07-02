@@ -43,10 +43,7 @@ import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.gbl.Gbl;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.run.HamburgExperimentalConfigGroup;
-import org.matsim.vehicles.EngineInformation;
-import org.matsim.vehicles.Vehicle;
-import org.matsim.vehicles.VehicleType;
-import org.matsim.vehicles.VehicleUtils;
+import org.matsim.vehicles.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -91,9 +88,9 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		if (!analysisOutputDirectory.endsWith("/")) analysisOutputDirectory = analysisOutputDirectory + "/";
 		this.analysisOutputDirectory = analysisOutputDirectory;
 
-		this.heavyGoodsVehicleTypeDistribution = new EnumeratedDistribution(passengerCarEmissionConceptShares);
-		this.lightCommercialVehicleTypeDistribution = new EnumeratedDistribution(heavyGoodsVehiclesEmissionConceptShares);
-		this.passengerVehicleTypeDistribution = new EnumeratedDistribution(lightCommercialVehiclesEmissionConceptShares);
+		this.heavyGoodsVehicleTypeDistribution = new EnumeratedDistribution(heavyGoodsVehiclesEmissionConceptShares);
+		this.lightCommercialVehicleTypeDistribution = new EnumeratedDistribution(lightCommercialVehiclesEmissionConceptShares);
+		this.passengerVehicleTypeDistribution = new EnumeratedDistribution(passengerCarEmissionConceptShares);
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -176,7 +173,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		eConfig.setWritingEmissionsEvents(true);
 
 		//TODO ?????
-		eConfig.setHbefaTableConsistencyCheckingLevel(EmissionsConfigGroup.HbefaTableConsistencyCheckingLevel.consistent);
+		eConfig.setHbefaTableConsistencyCheckingLevel(EmissionsConfigGroup.HbefaTableConsistencyCheckingLevel.none);
 
 		HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
@@ -197,10 +194,10 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 		//passenger car vehicle types
 		Map<String, VehicleType> passengerVehicleTypes = createAndAddVehicleTypesForAllEmissionConcepts(scenario, HbefaVehicleCategory.PASSENGER_CAR);
-		//heavy goods vehicle types
-		Map<String, VehicleType> heavyGoodsVehicleTypes = createAndAddVehicleTypesForAllEmissionConcepts(scenario, HbefaVehicleCategory.HEAVY_GOODS_VEHICLE);
 		//light commercial vehicle types
 		Map<String, VehicleType> lightCommercialVehicleTypes = createAndAddVehicleTypesForAllEmissionConcepts(scenario, HbefaVehicleCategory.LIGHT_COMMERCIAL_VEHICLE);
+		//heavy goods vehicle types
+		Map<String, VehicleType> heavyGoodsVehicleTypes = createAndAddHeavyGoodsVehicleTypesForAllEmissionConcepts(scenario);
 
 		VehicleType defaultCarVehicleType = scenario.getVehicles().getVehicleTypes().get(Id.create("car", VehicleType.class));
 
@@ -275,56 +272,74 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 //        emissionEventWriter.closeFile();
 
 		writeOutput(linkEmissionAnalysisFile, linkEmissionPerMAnalysisFile, vehicleTypeFile, scenario, emissionsEventHandler);
+
+		int totalVehicles = scenario.getVehicles().getVehicles().size();
+		log.info("Total number of vehicles: " + totalVehicles);
+
+
+		scenario.getVehicles().getVehicles().values().stream()
+				.map(vehicle -> vehicle.getType())
+				.collect(Collectors.groupingBy(category -> category, Collectors.counting()))
+				.entrySet()
+				.forEach(entry -> log.info("nr of " + VehicleUtils.getHbefaVehicleCategory(entry.getKey().getEngineInformation()) + " vehicles running on " + VehicleUtils.getHbefaEmissionsConcept(entry.getKey().getEngineInformation())
+						+" = " + entry.getValue() + " (equals " + ((double)entry.getValue()/(double)totalVehicles) + "% overall)"));
+
+//		scenario.getVehicles().getVehicles().values().stream()
+//				.map(vehicle -> {
+//					return VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation()) == null ? "NONE" : VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation());
+//				})
+//				.collect(Collectors.groupingBy(category -> category, Collectors.counting()))
+//				.entrySet()
+//				.forEach(entry -> log.info("nr of " + entry.getKey() + " vehicles = " + entry.getValue() + " (equals " + ((double)entry.getValue()/(double)totalVehicles) + "%)"));
 	}
 
 	private Map<String, VehicleType> createAndAddVehicleTypesForAllEmissionConcepts(Scenario scenario, HbefaVehicleCategory hbefaVehicleCategory){
-
+		VehiclesFactory factory = scenario.getVehicles().getFactory();
 		Map<String,VehicleType> emissionConcept2VehicleType = new HashMap<>();
-		VehicleType petrolCarVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "petrol_" + hbefaVehicleCategory, hbefaVehicleCategory, "petrol (4S)");
-		VehicleType dieselCarVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "diesel_" + hbefaVehicleCategory, hbefaVehicleCategory, "diesel");
-		VehicleType cngHybridVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cngHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel CNG/petrol");
-		VehicleType lpgHybridVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lpgHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel LPG/petrol");
-		VehicleType electricVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "electric_" + hbefaVehicleCategory,hbefaVehicleCategory, "electricity");
-		VehicleType pluginHybridPetrolVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "pluginHybridPetrol_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid petrol/electric");
-		VehicleType pluginHybridDieselVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "pluginHybridDiesel_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid diesel/electric");
-		if(hbefaVehicleCategory.equals(HbefaVehicleCategory.HEAVY_GOODS_VEHICLE) || hbefaVehicleCategory.equals(HbefaVehicleCategory.LIGHT_COMMERCIAL_VEHICLE )){
-			VehicleType cngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "cng_" + hbefaVehicleCategory, hbefaVehicleCategory,"CNG");
-			VehicleType lngVehicleType = prepareAndAddVehicleType(scenario, emissionConcept2VehicleType, "lng_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG");
+		emissionConcept2VehicleType.put("petrol (4S)", prepareAndAddVehicleType(factory, "petrol_" + hbefaVehicleCategory, hbefaVehicleCategory, "petrol (4S)"));
+		emissionConcept2VehicleType.put("diesel", prepareAndAddVehicleType(factory, "diesel_" + hbefaVehicleCategory, hbefaVehicleCategory, "diesel"));
+		emissionConcept2VehicleType.put("bifuel CNG/petrol", prepareAndAddVehicleType(factory, "cngHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel CNG/petrol"));
+		emissionConcept2VehicleType.put("electricity", prepareAndAddVehicleType(factory, "electric_" + hbefaVehicleCategory,hbefaVehicleCategory, "electricity"));
+		emissionConcept2VehicleType.put("Plug-in Hybrid petrol/electric", prepareAndAddVehicleType(factory, "pluginHybridPetrol_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid petrol/electric"));
+		emissionConcept2VehicleType.put("Plug-in Hybrid diesel/electric", prepareAndAddVehicleType(factory, "pluginHybridDiesel_" + hbefaVehicleCategory, hbefaVehicleCategory,"Plug-in Hybrid diesel/electric"));
+
+		if(hbefaVehicleCategory.equals(HbefaVehicleCategory.PASSENGER_CAR)){
+			emissionConcept2VehicleType.put("bifuel LPG/petrol", prepareAndAddVehicleType(factory, "lpgHybrid_" + hbefaVehicleCategory, hbefaVehicleCategory,"bifuel LPG/petrol"));
 		}
+
+		//add vehicle types to the scenario
+		emissionConcept2VehicleType.values().forEach(vehicleType -> scenario.getVehicles().addVehicleType(vehicleType));
+
 		return emissionConcept2VehicleType;
 	}
 
-	/**
-	 * has side effects: adds the created vehicle types to both the scenario and emissionConcept2VehicleType
-	 * @param scenario
-	 * @param emissionConcept2VehicleType
-	 * @param vehicleTypeId
-	 * @param hbefaVehicleCategory
-	 * @param emissionsConcept
-	 * @return
-	 */
-	private VehicleType prepareAndAddVehicleType(Scenario scenario, Map<String, VehicleType> emissionConcept2VehicleType, String vehicleTypeId, HbefaVehicleCategory hbefaVehicleCategory, String emissionsConcept) {
-		VehicleType vehicleType = scenario.getVehicles().getFactory().createVehicleType(Id.create(vehicleTypeId, VehicleType.class));
+	private Map<String, VehicleType> createAndAddHeavyGoodsVehicleTypesForAllEmissionConcepts(Scenario scenario){
+		VehiclesFactory factory = scenario.getVehicles().getFactory();
+		HbefaVehicleCategory hbefaVehicleCategory = HbefaVehicleCategory.HEAVY_GOODS_VEHICLE;
+
+		Map<String,VehicleType> emissionConcept2VehicleType = new HashMap<>();
+			emissionConcept2VehicleType.put("diesel", prepareAndAddVehicleType(factory, "diesel_" + hbefaVehicleCategory, hbefaVehicleCategory, "diesel"));
+			emissionConcept2VehicleType.put("CNG", prepareAndAddVehicleType(factory, "cng_" + hbefaVehicleCategory, hbefaVehicleCategory,"CNG"));
+			emissionConcept2VehicleType.put("LNG", prepareAndAddVehicleType(factory, "lng_" + hbefaVehicleCategory, hbefaVehicleCategory,"LNG"));
+			emissionConcept2VehicleType.put("electricity", prepareAndAddVehicleType(factory, "electric_" + hbefaVehicleCategory,hbefaVehicleCategory, "electricity"));
+
+		//add vehicle types to the scenario
+		emissionConcept2VehicleType.values().forEach(vehicleType -> scenario.getVehicles().addVehicleType(vehicleType));
+
+		return emissionConcept2VehicleType;
+	}
+
+	private VehicleType prepareAndAddVehicleType(VehiclesFactory factory, String vehicleTypeId, HbefaVehicleCategory hbefaVehicleCategory, String emissionsConcept) {
+		VehicleType vehicleType = factory.createVehicleType(Id.create(vehicleTypeId, VehicleType.class));
 		EngineInformation engineInformation = vehicleType.getEngineInformation();
 		VehicleUtils.setHbefaVehicleCategory(engineInformation, hbefaVehicleCategory.toString());
 		VehicleUtils.setHbefaTechnology(engineInformation, "average");
 		VehicleUtils.setHbefaSizeClass(engineInformation, "average");
 		VehicleUtils.setHbefaEmissionsConcept(engineInformation, emissionsConcept);
-		scenario.getVehicles().addVehicleType(vehicleType);
-		emissionConcept2VehicleType.put(emissionsConcept,vehicleType);
 		return vehicleType;
 	}
 
 	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFile, Scenario scenario, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
-
-		int totalVehicles = scenario.getVehicles().getVehicles().size();
-		log.info("Total number of vehicles: " + totalVehicles);
-
-		scenario.getVehicles().getVehicles().values().stream()
-				.map(vehicle -> VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation()))
-				.collect(Collectors.groupingBy(category -> category, Collectors.counting()))
-				.entrySet()
-				.forEach(entry -> log.info("nr of " + entry.getKey() + " vehicles = " + entry.getValue() + " (equals " + (entry.getValue()/totalVehicles) + "%"));
 
 		log.info("Emission analysis completed.");
 
