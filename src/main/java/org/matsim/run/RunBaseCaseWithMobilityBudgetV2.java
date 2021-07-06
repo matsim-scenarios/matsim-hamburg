@@ -37,6 +37,9 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
     public static double totalSumMobilityBudget = 0;
     static double dailyMobilityBudget;
+    static boolean useIncomeForMobilityBudget = false;
+    static double shareOfIncome;
+
 
     public static void main(String[] args) throws ParseException, IOException {
 
@@ -57,7 +60,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
         controler.run();
-        log.info("Total paid sum MobBug: "+totalSumMobilityBudget);
+        log.info("Total paid sum MobBug: " + totalSumMobilityBudget);
         log.info("Done.");
     }
 
@@ -101,6 +104,17 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                 }
             }
         }
+
+        if (useIncomeForMobilityBudget == true) {
+            log.info("Using the income for the MobilityBudget");
+            for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
+                System.out.println(personId);
+                System.out.println(scenario.getPopulation().getPersons().get(personId).getAttributes().toString());
+                double incomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income");
+                dailyMobilityBudget = incomeOfAgent * shareOfIncome;
+                personsEligibleForMobilityBudget.replace(personId, dailyMobilityBudget);
+            }
+        }
         return scenario;
     }
 
@@ -109,14 +123,36 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         try {
             dailyMobilityBudget = Double.parseDouble(args[6]);
-        }
-        catch (NumberFormatException numberFormatException) {
+        } catch (NumberFormatException numberFormatException) {
+            log.warn("Setting dailyMobilityBudget to default of 10.0");
             dailyMobilityBudget = 10.0;
-        }
-        catch (NullPointerException nullPointerException) {
+        } catch (NullPointerException nullPointerException) {
+            log.warn("Setting dailyMobilityBudget to default of 10.0");
             dailyMobilityBudget = 10.0;
         }
         log.info(dailyMobilityBudget);
+
+      /*  try {
+            useIncomeForMobilityBudget = Boolean.parseBoolean(args[7]);
+        }
+        catch (IllegalArgumentException illegalArgumentException) {
+            useIncomeForMobilityBudget = false;
+        }
+        catch (NullPointerException nullPointerException) {
+            useIncomeForMobilityBudget = false;
+        }
+
+        try {
+            shareOfIncome =Double.parseDouble(args[8]);
+        }
+        catch (NumberFormatException numberFormatException) {
+            shareOfIncome = 0.10;
+        }
+        catch (NullPointerException nullPointerException) {
+            shareOfIncome = 0.10;
+        }*/
+
+
         return config;
     }
 }
