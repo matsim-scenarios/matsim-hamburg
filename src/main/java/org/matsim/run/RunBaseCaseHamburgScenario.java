@@ -1,17 +1,13 @@
 package org.matsim.run;
 
 
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
-import org.matsim.analysis.TransportPlanningMainModeIdentifier;
 import org.matsim.analysis.here.HereAPIControlerListener;
 import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
-import org.matsim.analysis.pt.PtValidator;
-import org.matsim.analysis.pt.PtValidatorConfigGroup;
-import org.matsim.analysis.pt.PtValidatorControlerListener;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -28,11 +24,12 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
-import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
+import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -89,7 +86,8 @@ public class RunBaseCaseHamburgScenario {
 
                 // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
+//                	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
+                    bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
             }
         });
