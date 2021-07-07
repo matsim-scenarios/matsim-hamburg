@@ -62,7 +62,7 @@ public class RunBaseCaseHamburgScenario {
         baseCaseHH.run(args);
     }
 
-    void run(String[] args) throws IOException {
+    private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);

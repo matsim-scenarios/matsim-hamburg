@@ -35,7 +35,7 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
                 "--config:HereAPITravelTimeValidation.numOfTrips", "5",
                 "--config:HereAPITravelTimeValidation.timeBin", "3600",
                 "--config:hamburgExperimental.useLinkBasedParkPressure", "true",
-                "--config:plans.inputPlansFile", "test-hamburg-freight.plans.xml",
+                "--config:plans.inputPlansFile", "test-hamburg-withIncome.plans.xml",
 
         };
 
@@ -51,9 +51,9 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
         HashMap<Id<Person>, Double> scoreStatsFromBaseCase = new HashMap<>();
         scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"), 115.34333505696776);
-        scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 8.333666666666666);
         scoreStatsFromBaseCase.put(Id.createPersonId("113f00"), 47.10954448365045);
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f02"), 127.86871825413606);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f02"), 125.53538492080273);
         scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"), 121.90659700031605);
 
         for (Person p : persons.values()) {

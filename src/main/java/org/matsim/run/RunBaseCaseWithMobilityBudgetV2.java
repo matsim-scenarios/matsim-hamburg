@@ -91,16 +91,17 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                 Plan plan = person.getSelectedPlan();
 
                 //TripStructureUtil get Legs
+                List<String> transportModeList = new ArrayList<>();
                 List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
                 for (TripStructureUtils.Trip trip: trips) {
                     List<Leg> listLegs = trip.getLegsOnly();
-                    List<String> transportModeList = new ArrayList<>();
                     for (Leg leg: listLegs) {
                         transportModeList.add(leg.getMode());
                     }
-                    if (!transportModeList.contains(TransportMode.car)) {
-                        personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
-                    }
+
+                }
+                if (!transportModeList.contains(TransportMode.car)) {
+                    personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
                 }
             }
         }
@@ -108,9 +109,8 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         if (useIncomeForMobilityBudget == true) {
             log.info("Using the income for the MobilityBudget");
             for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
-                System.out.println(personId);
-                System.out.println(scenario.getPopulation().getPersons().get(personId).getAttributes().toString());
-                double incomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income");
+                //divided by 30 because income is needed per day
+                double incomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/30;
                 dailyMobilityBudget = incomeOfAgent * shareOfIncome;
                 personsEligibleForMobilityBudget.replace(personId, dailyMobilityBudget);
             }

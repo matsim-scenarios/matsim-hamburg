@@ -52,7 +52,8 @@ public class RunHamburgScenarioMobilityBudgetTest {
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
         HashMap<Id<Person>, Double> scoreStatsFromBaseCase = new HashMap<>();
         scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"),115.34333505696776);
-        scoreStatsFromBaseCase.put(Id.createPersonId("113efb"),0.0);
+        //Agent stays at home the whole day so doesn´t use his car still gets the MobBud
+        scoreStatsFromBaseCase.put(Id.createPersonId("113efb"),10.0);
         scoreStatsFromBaseCase.put(Id.createPersonId("113f00"),47.10954448365045);
         scoreStatsFromBaseCase.put(Id.createPersonId("113f02"),127.86871825413606);
         scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"),121.90659700031605);
