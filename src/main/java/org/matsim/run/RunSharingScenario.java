@@ -2,7 +2,6 @@ package org.matsim.run;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
@@ -16,7 +15,8 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.router.*;
+import org.matsim.core.router.NetworkRoutingProvider;
+import org.matsim.core.router.TeleportationRoutingModule;
 import org.matsim.sharingFare.SharingFareHandler;
 import org.matsim.sharingFare.SharingFaresConfigGroup;
 import org.matsim.sharingFare.SharingServiceFaresConfigGroup;
@@ -81,7 +81,7 @@ public class RunSharingScenario {
                 //bc otherwise, the sharing module routing will be overwritten
                 addRoutingModuleBinding(SHARING_CAR_MODE).toProvider(new NetworkRoutingProvider(SHARING_CAR_MODE));
 
-                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = (PlansCalcRouteConfigGroup.ModeRoutingParams) controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
+                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
                 addRoutingModuleBinding(SHARING_BIKE_MODE).toInstance(new TeleportationRoutingModule(SHARING_BIKE_MODE,scenario,sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
             }
         });
@@ -116,7 +116,7 @@ public class RunSharingScenario {
         carSharingConfig.setId(SHARING_SERVICE_ID_CAR);
         carSharingConfig.setMaximumAccessEgressDistance(2000);
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
-        carSharingConfig.setServiceAreaShapeFile(null);
+        carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_scar.xml");
         carSharingConfig.setMode(SHARING_CAR_MODE);
 
@@ -127,7 +127,7 @@ public class RunSharingScenario {
         bikeSharingConfig.setId(SHARING_SERVICE_ID_BIKE);
         bikeSharingConfig.setMaximumAccessEgressDistance(1000);
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
-        bikeSharingConfig.setServiceAreaShapeFile(null);
+        bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_sbike.xml");
         bikeSharingConfig.setMode(SHARING_BIKE_MODE);
 
