@@ -69,8 +69,10 @@ import java.util.stream.Collectors;
 public class DrtFeederVehicleCreator {
 	private static final Logger log = Logger.getLogger(DrtFeederVehicleCreator.class);
 
-	private final CoordinateTransformation ct;
+	//NOTE: for emission analysis, it is important to include 'drt' in the vehicleId
+	public final static String VEHICLE_PREFIX = "drtFeeder_";
 
+	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
 	private final Random random = MatsimRandom.getRandom();
 	private final String drtNetworkMode = RunRealLabHH2030Scenario.DRT_FEEDER_MODE;
@@ -163,7 +165,7 @@ public class DrtFeederVehicleCreator {
 
 		for (int i = 0 ; i< amount; i++) {
 			Id<Link> linkId = weightedLinkDraw.sample();
-			vehicles.add(ImmutableDvrpVehicleSpecification.newBuilder().id(Id.create("drt" + i, DvrpVehicle.class))
+			vehicles.add(ImmutableDvrpVehicleSpecification.newBuilder().id(Id.create(VEHICLE_PREFIX + i, DvrpVehicle.class))
 					.startLinkId(linkId)
 					.capacity(seats)
 					.serviceBeginTime(Math.round(1))
@@ -267,7 +269,7 @@ public class DrtFeederVehicleCreator {
 			
 			if (i%100 == 0) log.info("#"+i);
 
-			vehicles.add(ImmutableDvrpVehicleSpecification.newBuilder().id(Id.create("drt" + i, DvrpVehicle.class))
+			vehicles.add(ImmutableDvrpVehicleSpecification.newBuilder().id(Id.create(VEHICLE_PREFIX + i, DvrpVehicle.class))
 					.startLinkId(link.getId())
 					.capacity(seats)
 					.serviceBeginTime(Math.round(1))
