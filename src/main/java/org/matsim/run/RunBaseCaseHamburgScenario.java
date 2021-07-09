@@ -39,7 +39,7 @@ import java.util.List;
 
 
 /**
- * @author zmeng
+ * @author zmeng, tschlenther
  */
 public class RunBaseCaseHamburgScenario {
 
@@ -81,12 +81,9 @@ public class RunBaseCaseHamburgScenario {
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
-                // use the sbb pt raptor router
-//                install( new SwissRailRaptorModule() );
 
                 // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-//                	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
             }
