@@ -37,7 +37,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
     public static double totalSumMobilityBudget = 0;
     static double dailyMobilityBudget;
-    static boolean useIncomeForMobilityBudget = false;
+    static boolean useIncomeForMobilityBudget;
     static double shareOfIncome;
 
 
@@ -66,7 +66,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
 
     public static Controler prepareControler(Scenario scenario) {
-
+        log.info("Preparing controler");
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
         MobilityBudgetEventHandlerV2 mobilityBudgetEventHandler = new MobilityBudgetEventHandlerV2(personsEligibleForMobilityBudget);
         controler.addOverridingModule(new AbstractModule() {
@@ -84,7 +84,8 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
         log.info("filtering population for mobilityBudget");
-
+        log.info("using income"+ useIncomeForMobilityBudget);
+        log.info("share of income"+shareOfIncome);
         for (Person person : scenario.getPopulation().getPersons().values()) {
             Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
@@ -107,7 +108,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         }
 
         if (useIncomeForMobilityBudget == true) {
-            log.info("Using the income for the MobilityBudget");
+            log.info("using the income for the MobilityBudget");
             for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
                 //divided by 30 because income is needed per day
                 double incomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/30;
@@ -119,7 +120,13 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
-        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
+        log.info("Preparing config");
+
+        useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
+        log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
+        shareOfIncome =Double.parseDouble(args[10]);
+        log.info("share of income: "+ shareOfIncome);
+
 
         try {
             dailyMobilityBudget = Double.parseDouble(args[6]);
@@ -130,28 +137,36 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             log.warn("Setting dailyMobilityBudget to default of 10.0");
             dailyMobilityBudget = 10.0;
         }
+
         log.info(dailyMobilityBudget);
 
-      /*  try {
-            useIncomeForMobilityBudget = Boolean.parseBoolean(args[7]);
+
+        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
+
+
+       /* try {
+            useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
         }
         catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using income for the MobilityBudget");
             useIncomeForMobilityBudget = false;
         }
         catch (NullPointerException nullPointerException) {
+            log.warn("Not using income for the MobilityBudget");
             useIncomeForMobilityBudget = false;
         }
 
         try {
-            shareOfIncome =Double.parseDouble(args[8]);
+            shareOfIncome =Double.parseDouble(args[10]);
         }
         catch (NumberFormatException numberFormatException) {
+            log.warn("Using default share of income for the MobilityBudget");
             shareOfIncome = 0.10;
         }
         catch (NullPointerException nullPointerException) {
+            log.warn("Using default share of income for the MobilityBudget");
             shareOfIncome = 0.10;
         }*/
-
 
         return config;
     }
