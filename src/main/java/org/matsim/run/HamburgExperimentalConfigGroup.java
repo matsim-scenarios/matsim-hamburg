@@ -18,6 +18,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
+    private static final String DRT_OPERATION_AREA = "drtOperationArea";
+    private static final String E_SCOOTER_SERVICE_AREA = "eScooterServiceArea";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -33,6 +35,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean increaseStorageCapacity = true;
     private boolean filterCommercial = false;
     private int sampleSize = 10;
+    private String drtOperationArea = null;
+    private String eScooterServiceArea = null;
 
     @StringGetter(Filter_Commercial)
     public boolean isFilterCommercial() {
@@ -116,5 +120,21 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     @StringSetter(FREE_SPEED_FACTOR)
     public void setFreeSpeedFactor(double freeSpeedFactor) {
         this.freeSpeedFactor = freeSpeedFactor;
+    }
+
+    @StringGetter(DRT_OPERATION_AREA)
+    public String getDrtOperationArea() {
+        return drtOperationArea;
+    }
+    @StringSetter(DRT_OPERATION_AREA)
+    public void setDrtOperationArea(String drtOperationArea) {      this.drtOperationArea = drtOperationArea;  }
+
+    @StringGetter(E_SCOOTER_SERVICE_AREA)
+    public String getEScooterServiceArea() {
+        return eScooterServiceArea;
+    }
+    @StringSetter(E_SCOOTER_SERVICE_AREA)
+    public void setEScooterServiceArea(String eScooterServiceArea) {
+        this.eScooterServiceArea = eScooterServiceArea;
     }
 }

@@ -14,10 +14,16 @@ import org.matsim.vehicles.Vehicle;
 
 import java.util.HashMap;
 
-public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler {
+public class PtValidator implements VehicleArrivesAtFacilityEventHandler,  PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler {
 
-    HashMap<Id<Person>, MyPerson> ptUsageMap = new HashMap<>();
+    HashMap<Id<Person>, PtPassenger> ptUsageMap = new HashMap<>();
     HashMap<Id<Vehicle>, Id<TransitStopFacility>> movingVehicle = new HashMap<>();
+
+    @Override
+    public void reset(int iteration) {
+        ptUsageMap.clear();
+        movingVehicle.clear();
+    }
 
     @Override
     public void handleEvent(VehicleArrivesAtFacilityEvent event) {
@@ -35,23 +41,23 @@ public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  Pe
         }
         if (vehicleId.toString().contains("tr")) {
             if (ptUsageMap.containsKey(personId)) {
-                MyPerson myPerson = ptUsageMap.get(personId);
-                if (myPerson.isUsingPt()) {
+                PtPassenger ptPassenger = ptUsageMap.get(personId);
+                if (ptPassenger.isUsingPt()) {
                     try {
                         throw new Exception("already using pt");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                myPerson.setUsingPt(true);
+                ptPassenger.setUsingPt(true);
                 Id<TransitStopFacility> startStation = movingVehicle.get(vehicleId);
-                myPerson.setStartStation(startStation);
+                ptPassenger.setStartStation(startStation);
             } else {
-                MyPerson myPerson = new MyPerson(personId);
-                ptUsageMap.put(personId, myPerson);
-                myPerson.setUsingPt(true);
+                PtPassenger ptPassenger = new PtPassenger(personId);
+                ptUsageMap.put(personId, ptPassenger);
+                ptPassenger.setUsingPt(true);
                 Id<TransitStopFacility> startStation = movingVehicle.get(vehicleId);
-                myPerson.setStartStation(startStation);
+                ptPassenger.setStartStation(startStation);
             }
         }
     }
@@ -64,8 +70,8 @@ public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  Pe
             return;
         }
         if (vehicleId.toString().contains("tr")) {
-            MyPerson myPerson = ptUsageMap.get(personId);
-            if (!myPerson.isUsingPt()) {
+            PtPassenger ptPassenger = ptUsageMap.get(personId);
+            if (!ptPassenger.isUsingPt()) {
                 try {
                     throw new Exception("should already using pt");
                 } catch (Exception e) {
@@ -73,12 +79,12 @@ public class MyEventHandler implements VehicleArrivesAtFacilityEventHandler,  Pe
                 }
             }
             Id<TransitStopFacility> endStation = movingVehicle.get(vehicleId);
-            myPerson.addTransitUsage(myPerson.getStartStation(), endStation, vehicleId);
-            myPerson.setUsingPt(false);
+            ptPassenger.addTransitUsage(ptPassenger.getStartStation(), endStation, vehicleId);
+            ptPassenger.setUsingPt(false);
         }
     }
 
-    public HashMap<Id<Person>, MyPerson> getPtUsageMap() {
+    public HashMap<Id<Person>, PtPassenger> getPtUsageMap() {
         return ptUsageMap;
     }
 }

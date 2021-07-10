@@ -30,7 +30,7 @@ Handling of large files within git is not without problems (git lfs files are no
 ##### Run VIA on output files
 
 1. Get VIA from https://www.simunto.com/via/.  (There is a free license for a small number of agents; that will probably work but only display a small number of vehicles/agents.)
-1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/.
+1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1/.
 1. Inside there, decide for a scenario that you find interesting (e.g. hamburg-v1.1-10pct) and go into that directory. look for an `output-*` directory that you find interesting and go into that directory.
 1. Download `*.output_network.xml.gz` and `*.output_events.xml.gz`.  Best make sure that they do not uncompress, e.g. by "Download linked file as ...".
 1. Get these files into VIA.  This can be achieved in various ways; one is to open VIA and then drag the files from a file browser into VIA.
@@ -93,4 +93,4 @@ For more information about MATSim, see here: https://www.matsim.org/.
 
 ### Acknowledgements
 
-The travel demand data for area of Hamburg is provided by Senozon Deutschland GmbH (https://senozon.com).
+The travel demand data for the area of Hamburg is provided by Senozon Deutschland GmbH (https://senozon.com).

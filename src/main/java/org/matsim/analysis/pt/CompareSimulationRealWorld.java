@@ -28,12 +28,12 @@ public class CompareSimulationRealWorld {
 		String outputMissingStationsDirectory = args[4];
 		
 		
-		
+		//
 		LinkedHashMap<String, LinkedHashMap<String, PersonCounts>> realWordCountsData = readRealWorldData(
 				realWordCountsDirectory);
 		LinkedHashMap<String, String> mapLineToYear = ReadPtCounts.mapLineNoYear(realWordCountsDirectory);
 		HashMap<String, MyTransitObject> transitScheduleData = PtFromEventsFile.readTransitSchedule(transitScheduleFile);
-		HashMap<Id<Person>, MyPerson> simResults = PtFromEventsFile.readSimulationData(eventsFile);
+		HashMap<Id<Person>, PtPassenger> simResults = PtFromEventsFile.readSimulationData(eventsFile);
 		HashMap<Id<Vehicle>, String> vehicleLines = mapVehicleIdToLineNo(transitScheduleData, simResults);
 		ArrayList<String> simulationLines = new ArrayList<String>();
 		ArrayList<String> simulationLinesMatchingRealWorld = new ArrayList<String>();
@@ -43,7 +43,7 @@ public class CompareSimulationRealWorld {
 
 		for (Id<Person> key : simResults.keySet()) {
 
-			for (MyPerson.MyTransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
+			for (PtPassenger.TransitUsage personTransitUsage : simResults.get(key).getTransitUsageList()) {
 				String lineNo = vehicleLines.get(personTransitUsage.getVehicleId());
 				// transit contains all stations and corresponding person counts
 				LinkedHashMap<String, PersonCounts> transit = realWordCountsData.get(lineNo);
@@ -408,11 +408,11 @@ public class CompareSimulationRealWorld {
 	
 	
 	private static HashMap<Id<Vehicle>, String> mapVehicleIdToLineNo(
-			HashMap<String, MyTransitObject> transitScheduleData, HashMap<Id<Person>, MyPerson> simResults) {
+			HashMap<String, MyTransitObject> transitScheduleData, HashMap<Id<Person>, PtPassenger> simResults) {
 
 		HashMap<Id<Vehicle>, String> vehicleLines = new HashMap<Id<Vehicle>, String>();
-		for (MyPerson personTest : simResults.values()) {
-			for (MyPerson.MyTransitUsage personTransitUsage : personTest.getTransitUsageList()) {
+		for (PtPassenger personTest : simResults.values()) {
+			for (PtPassenger.TransitUsage personTransitUsage : personTest.getTransitUsageList()) {
 				Id<Vehicle> vehileId = personTransitUsage.getVehicleId();
 				for (MyTransitObject transitObject : transitScheduleData.values()) {
 					List<String> vehicles = transitObject.getVehicles();

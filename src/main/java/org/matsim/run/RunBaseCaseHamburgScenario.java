@@ -1,7 +1,7 @@
 package org.matsim.run;
 
 
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
@@ -25,9 +25,11 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
+import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -37,7 +39,7 @@ import java.util.List;
 
 
 /**
- * @author zmeng
+ * @author zmeng, tschlenther
  */
 public class RunBaseCaseHamburgScenario {
 
@@ -73,24 +75,16 @@ public class RunBaseCaseHamburgScenario {
         log.info("Done.");
     }
 
-
     public static Controler prepareControler(Scenario scenario) {
         Controler controler = new Controler(scenario);
 
-        // use the sbb pt raptor router
-        controler.addOverridingModule( new AbstractModule() {
-            @Override
-            public void install() {
-                install( new SwissRailRaptorModule() );
-            }
-        } );
-
-        // use PersonIncomeSpecificScoringFunction if is needed
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
+
+                // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                	this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
+                    bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
             }
         });
@@ -107,6 +101,15 @@ public class RunBaseCaseHamburgScenario {
             }
         });
 
+        // use pt validation
+//        controler.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                PtValidator ptValidator = new PtValidator();
+//                this.addEventHandlerBinding().toInstance(ptValidator);
+//                this.addControlerListenerBinding().toInstance(new PtValidatorControlerListener(ptValidator));
+//            };
+//        });
 
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -160,7 +163,8 @@ public class RunBaseCaseHamburgScenario {
             person.setSelectedPlan(selectedPlan);
         }
 
-        // increase flowspeed for links, where flowspeed lower than 50kmh
+        // increase flowspeed for links, where flowspeed lower than 25kmh
+        // bc HERE validation has shown that vehicles travel faster in reality
         for (Link link : scenario.getNetwork().getLinks().values()) {
             if (link.getFreespeed() < 25.5 / 3.6) {
                 link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeSpeedFactor());

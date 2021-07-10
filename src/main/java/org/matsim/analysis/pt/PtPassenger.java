@@ -8,14 +8,14 @@ import org.matsim.vehicles.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyPerson {
+public class PtPassenger {
 
     private final Id<Person> id;
     private boolean usingPt = false;
     private Id<TransitStopFacility> startStation;
-    private List<MyTransitUsage> transitUsageList = new ArrayList<>();
+    private List<TransitUsage> transitUsageList = new ArrayList<>();
 
-    MyPerson(Id<Person> id) {
+    PtPassenger(Id<Person> id) {
         this.id = id;
     }
 
@@ -30,11 +30,11 @@ public class MyPerson {
     }
 
     public void addTransitUsage(Id<TransitStopFacility> startStation, Id<TransitStopFacility> endStation, Id<Vehicle> vehicleId) {
-        MyTransitUsage transitUsage = new MyTransitUsage(startStation, endStation, vehicleId);
+        TransitUsage transitUsage = new TransitUsage(startStation, endStation, vehicleId);
         transitUsageList.add(transitUsage);
     }
 
-    public List<MyTransitUsage> getTransitUsageList() {
+    public List<TransitUsage> getTransitUsageList() {
         return transitUsageList;
     }
 
@@ -46,13 +46,13 @@ public class MyPerson {
         this.usingPt = usingPt;
     }
 
-    class MyTransitUsage {
+    class TransitUsage {
 
         private final Id<TransitStopFacility> startStation;
         private final Id<TransitStopFacility> endStation;
         private final Id<Vehicle> vehicleId;
 
-        MyTransitUsage (Id<TransitStopFacility> startStation, Id<TransitStopFacility> endStation, Id<Vehicle> vehicleId) {
+        TransitUsage(Id<TransitStopFacility> startStation, Id<TransitStopFacility> endStation, Id<Vehicle> vehicleId) {
             this.startStation = startStation;
             this.endStation = endStation;
             this.vehicleId = vehicleId;

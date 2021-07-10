@@ -4,13 +4,17 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>1.1</version>
+    <version>2.x-SNAPSHOT</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <matsim.version>13.0</matsim.version>
+        <matsim.version>14.0-PR1568</matsim.version>
+
+        <!--        <matsim.version>13.0</matsim.version>-->
+<!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
+
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
     </properties>
 
@@ -59,7 +63,7 @@
             <groupId>org.matsim.contrib</groupId>
             <artifactId>dvrp</artifactId>
             <version>${matsim.version}</version>
-            <scope>compile</scope>
+<!--            <scope>compile</scope>-->
         </dependency>
 
         <dependency>
@@ -171,6 +175,12 @@
             <version>master-933a6dd4ce-1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.matsim-vsp</groupId>
+            <artifactId>pt-extensions</artifactId>
+            <version>67dec05d3b</version>
+        </dependency>
+
         <!-- Command line parser -->
         <dependency>
             <groupId>info.picocli</groupId>
@@ -197,6 +207,13 @@
             </exclusions>
 
         </dependency>
+
+        <dependency>
+            <groupId>com.github.eqasim-org</groupId>
+            <artifactId>matsim-sharing</artifactId>
+            <version>757c51944b</version>
+        </dependency>
+
     </dependencies>
 
     <build>
