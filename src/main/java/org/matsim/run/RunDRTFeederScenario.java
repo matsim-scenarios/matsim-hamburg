@@ -37,16 +37,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author zmeng
+ * @author tschlenther
  */
-public class RunRealLabHH2030Scenario {
+public class RunDRTFeederScenario {
 
-    private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
+    private static final Logger log = Logger.getLogger(RunDRTFeederScenario.class);
 
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
-    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
+    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/hamburg-v2.0-drt-feeder-service-areas.shp";
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 
@@ -60,7 +60,7 @@ public class RunRealLabHH2030Scenario {
             args = new String[] {"scenarios/input/hamburg-v1.1-1pct.config.xml"};
         }
 
-        RunRealLabHH2030Scenario realLabHH2030 = new RunRealLabHH2030Scenario();
+        RunDRTFeederScenario realLabHH2030 = new RunDRTFeederScenario();
         realLabHH2030.run(args);
     }
 
@@ -200,11 +200,11 @@ public class RunRealLabHH2030Scenario {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(config).getModalElements()) {
-
-                // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
-                // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
-                // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
             //TODO: this is not the best solution
+
+            // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
+            // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
+            // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
             if(hamburgExperimentalConfigGroup.getDrtOperationArea() != null){
                 addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtOperationArea(), 0.);
             }
@@ -216,7 +216,7 @@ public class RunRealLabHH2030Scenario {
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
                         drtCfg.getDrtServiceAreaShapeFile(),
                         /* "stopFilter", "station_S/U/RE/RB",*/
-                        50.0); //
+                        0.); //
             }
         }
         return scenario;

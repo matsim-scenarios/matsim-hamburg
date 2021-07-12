@@ -52,7 +52,7 @@ import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.facilities.MatsimFacilitiesReader;
 import org.matsim.run.HamburgShpUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.matsim.run.RunRealLabHH2030Scenario;
+import org.matsim.run.RunDRTFeederScenario;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,7 +75,7 @@ public class DrtFeederVehicleCreator {
 	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
 	private final Random random = MatsimRandom.getRandom();
-	private final String drtNetworkMode = RunRealLabHH2030Scenario.DRT_FEEDER_MODE;
+	private final String drtNetworkMode = RunDRTFeederScenario.DRT_FEEDER_MODE;
 	private final HamburgShpUtils shpUtils;
 	private final Network drtNetwork;
 	private List<Pair<Id<Link>, Double>> links2weights = new ArrayList();
@@ -147,7 +147,7 @@ public class DrtFeederVehicleCreator {
 		shpUtils = new HamburgShpUtils(drtServiceAreaShapeFile);
 
 		//prepare network
-		RunRealLabHH2030Scenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
+		RunDRTFeederScenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
 		Set<String> modes = new HashSet<>();
 		modes.add(drtNetworkMode);
 		drtNetwork = NetworkUtils.createNetwork();

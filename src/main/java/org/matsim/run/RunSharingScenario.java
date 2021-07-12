@@ -27,11 +27,11 @@ import java.text.ParseException;
 import java.util.*;
 
 /**
- * @author zmeng
+ * @author zmeng, tschlenther
  */
 public class RunSharingScenario {
 
-    private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
+    private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
     public static final String VERSION = "v2.0";
 
