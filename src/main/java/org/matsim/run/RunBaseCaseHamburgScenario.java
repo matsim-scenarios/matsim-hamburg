@@ -88,12 +88,7 @@ public class RunBaseCaseHamburgScenario {
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
                //use custom AnalysisMainModeIdentifier
-                controler.addOverridingModule(new AbstractModule() {
-                    @Override
-                    public void install() {
-                        bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
-                    }
-                });
+                bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
 
             }
         });
