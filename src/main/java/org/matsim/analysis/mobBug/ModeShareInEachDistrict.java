@@ -1,4 +1,4 @@
-package org.matsim.analysis;
+package org.matsim.analysis.mobBug;
 
 /* *********************************************************************** *
  * project: org.matsim.*

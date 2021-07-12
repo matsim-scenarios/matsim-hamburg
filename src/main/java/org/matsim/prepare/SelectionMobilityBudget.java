@@ -1,14 +1,10 @@
 package org.matsim.prepare;
 
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Population;
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.population.io.PopulationReader;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.utils.gis.ShapeFileReader;
 import org.opengis.feature.simple.SimpleFeature;
@@ -17,10 +13,6 @@ import org.opengis.geometry.BoundingBox;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 
@@ -35,10 +27,6 @@ public class SelectionMobilityBudget {
         //HashMap<Id, Double> idDoubleHashMap = filterForRegion(population, shapeFile);
         HashMap<Id, Double> idDoubleHashMap = incomeBasedSelection(population, 10.0);
     }
-
-
-
-
 
     static HashMap<Id, Double> filterForRegion(Population population, String shapeFile) {
 

@@ -101,7 +101,8 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                     }
 
                 }
-                if (!transportModeList.contains(TransportMode.car)) {
+                //@TS this before was if not contains didnt make sense to me why was that?
+                if (transportModeList.contains(TransportMode.car)) {
                     personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
                 }
             }

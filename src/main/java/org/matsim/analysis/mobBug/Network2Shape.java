@@ -1,21 +1,20 @@
-package org.matsim.analysis;
+package org.matsim.analysis.mobBug;
 
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
-import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.gis.PolylineFeatureFactory;
 import org.matsim.core.utils.gis.ShapeFileWriter;
 import org.opengis.feature.simple.SimpleFeature;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Network2Shape {
     private final static Logger log = Logger.getLogger(Network2Shape.class);
