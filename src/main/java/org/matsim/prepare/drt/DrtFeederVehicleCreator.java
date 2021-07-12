@@ -89,14 +89,14 @@ public class DrtFeederVehicleCreator {
 		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
-		String drtServiceAreaShapeFile = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
+		String drtServiceAreaShapeFile = RunDRTFeederScenario.DRT_FEEDER_SERVICE_AREA;
 		//where vehicles are allowed to drive
 		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-		String vehiclesFilePrefix = "hamburg-v2.0-drt-feeder-by-rndLocations-";
+		String vehiclesFilePrefix = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
 		numbersOfVehicles.add(20);

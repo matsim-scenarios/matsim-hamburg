@@ -24,6 +24,7 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
@@ -86,6 +87,14 @@ public class RunBaseCaseHamburgScenario {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
+               //use custom AnalysisMainModeIdentifier
+                controler.addOverridingModule(new AbstractModule() {
+                    @Override
+                    public void install() {
+                        bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
+                    }
+                });
+
             }
         });
         // use HereApiValidator if is needed

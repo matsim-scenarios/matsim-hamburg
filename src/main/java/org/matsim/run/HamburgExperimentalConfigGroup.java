@@ -26,7 +26,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     }
 
     private double populationDownsampleFactor = 1.0;
-    private boolean usePersonIncomeBasedScoring = false;
+    private boolean usePersonIncomeBasedScoring = true;
     private double freeSpeedFactor = 1.;
     private boolean useLinkBasedParkPressure = false;
     private String parkPressureLinkAttributeFile = null;

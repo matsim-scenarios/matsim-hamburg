@@ -19,6 +19,7 @@ import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
@@ -46,7 +47,8 @@ public class RunDRTFeederScenario {
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
-    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/hamburg-v2.0-drt-feeder-service-areas.shp";
+    public static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+    private static final String DRT_FEEDER_VEHICLES = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 
@@ -93,9 +95,9 @@ public class RunDRTFeederScenario {
                 // So we need our own main mode indentifier which replaces both :-(
                 //TODO: write our hamburg mainModeIdentifier,which can deal with all the pt+x(s)
 
-                //HamburgFreightMainModeIdentifier was already bound
+                //HamburgAnalysisMainModeIdentifier was already bound
 //                bind(MainModeIdentifier.class).toInstance(new TransportPlanningMainModeIdentifier());
-//                bind(AnalysisMainModeIdentifier.class).to(HamburgFreightMainModeIdentifier.class);
+//                bind(AnalysisMainModeIdentifier.class).to(HamburgAnalysisMainModeIdentifier.class);
 
                 //need to bind this in another overriding module than in the module where we install the SwissRailRaptorModule
                 bind(RaptorIntermodalAccessEgress.class).to(EnhancedRaptorIntermodalAccessEgress.class);
@@ -159,13 +161,12 @@ public class RunDRTFeederScenario {
         hamburgExperimentalConfigGroup.setDrtOperationArea(ALL_DRT_OPERATION_AREA);
 
         //fleet
-        drtFeederCfg.setVehiclesFile("D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz");
+        drtFeederCfg.setVehiclesFile(DRT_FEEDER_VEHICLES);
 
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
         drtFeederCfg.setMaxTravelTimeBeta(120);
         drtFeederCfg.setStopDuration(60);
-
         drtFeederCfg.addDrtInsertionSearchParams(new ExtensiveInsertionSearchParams());
 
         multiModeDrtCfg.addDrtConfig(drtFeederCfg);
@@ -179,6 +180,10 @@ public class RunDRTFeederScenario {
 
         //add drt stage activities
         DrtConfigs.adjustMultiModeDrtConfig(multiModeDrtCfg, config.planCalcScore(), config.plansCalcRoute());
+
+        //add mode params
+        PlanCalcScoreConfigGroup.ModeParams modeParams = new PlanCalcScoreConfigGroup.ModeParams(DRT_FEEDER_MODE);
+        config.planCalcScore().addModeParams(modeParams);
 
         //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
