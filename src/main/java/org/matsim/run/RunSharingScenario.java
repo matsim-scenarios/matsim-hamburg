@@ -50,7 +50,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/sharing/hamburg-v2.0-10pct-sharing.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();
@@ -195,6 +195,9 @@ public class RunSharingScenario {
         List<String> subtourModes = new ArrayList(Arrays.asList(config.subtourModeChoice().getModes()));
         modes.add(SharingUtils.getServiceMode(carSharingConfig));
         modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
+
+        //set new vehicles file
+        config.vehicles().setVehiclesFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2-vehicle-types.xml");
 
         return config;
     }
