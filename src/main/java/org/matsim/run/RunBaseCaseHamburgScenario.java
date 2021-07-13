@@ -200,9 +200,9 @@ public class RunBaseCaseHamburgScenario {
             for (Id<Person> personId: personIds) {
                 scenario.getPopulation().removePerson(personId);
             }
-        } else
+        } else {
             AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
-
+        }
 
 
         if (hamburgExperimentalConfigGroup.isIncreaseStorageCapacity()) {
