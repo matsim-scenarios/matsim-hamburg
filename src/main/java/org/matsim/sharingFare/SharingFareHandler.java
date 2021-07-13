@@ -16,7 +16,6 @@ import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
 import org.matsim.contrib.sharing.service.events.SharingPickupEvent;
 import org.matsim.contrib.sharing.service.events.SharingPickupEventHandler;
 import org.matsim.core.api.experimental.events.EventsManager;
-import org.matsim.core.config.Config;
 
 import java.util.*;
 
@@ -42,10 +41,10 @@ public class SharingFareHandler implements LinkEnterEventHandler, ActivityEndEve
 
     private SharingServiceFaresConfigGroup sharingServiceFaresConfigGroup;
     private SharingServiceConfigGroup sharingServiceConfigGroup;
-    private String serviceId;
+    private final String serviceId;
     private String mode;
-    private Map<Id<Person>, sharingTrip> sharingTrips = new HashMap<>();
-    private Set<Id<Person>> sharingCustomers = new HashSet<>();
+    private final Map<Id<Person>, sharingTrip> sharingTrips = new HashMap<>();
+    private final Set<Id<Person>> sharingCustomers = new HashSet<>();
 
     public SharingFareHandler(String serviceId) {
         this.serviceId = serviceId;
@@ -78,7 +77,7 @@ public class SharingFareHandler implements LinkEnterEventHandler, ActivityEndEve
             if(!this.sharingTrips.containsKey(event.getPersonId()))
                 throw new RuntimeException("person " + event.getPersonId() + " has no pick up event");
             else {
-                this.sharingTrips.get(event.getPersonId()).setDropoffEvent(event);
+                this.sharingTrips.get(event.getPersonId()).setDropoffEvent(event); //TODO this breaks if one person has several sharing trips. and more importantly, it breaks more or less silently (simulation goes on)
                 this.sharingCustomers.remove(event.getPersonId());
             }
         }
@@ -87,7 +86,7 @@ public class SharingFareHandler implements LinkEnterEventHandler, ActivityEndEve
     @Override
     public void handleEvent(LinkEnterEvent event) {
         if(sharingTrips.containsKey(event.getVehicleId()))
-            sharingTrips.get(event.getVehicleId()).addLink(event.getLinkId());
+            sharingTrips.get(event.getVehicleId()).addLink(event.getLinkId()); //TODO this breaks if one person has several sharing trips. and more importantly, it breaks more or less silently (simulation goes on)
     }
 
     @Override

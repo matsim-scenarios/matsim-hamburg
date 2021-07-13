@@ -211,7 +211,7 @@
         <dependency>
             <groupId>com.github.eqasim-org</groupId>
             <artifactId>matsim-sharing</artifactId>
-            <version>757c51944b</version>
+            <version>792a5147ef</version>
         </dependency>
 
     </dependencies>
