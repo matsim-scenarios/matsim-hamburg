@@ -8,6 +8,7 @@ import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
 import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
+import org.matsim.analysis.personMoney.PersonMoneyEventsAnalysisModule;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -90,6 +91,8 @@ public class RunBaseCaseHamburgScenario {
                //use custom AnalysisMainModeIdentifier
                 bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
 
+                //analyse PersonMoneyEvents
+                install(new PersonMoneyEventsAnalysisModule());
             }
         });
         // use HereApiValidator if is needed
