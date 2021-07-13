@@ -18,9 +18,7 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.NetworkRoutingProvider;
 import org.matsim.core.router.TeleportationRoutingModule;
-import org.matsim.sharingFare.SharingFareHandler;
 import org.matsim.sharingFare.SharingFaresConfigGroup;
-import org.matsim.sharingFare.TeleportedSharingFareHandler;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -89,13 +87,13 @@ public class RunSharingScenario {
         controler.addOverridingModule(new SharingModule());
         controler.configureQSimComponents(SharingUtils.configureQSim(ConfigUtils.addOrGetModule(scenario.getConfig(),SharingConfigGroup.class)));
 
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.addEventHandlerBinding().toInstance(new SharingFareHandler(SHARING_SERVICE_ID_CAR));
-                this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler(SHARING_SERVICE_ID_BIKE));
-            }
-        });
+//        controler.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                this.addEventHandlerBinding().toInstance(new SharingFareHandler(SHARING_SERVICE_ID_CAR));
+//                this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler(SHARING_SERVICE_ID_BIKE));
+//            }
+//        });
 
 
         return controler;
@@ -213,7 +211,7 @@ public class RunSharingScenario {
             //these values are set according to shareNow fares ass of July 2021
             carSharingConfig.setBaseFare(0.);
             carSharingConfig.setMinimumFare(0.);
-            carSharingConfig.setTimeFare( (0.09 / 60.) ); //per second. maybe is some kinf of special tarif and we should rather use 0.28€/min
+            carSharingConfig.setTimeFare( (0.09 / 60.) ); //per second. maybe is some kind of special tariff and we should rather use 0.28€/min
             carSharingConfig.setDistanceFare(0.);
 
             //these values are set according to stadtrad fares ass of July 2021
