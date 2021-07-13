@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.drt.fare.DrtFareParams;
 import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
@@ -69,6 +70,11 @@ public class RunDRTFeederScenario {
     private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
+
+        //TODO
+        //set real (1pct) input plans
+        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
+
         Scenario scenario = prepareScenario(config);
 
         Controler controler = prepareControler(scenario);
@@ -163,6 +169,15 @@ public class RunDRTFeederScenario {
         //fleet
         drtFeederCfg.setVehiclesFile(DRT_FEEDER_VEHICLES);
 
+        //fare
+        DrtFareParams drtFeederFareParams = new DrtFareParams();
+        drtFeederFareParams.setBasefare(1.);
+        drtFeederFareParams.setDistanceFare_m(0.);
+        drtFeederFareParams.setTimeFare_h(0.);
+        drtFeederFareParams.setMinFarePerTrip(1.);
+        drtFeederFareParams.setDailySubscriptionFee(0.);
+        drtFeederCfg.addParameterSet(drtFeederFareParams);
+
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
         drtFeederCfg.setMaxTravelTimeBeta(120);
@@ -188,15 +203,15 @@ public class RunDRTFeederScenario {
         //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
-        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet params = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
-        params.setMode(DRT_FEEDER_MODE);
-        params.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
-        params.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet accessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        accessEgressParameterSet.setMode(DRT_FEEDER_MODE);
+        accessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        accessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
         //TODO these values were recommended by GL based on his experiences for Berlin
-        params.setInitialSearchRadius(3_000);
-        params.setSearchExtensionRadius(1_000);
-        params.setMaxRadius(20_000);
-        swissRailRaptorConfigGroup.addIntermodalAccessEgress(params);
+        accessEgressParameterSet.setInitialSearchRadius(3_000);
+        accessEgressParameterSet.setSearchExtensionRadius(1_000);
+        accessEgressParameterSet.setMaxRadius(20_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(accessEgressParameterSet);
 
         return config;
     }
