@@ -212,6 +212,10 @@
                     <groupId>org.matsim</groupId>
                     <artifactId>matsim</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.matsim</groupId>
+                    <artifactId>matsim-examples</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
