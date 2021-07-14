@@ -123,9 +123,11 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
 
-        useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
+        useIncomeForMobilityBudget = false;
+        //useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
+
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
-        shareOfIncome =Double.parseDouble(args[10]);
+        //shareOfIncome =Double.parseDouble(args[10]);
         log.info("share of income: "+ shareOfIncome);
 
 

@@ -38,8 +38,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
                 "--config:HereAPITravelTimeValidation.numOfTrips","5",
                 "--config:HereAPITravelTimeValidation.timeBin","3600",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
-                "--config:plans.inputPlansFile" , "test-hamburg-freight.plans.xml",
-
+                "--config:plans.inputPlansFile" , "test/input/plans/test-hamburg-freight.plans.xml",
         };
 
         Config config = prepareConfig(args);

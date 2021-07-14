@@ -41,7 +41,7 @@ public class RunHamburgScenarioTest {
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "test-hamburg.plans.xml",
+                "--config:plans.inputPlansFile" , "test-hamburg-freight.plans.xml",
 
         };
 
