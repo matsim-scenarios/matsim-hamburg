@@ -3,12 +3,12 @@
 ## CompareSimulationRealWorld ---> main method call
 
 passing the following parameters as arguments
-transitScheduleFile
-eventsFile
-realWorldCountsDirectory
-outputResultsDirectory
-outputMissingStationsDirectory
-scalingFactor
+* transitScheduleFile
+* eventsFile
+* realWorldCountsDirectory
+* outputResultsDirectory
+* outputMissingStationsDirectory
+* scalingFactor
 
 ---
 
@@ -66,6 +66,8 @@ Here we compare the vehicle id of the transit usage of persons with transit sche
 * If both of start station and end station is missing in real world it is tracked using MissingStationPersonCounts object and added in 'HashMap<String, LinkedHashMap<String, MissingStationPersonCounts>> missingStation' where key is line no: and LinkedHashMap<String, MissingStationPersonCounts> key is station
 
 
+*Note: In many cases real world and simulations has same stations but the string is not exactly same eg: Parkstraße/Elbchaussee (simulation), Parkstraße / Elbchaussee (real world), here there is a space after the name in real world but not in sim, such many scenarios are there which cannot be handled here, such station are considered non matching
+
 
 In the end print results files,
 * File 1: missingStations.csv
@@ -74,8 +76,7 @@ This file contains lines which has stations not matching with real world
 * File 2: results.csv
 This file cotains lines which has stations exactly matching with real world
 
-*Note: In many cases real world and simulations has same stations but the string is not exactly same eg: Parkstraße/Elbchaussee (simulation), Parkstraße / Elbchaussee (real world), here there is a space after the name in real world but not in sim, such many scenarios are there which cannot be handled here, such station are considered non matching
-
+---
 
 * Charts are drawn with the same data used for generating csv files.
 
