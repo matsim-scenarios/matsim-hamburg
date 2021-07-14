@@ -185,6 +185,17 @@
             <groupId>com.github.matsim-vsp</groupId>
             <artifactId>matsim-analysis</artifactId>
             <version>master-933a6dd4ce-1</version>
+            <exclusions>
+                <!-- Will pull old drt version -->
+                <exclusion>
+                    <groupId>org.matsim.contrib</groupId>
+                    <artifactId>drt</artifactId>
+                </exclusion>
+                    <exclusion>
+                        <groupId>org.matsim.contrib</groupId>
+                        <artifactId>dvrp</artifactId>
+                    </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -196,6 +207,10 @@
                 <exclusion>
                     <groupId>org.matsim.contrib</groupId>
                     <artifactId>drt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.matsim</groupId>
+                    <artifactId>matsim</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -231,6 +246,12 @@
             <groupId>com.github.eqasim-org</groupId>
             <artifactId>matsim-sharing</artifactId>
             <version>792a5147ef</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.matsim.contrib</groupId>
+                    <artifactId>dvrp</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
