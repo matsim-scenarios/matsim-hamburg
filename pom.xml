@@ -119,6 +119,12 @@
             <groupId>org.matsim.contrib</groupId>
             <artifactId>application</artifactId>
             <version>${matsim.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.matsim-vsp</groupId>
+                    <artifactId>matsim-analysis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
