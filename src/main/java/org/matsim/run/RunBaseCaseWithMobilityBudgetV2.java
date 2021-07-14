@@ -134,11 +134,11 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         try {
             dailyMobilityBudget = Double.parseDouble(args[6]);
         } catch (NumberFormatException numberFormatException) {
-            log.warn("Setting dailyMobilityBudget to default of 10.0");
-            dailyMobilityBudget = 10.0;
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 100.0;
         } catch (NullPointerException nullPointerException) {
-            log.warn("Setting dailyMobilityBudget to default of 10.0");
-            dailyMobilityBudget = 10.0;
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 100.0;
         }
 
         log.info(dailyMobilityBudget);

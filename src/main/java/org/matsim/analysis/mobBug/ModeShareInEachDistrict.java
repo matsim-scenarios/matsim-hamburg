@@ -1,5 +1,7 @@
+/*
 package org.matsim.analysis.mobBug;
 
+*/
 /* *********************************************************************** *
  * project: org.matsim.*
  * ScoreStats.java
@@ -18,7 +20,8 @@ package org.matsim.analysis.mobBug;
  *   (at your option) any later version.                                   *
  *   See also COPYING, LICENSE and WARRANTY file                           *
  *                                                                         *
- * *********************************************************************** */
+ * *********************************************************************** *//*
+
 
 
 import org.matsim.api.core.v01.TransportMode;
@@ -29,11 +32,12 @@ import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.gis.ShapeFileReader;
-import org.matsim.run.HamburgFreightMainModeIdentifier;
+//import org.matsim.run.HamburgFreightMainModeIdentifier;
 import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.*;
 
+*/
 /**
  * Calculates at the end of each iteration mode statistics, based on the main mode identifier of a trip chain.
  * For multi-modal trips, this is only as accurate as your main mode identifier.
@@ -41,13 +45,14 @@ import java.util.*;
  * a separate line.
  *
  * @author grybczak
- */
+ *//*
+
 
 
 class ModeShareInEachDistrict {
 
     private static Map<String, HashMap<String, Double>> modeStatsInEachDistrict = new HashMap<String, HashMap<String, Double>>();
-    private static HamburgFreightMainModeIdentifier mainModeIdentifier;
+    //private static HamburgFreightMainModeIdentifier mainModeIdentifier;
     private static Map<String, Double> modeCnt = new HashMap<>();
     private static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
     private static String popInputFile = "D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.0-1pct.plans.xml.gz";
@@ -73,7 +78,7 @@ class ModeShareInEachDistrict {
             Plan plan = person.getSelectedPlan();
             List<Trip> trips = TripStructureUtils.getTrips(plan);
             for (Trip trip : trips) {
-                String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+                //String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
                 trip.getOriginActivity().getCoord();
 
                 Double cnt = modeCnt.get(mode);
@@ -90,7 +95,7 @@ class ModeShareInEachDistrict {
         }
 
 
-        System.out.println("Mode shares over all " + sum + " trips found. MainModeIdentifier: " + mainModeIdentifier.getClass());
+        //System.out.println("Mode shares over all " + sum + " trips found. MainModeIdentifier: " + mainModeIdentifier.getClass());
         for (String mode : modes) {
             Double cnt = modeCnt.getOrDefault(mode, 0.0);
             double share = 0.;
@@ -103,4 +108,4 @@ class ModeShareInEachDistrict {
 
 
     }
-}
+}*/
