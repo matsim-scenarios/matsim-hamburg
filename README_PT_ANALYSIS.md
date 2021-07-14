@@ -78,7 +78,7 @@ This file cotains lines which has stations exactly matching with real world
 
 ---
 
-* Charts are drawn with the same data used for generating csv files.
+## Charts are drawn with the same data used for generating csv files.
 Following charts are generated for all lines (in results.csv)
 * PercentageChangepercentageChangeEinsteigerInbound
 * PercentageChangepercentageChangeEinsteigerOutbound
