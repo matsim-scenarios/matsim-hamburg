@@ -70,15 +70,23 @@ Here we compare the vehicle id of the transit usage of persons with transit sche
 
 
 In the end print results files,
-* File 1: missingStations.csv
+* File 1: ** missingStations.csv **
 This file contains lines which has stations not matching with real world
 
-* File 2: results.csv
+* File 2: ** results.csv **
 This file cotains lines which has stations exactly matching with real world
 
 ---
 
 * Charts are drawn with the same data used for generating csv files.
+Following charts are generated for all lines (in results.csv)
+* PercentageChangepercentageChangeEinsteigerInbound
+* PercentageChangepercentageChangeEinsteigerOutbound
+* TotalPtUsageBarChart
+* transitAussteigerRealWorld
+* transitAussteigerSim
+* transitEinsteigerRealWorld
+* transitEinsteigerSim
 
  
 
