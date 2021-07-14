@@ -5,7 +5,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.events.PersonScoreEvent;
 import org.matsim.api.core.v01.events.PersonStuckEvent;
+import org.matsim.api.core.v01.events.handler.PersonScoreEventHandler;
 import org.matsim.api.core.v01.events.handler.PersonStuckEventHandler;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
@@ -73,13 +75,19 @@ public class RunSharingScenarioTest {
 
 
         Scenario scenario = prepareScenario(config);
+
+        //override parking pressure for link (destination of scarUser 2a and origin of scarUser2b)
+        scenario.getNetwork().getLinks().get(Id.createLinkId("5170509070009r")).getAttributes().putAttribute("parkPressure", 1.0);
+
         Controler controler = prepareControler(scenario);
 
-        StuckPerson stuckPerson = new StuckPerson();
+        StuckPersonHandler stuckPersonHandler = new StuckPersonHandler();
+        ParkingPressureHandler parkingPressureHandler = new ParkingPressureHandler();
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
-                this.addEventHandlerBinding().toInstance(stuckPerson);
+                this.addEventHandlerBinding().toInstance(stuckPersonHandler);
+                this.addEventHandlerBinding().toInstance(parkingPressureHandler);
             }
         });
         controler.run();
@@ -96,11 +104,19 @@ public class RunSharingScenarioTest {
          *      the vehicle cannot be found by other users when it is in use, at least 1 second is needed for placing it to an "idle" status
          */
 
-        Assert.assertEquals(1, stuckPerson.getStuckPersons().size());
-        Assert.assertEquals("scarUser_2b", stuckPerson.getStuckPersons().get(0).toString());
+        Assert.assertEquals(1, stuckPersonHandler.getStuckPersons().size());
+        Assert.assertEquals("scarUser_2b", stuckPersonHandler.getStuckPersons().get(0).toString());
+
+
+        /**
+         * test that the car-sharing users also perceive parking pressure
+         */
+        Assert.assertEquals(1, parkingPressureHandler.parkPressureScoreEvents.size());
+        Assert.assertEquals(1., parkingPressureHandler.parkPressureScoreEvents.get(0).getAmount(), 0.);
+
     }
 
-    private class StuckPerson implements PersonStuckEventHandler{
+    private class StuckPersonHandler implements PersonStuckEventHandler{
         List<Id<Person>> stuckPersons = new LinkedList<>();
         @Override
         public void handleEvent(PersonStuckEvent personStuckEvent) {
@@ -112,6 +128,17 @@ public class RunSharingScenarioTest {
         public List<Id<Person>> getStuckPersons() {
             return stuckPersons;
         }
+    }
+
+    private class ParkingPressureHandler implements PersonScoreEventHandler {
+        List<PersonScoreEvent> parkPressureScoreEvents = new LinkedList<>();
+        @Override
+        public void handleEvent(PersonScoreEvent event) {
+            if(event.getKind().equals("parkPressure")){
+                parkPressureScoreEvents.add(event);
+            }
+        }
+
     }
 
 }

@@ -31,13 +31,11 @@ public class RunSharingScenario {
 
     private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
-    public static final String VERSION = "v2.0";
-
     private static final String SHARING_SERVICE_ID_CAR = "car";
     private static final String SHARING_SERVICE_ID_BIKE = "bike";
 
-    private static final String SHARING_CAR_MODE = "scar";
-    private static final String SHARING_BIKE_MODE = "sbike";
+    public static final String SHARING_CAR_MODE = "scar";
+    public static final String SHARING_BIKE_MODE = "sbike";
 
     private static final String SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
