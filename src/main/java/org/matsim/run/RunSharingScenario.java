@@ -18,7 +18,6 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.NetworkRoutingProvider;
 import org.matsim.core.router.TeleportationRoutingModule;
-import org.matsim.sharingFare.SharingFaresConfigGroup;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -102,7 +101,6 @@ public class RunSharingScenario {
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
 
         ConfigUtils.addOrGetModule(config, SharingConfigGroup.class);
-        ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
         //add sharing config group
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
 
