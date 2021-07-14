@@ -41,11 +41,11 @@
         <!-- Temporarily needed for the osm reader -->
         <repository>
             <id>topobyte</id>
-            <url>http://mvn.topobyte.de</url>
+            <url>https://mvn.topobyte.de</url>
         </repository>
         <repository>
             <id>slimjars</id>
-            <url>http://mvn.slimjars.com</url>
+            <url>https://mvn.slimjars.com</url>
         </repository>
 
     </repositories>
@@ -285,11 +285,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <!-- avoid out of memory errors: -->
-                    <argLine>-Xmx12000m -Djava.awt.headless=true -Dmatsim.preferLocalDtds=true</argLine>
+                    <argLine>-Xmx9500m -Djava.awt.headless=true -Dmatsim.preferLocalDtds=true</argLine>
                 </configuration>
             </plugin>
 
