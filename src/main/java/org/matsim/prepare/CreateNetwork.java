@@ -53,7 +53,7 @@ public final class CreateNetwork implements Callable<Integer> {
 	/**
 	 * Capacities below this threshold are unplausible and ignored.
 	 */
-	private static final double CAPACITY_THRESHOLD = 300;
+	private static final double CAPACITY_THRESHOLD = 375;
 
 	@CommandLine.Parameters(arity = "1..*", paramLabel = "INPUT", description = "Input file", defaultValue = "scenarios/input/sumo.net.xml")
 	private List<Path> input;
@@ -200,11 +200,11 @@ public final class CreateNetwork implements Callable<Integer> {
 
 			Link link = network.getLinks().get(e.getKey());
 
-			// ignore unplausible capacities
-			if (e.getDoubleValue() < CAPACITY_THRESHOLD)
-				continue;
-
 			if (link != null) {
+				// ignore unplausible capacities
+				if (e.getDoubleValue() < CAPACITY_THRESHOLD * link.getNumberOfLanes())
+					continue;
+
 				link.setCapacity(e.getDoubleValue());
 				link.getAttributes().putAttribute("junction", true);
 			} else {

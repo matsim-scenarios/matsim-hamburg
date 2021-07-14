@@ -311,3 +311,4 @@ hs_err_pid*
 .idea/*
 lsp/*
 matsim-hamburg.iml
+*output/

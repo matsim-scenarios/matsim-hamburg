@@ -1,6 +1,6 @@
 
 JAR := matsim-hamburg-*.jar
-V := v1.0
+V := v1.2
 
 export SUMO_HOME := $(abspath ../../sumo-1.8.0/)
 osmosis := osmosis\bin\osmosis
@@ -20,18 +20,18 @@ scenarios/input/network.osm: scenarios/input/network.osm.pbf
 	$(osmosis) --rb file=$<\
 	 --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary_link,secondary,tertiary,motorway_junction,residential,unclassified,living_street\
 	 --bounding-box top=54.10 left=8.80 bottom=52.90 right=11.30\
-	 --used-node --wx $@
+	 --used-node --wb network-detailed.osm.pbf
 
-	#$(osmosis) --rb file=$<\
-	# --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary_link,secondary,tertiary,motorway_junction\
-	# --bounding-box top=51.46 left=6.60 bottom=50.98 right=7.03\
-	# --used-node --wb network-coarse.osm.pbf
+	$(osmosis) --rb file=$<\
+	 --tf accept-ways highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary_link,secondary,tertiary,motorway_junction\
+	 --bounding-box top=54.70 left=8.08 bottom=52.41 right=12.35\
+	 --used-node --wb network-coarse.osm.pbf
 
-	#$(osmosis) --rb file=network-detailed.osm.pbf\
-  	# --merge --wx $@
+	$(osmosis) --rb file=network-coarse.osm.pbf --rb file=network-detailed.osm.pbf\
+  	 --merge --wx $@
 
-	#rm network-detailed.osm.pbf
-	#rm network-coarse.osm.pbf
+	rm network-detailed.osm.pbf
+	rm network-coarse.osm.pbf
 
 
 scenarios/input/hamburg-sumo.net.xml: scenarios/input/network.osm
@@ -51,7 +51,7 @@ scenarios/input/hamburg-sumo.net.xml: scenarios/input/network.osm
 
 scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/hamburg-sumo.net.xml
 	java -cp $(JAR) org.matsim.prepare.CreateNetwork $<\
-	 --capacities ../shared-svn/projects/matsim-hamburg/hamburg-v1.0/RLHH_analyze_Q_at_LSA_all.csv\
+	 --capacities ../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.2/RLHH_analyze_Q_at_LSA_all.csv\
 	 --output $@
 
 # Aggregated target

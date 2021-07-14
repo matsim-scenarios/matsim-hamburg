@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.drt.fare.DrtFareParams;
 import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
@@ -19,6 +20,7 @@ import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
@@ -37,16 +39,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author zmeng
+ * @author tschlenther
  */
-public class RunRealLabHH2030Scenario {
+public class RunDRTFeederScenario {
 
-    private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
+    private static final Logger log = Logger.getLogger(RunDRTFeederScenario.class);
 
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
-    private static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
+    public static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+    private static final String DRT_FEEDER_VEHICLES = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 
@@ -60,13 +63,18 @@ public class RunRealLabHH2030Scenario {
             args = new String[] {"scenarios/input/hamburg-v1.1-1pct.config.xml"};
         }
 
-        RunRealLabHH2030Scenario realLabHH2030 = new RunRealLabHH2030Scenario();
+        RunDRTFeederScenario realLabHH2030 = new RunDRTFeederScenario();
         realLabHH2030.run(args);
     }
 
     private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
+
+        //TODO
+        //set real (1pct) input plans
+        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
+
         Scenario scenario = prepareScenario(config);
 
         Controler controler = prepareControler(scenario);
@@ -93,9 +101,9 @@ public class RunRealLabHH2030Scenario {
                 // So we need our own main mode indentifier which replaces both :-(
                 //TODO: write our hamburg mainModeIdentifier,which can deal with all the pt+x(s)
 
-                //HamburgFreightMainModeIdentifier was already bound
+                //HamburgAnalysisMainModeIdentifier was already bound
 //                bind(MainModeIdentifier.class).toInstance(new TransportPlanningMainModeIdentifier());
-//                bind(AnalysisMainModeIdentifier.class).to(HamburgFreightMainModeIdentifier.class);
+//                bind(AnalysisMainModeIdentifier.class).to(HamburgAnalysisMainModeIdentifier.class);
 
                 //need to bind this in another overriding module than in the module where we install the SwissRailRaptorModule
                 bind(RaptorIntermodalAccessEgress.class).to(EnhancedRaptorIntermodalAccessEgress.class);
@@ -159,13 +167,21 @@ public class RunRealLabHH2030Scenario {
         hamburgExperimentalConfigGroup.setDrtOperationArea(ALL_DRT_OPERATION_AREA);
 
         //fleet
-        drtFeederCfg.setVehiclesFile("D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz");
+        drtFeederCfg.setVehiclesFile(DRT_FEEDER_VEHICLES);
+
+        //fare
+        DrtFareParams drtFeederFareParams = new DrtFareParams();
+        drtFeederFareParams.setBasefare(1.);
+        drtFeederFareParams.setDistanceFare_m(0.);
+        drtFeederFareParams.setTimeFare_h(0.);
+        drtFeederFareParams.setMinFarePerTrip(1.);
+        drtFeederFareParams.setDailySubscriptionFee(0.);
+        drtFeederCfg.addParameterSet(drtFeederFareParams);
 
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
         drtFeederCfg.setMaxTravelTimeBeta(120);
         drtFeederCfg.setStopDuration(60);
-
         drtFeederCfg.addDrtInsertionSearchParams(new ExtensiveInsertionSearchParams());
 
         multiModeDrtCfg.addDrtConfig(drtFeederCfg);
@@ -180,18 +196,22 @@ public class RunRealLabHH2030Scenario {
         //add drt stage activities
         DrtConfigs.adjustMultiModeDrtConfig(multiModeDrtCfg, config.planCalcScore(), config.plansCalcRoute());
 
+        //add mode params
+        PlanCalcScoreConfigGroup.ModeParams modeParams = new PlanCalcScoreConfigGroup.ModeParams(DRT_FEEDER_MODE);
+        config.planCalcScore().addModeParams(modeParams);
+
         //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
-        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet params = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
-        params.setMode(DRT_FEEDER_MODE);
-        params.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
-        params.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet accessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        accessEgressParameterSet.setMode(DRT_FEEDER_MODE);
+        accessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        accessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
         //TODO these values were recommended by GL based on his experiences for Berlin
-        params.setInitialSearchRadius(3_000);
-        params.setSearchExtensionRadius(1_000);
-        params.setMaxRadius(20_000);
-        swissRailRaptorConfigGroup.addIntermodalAccessEgress(params);
+        accessEgressParameterSet.setInitialSearchRadius(3_000);
+        accessEgressParameterSet.setSearchExtensionRadius(1_000);
+        accessEgressParameterSet.setMaxRadius(20_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(accessEgressParameterSet);
 
         return config;
     }
@@ -200,11 +220,11 @@ public class RunRealLabHH2030Scenario {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(config).getModalElements()) {
-
-                // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
-                // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
-                // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
             //TODO: this is not the best solution
+
+            // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
+            // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
+            // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
             if(hamburgExperimentalConfigGroup.getDrtOperationArea() != null){
                 addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtOperationArea(), 0.);
             }
@@ -216,7 +236,7 @@ public class RunRealLabHH2030Scenario {
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
                         drtCfg.getDrtServiceAreaShapeFile(),
                         /* "stopFilter", "station_S/U/RE/RB",*/
-                        50.0); //
+                        0.); //
             }
         }
         return scenario;

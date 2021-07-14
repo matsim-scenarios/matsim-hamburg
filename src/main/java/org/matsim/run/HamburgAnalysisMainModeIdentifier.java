@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
+import org.matsim.prepare.freight.AdjustScenarioForFreight;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,23 +14,23 @@ import java.util.List;
 /**
  * @author zmeng
  */
-public class HamburgFreightMainModeIdentifier implements AnalysisMainModeIdentifier {
+public class HamburgAnalysisMainModeIdentifier implements AnalysisMainModeIdentifier {
     private final List<String> modeHierarchy = new ArrayList();
-    private final List<String> drtModes = Arrays.asList("drt", "drt1", "drt2", "drt_teleportation");
+    private final List<String> drtModes = Arrays.asList("drt", "drt1", "drt2", "drt_teleportation", RunDRTFeederScenario.DRT_FEEDER_MODE);
     private final List<String> freightModes;
 
     @Inject
-    public HamburgFreightMainModeIdentifier(List<String> freightModes) {
-        this.freightModes = freightModes;
+    public HamburgAnalysisMainModeIdentifier() {
+        this.freightModes = AdjustScenarioForFreight.getFreightModes();
         this.modeHierarchy.add("transit_walk");
         this.modeHierarchy.add("walk");
         this.modeHierarchy.add("bike");
         this.modeHierarchy.add("bicycle");
         this.modeHierarchy.add("ride");
         this.modeHierarchy.add("car");
-        this.modeHierarchy.add("eScooter");
         this.modeHierarchy.add("scar");
         this.modeHierarchy.add("sbike");
+
         Iterator var1 = this.drtModes.iterator();
 
         while(var1.hasNext()) {
@@ -54,10 +55,10 @@ public class HamburgFreightMainModeIdentifier implements AnalysisMainModeIdentif
                         do {
                             if (!var3.hasNext()) {
                                 if (mainModeIndex == -1) {
-                                    throw new RuntimeException("no main mode found for trip " + planElements.toString());
+                                    throw new RuntimeException("no main mode found for trip " + planElements);
                                 }
 
-                                return (String)this.modeHierarchy.get(mainModeIndex);
+                                return this.modeHierarchy.get(mainModeIndex);
                             }
 
                             pe = (PlanElement)var3.next();

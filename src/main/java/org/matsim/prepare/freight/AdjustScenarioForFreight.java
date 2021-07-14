@@ -10,8 +10,6 @@ import org.matsim.core.config.groups.StrategyConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
-import org.matsim.run.HamburgFreightMainModeIdentifier;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,7 +65,6 @@ public class AdjustScenarioForFreight {
     }
 
     public static void adjustControlerForFreight(Controler controler, List<String> modes){
-
         for (String mode : modes) {
             controler.addOverridingModule( new AbstractModule() {
                 @Override
@@ -77,12 +74,5 @@ public class AdjustScenarioForFreight {
                 }
             });
         }
-
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgFreightMainModeIdentifier(modes));
-            }
-        });
     }
 }

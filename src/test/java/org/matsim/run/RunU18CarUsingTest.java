@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.matsim.analysis.ModeStatsControlerListener;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
@@ -22,7 +23,7 @@ public class RunU18CarUsingTest {
 
     @Test
     public void u18CarUsingTest() throws IOException {
-        String args[] = new String[]{
+        String[] args = new String[]{
                 "test/input/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "5",
                 "--config:planCalcScore.scoringParameters[subpopulation=null].modeParams[mode=car].constant", "-7"
@@ -33,7 +34,8 @@ public class RunU18CarUsingTest {
         config.controler().setRunId("u18CarUsingTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
-        config.plans().setInputFile("test-u18-hamburg.plans.xml");
+        config.plans().setInputFile("plans/test-u18-hamburg.plans.xml");
+        ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class).setUsePersonIncomeBasedScoring(false);
         config.subtourModeChoice().setConsiderCarAvailability(true);
 
         Scenario scenario = prepareScenario(config);

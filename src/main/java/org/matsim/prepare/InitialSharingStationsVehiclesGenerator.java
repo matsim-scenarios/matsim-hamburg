@@ -19,7 +19,10 @@ import org.matsim.core.utils.gis.ShapeFileReader;
 import org.matsim.core.utils.io.IOUtils;
 import org.opengis.feature.simple.SimpleFeature;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,14 +38,14 @@ public class InitialSharingStationsVehiclesGenerator {
     private static final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
 
     private static final String SERVICE_AREA = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
-    private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hvv-switch-points-2030.csv";
+    private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/hvv-switch-points-2030.csv";
 
     private final String COORDINATION_SYSTEM = "EPSG:25832";
 
     private final Network network;
-    private String mode;
-    private List<SharingStation> sharingStations = new LinkedList<>();
-    private String outputPath;
+    private final String mode;
+    private final List<SharingStation> sharingStations = new LinkedList<>();
+    private final String outputPath;
 
     public InitialSharingStationsVehiclesGenerator(String mode, String outputPath, Network network) {
         this.mode = mode;
@@ -56,15 +59,19 @@ public class InitialSharingStationsVehiclesGenerator {
 
         Network network = prepareNetwork();
         InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", "scenarios/input/", network);
+
+        //300 hvv switch points. current fleet size for shareNow is 1100 vehicles. weShare has 800 vehicles (July '21)
+        //so we model the existing fleet and the hvv switch points on top
         int vehiclesPerStation = 50;
         carSharingService.addStationsFromCSV(SWITCH_POINTS_CSV,coordinationSystem,vehiclesPerStation);
         carSharingService.addStationsRandomlyInNetwork(2000,1);
         carSharingService.write2xmlFile();
 
+//        stadtrad currently (July '21') has 3200 vehicles
         InitialSharingStationsVehiclesGenerator bikeSharingService = new InitialSharingStationsVehiclesGenerator("sbike", "scenarios/input/", network);
         int bikesPerStation = 50;
         bikeSharingService.addStationsFromCSV(SWITCH_POINTS_CSV, coordinationSystem, bikesPerStation);
-        bikeSharingService.addStationsRandomlyInNetwork(5000, 1);
+        bikeSharingService.addStationsRandomlyInNetwork(3200, 1);
         bikeSharingService.write2xmlFile();
 
         System.out.println("done!!");
@@ -127,7 +134,7 @@ public class InitialSharingStationsVehiclesGenerator {
     private void addStationsRandomlyInNetwork(int stationsNum, int vehiclesPerStation) {
 
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-        var serviceArea = ShapeFileReader.getAllFeatures(this.SERVICE_AREA);
+        var serviceArea = ShapeFileReader.getAllFeatures(SERVICE_AREA);
         List<Geometry> geometries = new LinkedList<>();
         List<Link> links = new LinkedList<>();
 
@@ -192,10 +199,10 @@ public class InitialSharingStationsVehiclesGenerator {
 
     private static class SharingStation{
 
-        private Network network;
-        private Coord coord;
-        private Link link;
-        private int capacity;
+        private final Network network;
+        private final Coord coord;
+        private final Link link;
+        private final int capacity;
 
         private SharingStation(Network network, Coord coord, int capacity) {
             this.coord = coord;

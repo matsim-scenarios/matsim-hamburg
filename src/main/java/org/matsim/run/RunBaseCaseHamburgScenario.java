@@ -8,6 +8,7 @@ import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
 import org.matsim.analysis.here.HereAPITravelTimeValidation;
 import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
+import org.matsim.analysis.personMoney.PersonMoneyEventsAnalysisModule;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -24,6 +25,7 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.parking.NetworkParkPressureReader;
@@ -86,6 +88,11 @@ public class RunBaseCaseHamburgScenario {
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
+               //use custom AnalysisMainModeIdentifier
+                bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
+
+                //analyse PersonMoneyEvents
+                install(new PersonMoneyEventsAnalysisModule());
             }
         });
         // use HereApiValidator if is needed
@@ -193,9 +200,9 @@ public class RunBaseCaseHamburgScenario {
             for (Id<Person> personId: personIds) {
                 scenario.getPopulation().removePerson(personId);
             }
-        } else
+        } else {
             AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
-
+        }
 
 
         if (hamburgExperimentalConfigGroup.isIncreaseStorageCapacity()) {

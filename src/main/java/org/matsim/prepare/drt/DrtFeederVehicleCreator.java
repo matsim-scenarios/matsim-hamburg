@@ -52,7 +52,7 @@ import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.facilities.MatsimFacilitiesReader;
 import org.matsim.run.HamburgShpUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.matsim.run.RunRealLabHH2030Scenario;
+import org.matsim.run.RunDRTFeederScenario;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,7 +75,7 @@ public class DrtFeederVehicleCreator {
 	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
 	private final Random random = MatsimRandom.getRandom();
-	private final String drtNetworkMode = RunRealLabHH2030Scenario.DRT_FEEDER_MODE;
+	private final String drtNetworkMode = RunDRTFeederScenario.DRT_FEEDER_MODE;
 	private final HamburgShpUtils shpUtils;
 	private final Network drtNetwork;
 	private List<Pair<Id<Link>, Double>> links2weights = new ArrayList();
@@ -89,14 +89,14 @@ public class DrtFeederVehicleCreator {
 		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
-		String drtServiceAreaShapeFile = "D:/svn/shared-svn/projects/realLabHH/data/drt-feeder-potential-areas/test/drt-feeder-service-areas-test.shp";
+		String drtServiceAreaShapeFile = RunDRTFeederScenario.DRT_FEEDER_SERVICE_AREA;
 		//where vehicles are allowed to drive
 		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-		String vehiclesFilePrefix = "hamburg-v2.0-drt-feeder-by-rndLocations-";
+		String vehiclesFilePrefix = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
 		numbersOfVehicles.add(20);
@@ -147,7 +147,7 @@ public class DrtFeederVehicleCreator {
 		shpUtils = new HamburgShpUtils(drtServiceAreaShapeFile);
 
 		//prepare network
-		RunRealLabHH2030Scenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
+		RunDRTFeederScenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
 		Set<String> modes = new HashSet<>();
 		modes.add(drtNetworkMode);
 		drtNetwork = NetworkUtils.createNetwork();

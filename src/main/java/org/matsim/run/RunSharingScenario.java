@@ -2,6 +2,7 @@ package org.matsim.run;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
@@ -17,21 +18,18 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.NetworkRoutingProvider;
 import org.matsim.core.router.TeleportationRoutingModule;
-import org.matsim.sharingFare.SharingFareHandler;
 import org.matsim.sharingFare.SharingFaresConfigGroup;
-import org.matsim.sharingFare.SharingServiceFaresConfigGroup;
-import org.matsim.sharingFare.TeleportedSharingFareHandler;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
 /**
- * @author zmeng
+ * @author zmeng, tschlenther
  */
 public class RunSharingScenario {
 
-    private static final Logger log = Logger.getLogger(RunRealLabHH2030Scenario.class);
+    private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
     public static final String VERSION = "v2.0";
 
@@ -50,7 +48,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/sharing/hamburg-v2.0-10pct-sharing.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();
@@ -89,13 +87,13 @@ public class RunSharingScenario {
         controler.addOverridingModule(new SharingModule());
         controler.configureQSimComponents(SharingUtils.configureQSim(ConfigUtils.addOrGetModule(scenario.getConfig(),SharingConfigGroup.class)));
 
-        controler.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                this.addEventHandlerBinding().toInstance(new SharingFareHandler(SHARING_SERVICE_ID_CAR));
-                this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler(SHARING_SERVICE_ID_BIKE));
-            }
-        });
+//        controler.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                this.addEventHandlerBinding().toInstance(new SharingFareHandler(SHARING_SERVICE_ID_CAR));
+//                this.addEventHandlerBinding().toInstance(new TeleportedSharingFareHandler(SHARING_SERVICE_ID_BIKE));
+//            }
+//        });
 
 
         return controler;
@@ -117,7 +115,7 @@ public class RunSharingScenario {
         carSharingConfig.setMaximumAccessEgressDistance(2000);
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_scar.xml");
+        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
         carSharingConfig.setMode(SHARING_CAR_MODE);
 
 
@@ -128,7 +126,7 @@ public class RunSharingScenario {
         bikeSharingConfig.setMaximumAccessEgressDistance(1000);
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/sharingStationsAndSharingVehicles_sbike.xml");
+        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
         bikeSharingConfig.setMode(SHARING_BIKE_MODE);
 
         // add sharing modes to mode choice
@@ -149,12 +147,29 @@ public class RunSharingScenario {
         bookingParams.setScoringThisActivityAtAll(false);
         config.planCalcScore().addActivityParams(bookingParams);
 
-        // add planCalcScore for scar and sbike
-        PlanCalcScoreConfigGroup.ModeParams scarParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_CAR_MODE);
-        PlanCalcScoreConfigGroup.ModeParams sbikeParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_BIKE_MODE);
+        // add modeParams for scar and sbike
+        {
+            PlanCalcScoreConfigGroup.ModeParams scarParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_CAR_MODE);
+            //copy relevant parameters from car. monetary components will be handled via the fares though
+            PlanCalcScoreConfigGroup.ModeParams carParams = config.planCalcScore().getModes().get(TransportMode.car);
+            scarParams.setConstant(carParams.getConstant());
+            scarParams.setMarginalUtilityOfTraveling(carParams.getMarginalUtilityOfTraveling());
+            scarParams.setDailyUtilityConstant(carParams.getDailyUtilityConstant());
+            scarParams.setMarginalUtilityOfDistance(carParams.getMarginalUtilityOfDistance());
 
-        config.planCalcScore().addModeParams(sbikeParams);
-        config.planCalcScore().addModeParams(scarParams);
+            PlanCalcScoreConfigGroup.ModeParams sbikeParams = new PlanCalcScoreConfigGroup.ModeParams(SHARING_BIKE_MODE);
+            //copy relevant parameters from bike. monetary components will be handled via the fares though
+            PlanCalcScoreConfigGroup.ModeParams bikeParams = config.planCalcScore().getModes().get(TransportMode.bike);
+            sbikeParams.setConstant(bikeParams.getConstant());
+            sbikeParams.setMarginalUtilityOfTraveling(bikeParams.getMarginalUtilityOfTraveling());
+            sbikeParams.setDailyUtilityConstant(bikeParams.getDailyUtilityConstant());
+            sbikeParams.setMarginalUtilityOfDistance(bikeParams.getMarginalUtilityOfDistance());
+            //TODO this comes from the stadtrad fares. the service costs 5 euros per year
+            sbikeParams.setDailyMonetaryConstant( (5. / 365.) );
+
+            config.planCalcScore().addModeParams(sbikeParams);
+            config.planCalcScore().addModeParams(scarParams);
+        }
 
         //add scar as network modes
         Set<String> networkModes = new HashSet<>();
@@ -175,26 +190,46 @@ public class RunSharingScenario {
         config.qsim().setMainModes(mainMode);
 
         //configure sharing fares
-        SharingFaresConfigGroup sharingFaresConfigGroup = ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
+        {
+            //this has not worked and the sharing contribution provides now it's own fare implementation
+//        SharingFaresConfigGroup sharingFaresConfigGroup = ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
+//
+//        SharingServiceFaresConfigGroup scarFares = new SharingServiceFaresConfigGroup();
+//        scarFares.setId(SHARING_SERVICE_ID_CAR);
+//        scarFares.setBasefare(1);
+//        scarFares.setTimeFare_m(0.5);
+//        scarFares.setDistanceFare_m(0.);
+//        sharingFaresConfigGroup.addServiceFaresParams(scarFares);
+//
+//        SharingServiceFaresConfigGroup sbikeFares = new SharingServiceFaresConfigGroup();
+//        scarFares.setId(SHARING_SERVICE_ID_BIKE);
+//        scarFares.setBasefare(0.79);
+//        scarFares.setTimeFare_m(0.19);
+//        scarFares.setDistanceFare_m(0.);
+//        sharingFaresConfigGroup.addServiceFaresParams(sbikeFares);
 
-        SharingServiceFaresConfigGroup scarFares = new SharingServiceFaresConfigGroup();
-        scarFares.setId(SHARING_SERVICE_ID_CAR);
-        scarFares.setBasefare(1);
-        scarFares.setTimeFare_m(0.5);
-        scarFares.setDistanceFare_m(0.);
-        sharingFaresConfigGroup.addServiceFaresParams(scarFares);
+            //these values are set according to shareNow fares ass of July 2021
+            carSharingConfig.setBaseFare(0.);
+            carSharingConfig.setMinimumFare(0.);
+            carSharingConfig.setTimeFare( (0.29 / 60.) ); //per second. maybe is some kind of special tariff and we should rather use 0.28€/min
+            carSharingConfig.setDistanceFare(0.);
 
-        SharingServiceFaresConfigGroup sbikeFares = new SharingServiceFaresConfigGroup();
-        scarFares.setId(SHARING_SERVICE_ID_BIKE);
-        scarFares.setBasefare(0.79);
-        scarFares.setTimeFare_m(0.19);
-        scarFares.setDistanceFare_m(0.);
-        sharingFaresConfigGroup.addServiceFaresParams(sbikeFares);
+            //these values are set according to stadtrad fares ass of July 2021
+            //actually, the service is 30 mins for free and then costs 0.10 €/min. We can not really model this right now...
+            //and we model the yearly subscription fee in the mode params, see above.
+            bikeSharingConfig.setBaseFare(0.);
+            bikeSharingConfig.setMinimumFare(0.);
+            bikeSharingConfig.setTimeFare(0.); //per second. costs actually 0.10/min after the 30th minute...
+            bikeSharingConfig.setDistanceFare(0.); //per meter
+        }
 
         //add share modes to subtourModeChoice
         List<String> subtourModes = new ArrayList(Arrays.asList(config.subtourModeChoice().getModes()));
         modes.add(SharingUtils.getServiceMode(carSharingConfig));
         modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
+
+        //set new vehicles file
+        config.vehicles().setVehiclesFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/hamburg-v2-vehicle-types.xml");
 
         return config;
     }
