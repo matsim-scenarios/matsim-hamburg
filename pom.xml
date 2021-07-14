@@ -116,6 +116,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.matsim.contrib</groupId>
+            <artifactId>application</artifactId>
+            <version>${matsim.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
             <version>8.4.4</version>
@@ -179,6 +185,13 @@
             <groupId>com.github.matsim-vsp</groupId>
             <artifactId>pt-extensions</artifactId>
             <version>67dec05d3b</version>
+            <exclusions>
+                <!-- Will pull old drt version -->
+                <exclusion>
+                    <groupId>org.matsim.contrib</groupId>
+                    <artifactId>drt</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Command line parser -->
