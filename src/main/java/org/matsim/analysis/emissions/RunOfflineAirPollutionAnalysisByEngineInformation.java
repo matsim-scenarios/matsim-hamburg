@@ -96,14 +96,15 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 	public static void main(String[] args) throws IOException {
 
 		//actually the hbefa files need to be set relative to the config or by absolute path...
-		final String hbefaFileCold = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage.csv";
-		final String hbefaFileWarm = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
+
+		final String hbefaFileCold = "D:/Arbeit/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage.csv";
+		final String hbefaFileWarm = "D:/Arbeit/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
 
 		final String hbefaFileCold_2030 = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_ColdStart_Concept_2030_detailed_perTechAverage.csv";
 		final String hbefaFileWarm_2030 = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_HOT_Concept_2030_detailed_perTechAverage.csv";
 
 		final String runId = "hamburg-v1.1-10pct" ;
-		String runDirectory = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
+		String runDirectory = "D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\Outputs\\0.5";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
