@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 /**
- * @author zmeng
+ * @author zmeng,gryb
  */
 public class RunBaseCaseWithMobilityBudgetV2 {
 
@@ -101,7 +101,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                     }
 
                 }
-                //@TS this before was if not contains didnt make sense to me why was that?
                 if (transportModeList.contains(TransportMode.car)) {
                     personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
                 }
@@ -123,7 +122,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
 
-        useIncomeForMobilityBudget = false;
         //useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
 
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
@@ -147,7 +145,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
 
 
-       /* try {
+        try {
             useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
         }
         catch (IllegalArgumentException illegalArgumentException) {
@@ -169,7 +167,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         catch (NullPointerException nullPointerException) {
             log.warn("Using default share of income for the MobilityBudget");
             shareOfIncome = 0.10;
-        }*/
+        }
 
         return config;
     }

@@ -44,7 +44,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
 
         Config config = prepareConfig(args);
 
-        //
+        //adjusting strategy setting of config so agents try out different modes
         for (StrategyConfigGroup.StrategySettings setting:    config.strategy().getStrategySettings()) {
             if (setting.getStrategyName().equals("SubtourModeChoice")) {
                 setting.setWeight(1.0);
