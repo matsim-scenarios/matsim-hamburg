@@ -225,9 +225,9 @@ public class RunDRTFeederScenario {
         SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet walkAccessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
         walkAccessEgressParameterSet.setMode(TransportMode.walk);
         //TODO these values were recommended copied from GL
-        drtFeederAccessEgressParameterSet.setInitialSearchRadius(1_500);
-        drtFeederAccessEgressParameterSet.setSearchExtensionRadius(1_000);
-        drtFeederAccessEgressParameterSet.setMaxRadius(100_000);
+        walkAccessEgressParameterSet.setInitialSearchRadius(1_500);
+        walkAccessEgressParameterSet.setSearchExtensionRadius(1_000);
+        walkAccessEgressParameterSet.setMaxRadius(100_000);
         swissRailRaptorConfigGroup.addIntermodalAccessEgress(walkAccessEgressParameterSet);
 
         return config;
