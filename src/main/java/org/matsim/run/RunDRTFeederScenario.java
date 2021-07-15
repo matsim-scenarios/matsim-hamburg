@@ -209,15 +209,26 @@ public class RunDRTFeederScenario {
         //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
-        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet accessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
-        accessEgressParameterSet.setMode(DRT_FEEDER_MODE);
-        accessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
-        accessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
+
+        //add drtFeeder
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet drtFeederAccessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        drtFeederAccessEgressParameterSet.setMode(DRT_FEEDER_MODE);
+        drtFeederAccessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        drtFeederAccessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
         //TODO these values were recommended by GL based on his experiences for Berlin
-        accessEgressParameterSet.setInitialSearchRadius(3_000);
-        accessEgressParameterSet.setSearchExtensionRadius(1_000);
-        accessEgressParameterSet.setMaxRadius(20_000);
-        swissRailRaptorConfigGroup.addIntermodalAccessEgress(accessEgressParameterSet);
+        drtFeederAccessEgressParameterSet.setInitialSearchRadius(3_000);
+        drtFeederAccessEgressParameterSet.setSearchExtensionRadius(1_000);
+        drtFeederAccessEgressParameterSet.setMaxRadius(20_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(drtFeederAccessEgressParameterSet);
+
+        //add walk
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet walkAccessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        walkAccessEgressParameterSet.setMode(TransportMode.walk);
+        //TODO these values were recommended copied from GL
+        drtFeederAccessEgressParameterSet.setInitialSearchRadius(1_500);
+        drtFeederAccessEgressParameterSet.setSearchExtensionRadius(1_000);
+        drtFeederAccessEgressParameterSet.setMaxRadius(100_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(walkAccessEgressParameterSet);
 
         return config;
     }
