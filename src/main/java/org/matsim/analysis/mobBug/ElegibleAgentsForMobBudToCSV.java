@@ -18,8 +18,9 @@ public class ElegibleAgentsForMobBudToCSV {
 
     public static void main(String args []) throws IOException {
 
+        String popFile = args[0];
         //read in BaseCase to and check wich agents where allowed to use the mobilityBudget and how many trips they made
-        Population pop = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.1-1pct.plans.xml.gz");
+        Population pop = PopulationUtils.readPopulation(popFile);
         ArrayList<Id<Person>> personsEligibleForMobilityBudget = new ArrayList<>();
 
         for (Person person : pop.getPersons().values()) {
@@ -28,15 +29,18 @@ public class ElegibleAgentsForMobBudToCSV {
                 Plan plan = person.getSelectedPlan();
                 List<String> transportModeList = new ArrayList<>();
                 List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
+                int carCounter = 0;
                 for (TripStructureUtils.Trip trip: trips) {
                     List<Leg> listLegs = trip.getLegsOnly();
                     for (Leg leg: listLegs) {
-                        System.out.println(leg.getMode());
                         transportModeList.add(leg.getMode());
+                        if (leg.getMode().equals(TransportMode.car)) {
+                            carCounter++;
+                        }
                     }
                 }
                 if (transportModeList.contains(TransportMode.car)) {
-                    System.out.println("True");
+                    System.out.println(carCounter);
                     personsEligibleForMobilityBudget.add(personId);
                 }
             }
@@ -46,7 +50,7 @@ public class ElegibleAgentsForMobBudToCSV {
     }
 
     private static void writeList2CSV (List originalList) throws IOException {
-        FileWriter writer = new FileWriter("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\test.csv");
+        FileWriter writer = new FileWriter("test.csv");
         writer.write("personId");
         writer.append("\n");
 

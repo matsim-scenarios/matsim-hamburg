@@ -25,12 +25,12 @@ import java.util.*;
 
 public class RailwayCrossings {
 
-    static HashMap<Id, Double> carLinkMap = new HashMap<>();
-    static HashMap<Id, List<Double>> carLinkTimeMap = new HashMap<>();
-    static HashMap<Id, Double> ptLinkMap = new HashMap<>();
-    static HashMap<Id, List<Double>> ptLinkTimeMap = new HashMap<>();
-    static HashMap<Id, Id> connection = new HashMap<>();
-    static double offSet = 100.0;
+    public static HashMap<Id, Double> carLinkMap = new HashMap<>();
+    public static HashMap<Id, List<Double>> carLinkTimeMap = new HashMap<>();
+    public static HashMap<Id, Double> ptLinkMap = new HashMap<>();
+    public static HashMap<Id, List<Double>> ptLinkTimeMap = new HashMap<>();
+    public static HashMap<Id, Id> connection = new HashMap<>();
+    public static double offSet = 1.0;
 
     public static void main(String[] args) throws Exception {
 
@@ -53,7 +53,10 @@ public class RailwayCrossings {
             transformedCoord.add(coordinate);
             Link l = NetworkUtils.getNearestLink(carNetwork, coordinate);
             Link nearestPtLink = NetworkUtils.getNearestLink(ptNetwork, coordinate);
-            calculateIntersection(l, nearestPtLink);
+            carLinkMap.put(l.getId(),0.0);
+            ptLinkMap.put(nearestPtLink.getId(), 0.0);
+            connection.put(l.getId(), nearestPtLink.getId());
+            //calculateIntersection(l, nearestPtLink);
        }
 
         writeCoord2CSV(coordinates, transformedCoord);
@@ -103,21 +106,26 @@ public class RailwayCrossings {
     }
 
 
-    private static HashMap<Tuple<Id<Link>, Id<Link>>, Integer> calculateTimeDiff() {
+    public static HashMap<Tuple<Id<Link>, Id<Link>>, Integer> calculateTimeDiff() {
         HashMap<Tuple<Id<Link>, Id<Link>>, Integer> amountOfCriticalPassings = new HashMap<>();
 
 
-        for (Id linkId: carLinkTimeMap.keySet()) {
+        for (Id<Link> linkId: carLinkTimeMap.keySet()) {
             List<Double> listOfCar = carLinkTimeMap.get(linkId);
             Id correspondingPtLink = connection.get(linkId);
             List <Double> listOfPt = ptLinkTimeMap.get(correspondingPtLink);
             int counter = 0;
 
+
             if (listOfCar != null && listOfPt!= null  ) {
                 if (listOfCar.size()> listOfPt.size()) {
+                    //System.out.println("Fall 1 Auto länger als pt ");
                     for (Double ptTime : listOfPt) {
                         for (Double carTime: listOfCar) {
+                            //System.out.println(ptTime);
+                            //System.out.println(carTime);
                             double diff = ptTime - carTime;
+                            System.out.println(diff);
                             if (diff > 0 && diff <= offSet) {
                                 counter++;
                             }
@@ -128,9 +136,14 @@ public class RailwayCrossings {
                 }
 
                 if (listOfPt.size()> listOfCar.size()) {
+                    //System.out.println("Fall 2 pt länger als auto ");
+
                     for (double timeCar : listOfCar) {
                         for (Double aDouble : listOfPt) {
+                            System.out.println(timeCar);
+                            System.out.println(listOfPt);
                             double diff = timeCar - aDouble;
+                            System.out.println(diff);
                             if (diff > 0 && diff <= offSet) {
                                 counter++;
                             }
@@ -164,8 +177,8 @@ public class RailwayCrossings {
     }
 
 
-    private static void writeResults2CSV (HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings ) throws IOException {
-        FileWriter writer = new FileWriter("C:/Users/Gregor/Documents/VSP_Arbeit/results.csv");
+    public static void writeResults2CSV (HashMap<Tuple<Id<Link>, Id<Link>>, Integer> criticalPassings ) throws IOException {
+        FileWriter writer = new FileWriter("D://Arbeit//Network_RSV_Edited.xml");
         writer.write("carLink"+";"+"ptLink"+";"+"amountOfCrossings");
         writer.append("\n");
 
