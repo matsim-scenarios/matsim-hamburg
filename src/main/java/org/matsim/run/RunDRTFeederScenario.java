@@ -7,8 +7,11 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.drt.analysis.zonal.DrtZonalSystemParams;
 import org.matsim.contrib.drt.fare.DrtFareParams;
 import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
+import org.matsim.contrib.drt.optimizer.rebalancing.RebalancingParams;
+import org.matsim.contrib.drt.optimizer.rebalancing.mincostflow.MinCostFlowRebalancingStrategyParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
@@ -48,7 +51,10 @@ public class RunDRTFeederScenario {
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
+
+    //TODO: could in fact take the same shape as the rebalancing zones shape file since the latter covers in fact (currently) the same are but is just split into more polygons...
     public static final String DRT_FEEDER_SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+    private static final String DRT_FEEDER_REBALANCING_ZONES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/rebalancing/service-area-divided-1000m.shp";
     private static final String DRT_FEEDER_VEHICLES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
@@ -176,6 +182,22 @@ public class RunDRTFeederScenario {
         drtFeederFareParams.setMinFarePerTrip(1.);
         drtFeederFareParams.setDailySubscriptionFee(0.);
         drtFeederCfg.addParameterSet(drtFeederFareParams);
+
+        //rebalancing
+        RebalancingParams rebalancingParams = new RebalancingParams();
+        MinCostFlowRebalancingStrategyParams mincostFlowParams = new MinCostFlowRebalancingStrategyParams();
+        mincostFlowParams.setRebalancingTargetCalculatorType(MinCostFlowRebalancingStrategyParams.RebalancingTargetCalculatorType.EstimatedDemand); //Estimated Demand is default
+        mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
+        mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
+        rebalancingParams.setInterval(600); //1800 is default. should prbly be the same as demand estimation period
+        mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+        mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+        rebalancingParams.addParameterSet(mincostFlowParams);
+
+        DrtZonalSystemParams rebalancingZones = new DrtZonalSystemParams();
+        rebalancingZones.setZonesGeneration(DrtZonalSystemParams.ZoneGeneration.ShapeFile);
+        rebalancingZones.setTargetLinkSelection(DrtZonalSystemParams.TargetLinkSelection.random);
+        rebalancingZones.setZonesShapeFile(DRT_FEEDER_REBALANCING_ZONES);
 
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
