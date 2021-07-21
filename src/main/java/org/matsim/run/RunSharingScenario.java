@@ -108,7 +108,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(carSharingConfig);
         carSharingConfig.setId(SHARING_SERVICE_ID_CAR);
-        carSharingConfig.setMaximumAccessEgressDistance(2000);
+        carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
@@ -119,7 +119,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup bikeSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(bikeSharingConfig);
         bikeSharingConfig.setId(SHARING_SERVICE_ID_BIKE);
-        bikeSharingConfig.setMaximumAccessEgressDistance(1000);
+        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
