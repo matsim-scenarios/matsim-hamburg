@@ -187,29 +187,33 @@ public class RunDRTFeederScenario {
 
 
         {//rebalancing
-
             //general
             RebalancingParams rebalancingParams = new RebalancingParams();
             rebalancingParams.setInterval(600); //1800 is default. should prbly be the same as demand estimation period
 
-            //zones
-            DrtZonalSystemParams rebalancingZones = new DrtZonalSystemParams();
-            rebalancingZones.setZonesGeneration(DrtZonalSystemParams.ZoneGeneration.ShapeFile);
-            rebalancingZones.setTargetLinkSelection(DrtZonalSystemParams.TargetLinkSelection.random);
-            rebalancingZones.setZonesShapeFile(DRT_FEEDER_REBALANCING_ZONES);
-            drtFeederCfg.addParameterSet(rebalancingZones);
-
-            //algorithm
-            MinCostFlowRebalancingStrategyParams mincostFlowParams = new MinCostFlowRebalancingStrategyParams();
-            mincostFlowParams.setRebalancingTargetCalculatorType(MinCostFlowRebalancingStrategyParams.RebalancingTargetCalculatorType.EstimatedDemand); //Estimated Demand is default
-            mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
-            mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
-            mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
-            mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
-            rebalancingParams.addParameterSet(mincostFlowParams);
+            {//algorithm
+                MinCostFlowRebalancingStrategyParams mincostFlowParams = new MinCostFlowRebalancingStrategyParams();
+                mincostFlowParams.setRebalancingTargetCalculatorType(MinCostFlowRebalancingStrategyParams.RebalancingTargetCalculatorType.EstimatedDemand); //Estimated Demand is default
+                mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
+                mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
+                mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+                mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+                rebalancingParams.addParameterSet(mincostFlowParams);
 
 //            PlusOneRebalancingStrategyParams plusOneRebalancingStrategyParams = new PlusOneRebalancingStrategyParams();
 //            rebalancingParams.addParameterSet(plusOneRebalancingStrategyParams);
+            }
+
+            {//zones
+                DrtZonalSystemParams rebalancingZones = new DrtZonalSystemParams();
+                rebalancingZones.setZonesGeneration(DrtZonalSystemParams.ZoneGeneration.ShapeFile);
+                rebalancingZones.setTargetLinkSelection(DrtZonalSystemParams.TargetLinkSelection.random);
+                rebalancingZones.setZonesShapeFile(DRT_FEEDER_REBALANCING_ZONES);
+                drtFeederCfg.addParameterSet(rebalancingZones);
+            }
+
+            //add rebalancing params
+            drtFeederCfg.addParameterSet(rebalancingParams);
         }
 
         //set some standard values
