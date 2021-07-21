@@ -144,6 +144,7 @@ public class RunDRTFeederScenario {
         return config;
     }
 
+    //TODO: make this all configurable via xml and move it out of the code
     public static Config configureDRTFeeder(Config config){
         //when simulating dvrp, we need/should simulate from the start to the end
         config.qsim().setSimStarttimeInterpretation(QSimConfigGroup.StarttimeInterpretation.onlyUseStarttime);
@@ -174,30 +175,42 @@ public class RunDRTFeederScenario {
         //fleet
         drtFeederCfg.setVehiclesFile(DRT_FEEDER_VEHICLES);
 
-        //fare
-        DrtFareParams drtFeederFareParams = new DrtFareParams();
-        drtFeederFareParams.setBasefare(1.);
-        drtFeederFareParams.setDistanceFare_m(0.);
-        drtFeederFareParams.setTimeFare_h(0.);
-        drtFeederFareParams.setMinFarePerTrip(1.);
-        drtFeederFareParams.setDailySubscriptionFee(0.);
-        drtFeederCfg.addParameterSet(drtFeederFareParams);
+        {//fare
+            DrtFareParams drtFeederFareParams = new DrtFareParams();
+            drtFeederFareParams.setBasefare(1.);
+            drtFeederFareParams.setDistanceFare_m(0.);
+            drtFeederFareParams.setTimeFare_h(0.);
+            drtFeederFareParams.setMinFarePerTrip(1.);
+            drtFeederFareParams.setDailySubscriptionFee(0.);
+            drtFeederCfg.addParameterSet(drtFeederFareParams);
+        }
 
-        //rebalancing
-        RebalancingParams rebalancingParams = new RebalancingParams();
-        MinCostFlowRebalancingStrategyParams mincostFlowParams = new MinCostFlowRebalancingStrategyParams();
-        mincostFlowParams.setRebalancingTargetCalculatorType(MinCostFlowRebalancingStrategyParams.RebalancingTargetCalculatorType.EstimatedDemand); //Estimated Demand is default
-        mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
-        mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
-        rebalancingParams.setInterval(600); //1800 is default. should prbly be the same as demand estimation period
-        mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
-        mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
-        rebalancingParams.addParameterSet(mincostFlowParams);
 
-        DrtZonalSystemParams rebalancingZones = new DrtZonalSystemParams();
-        rebalancingZones.setZonesGeneration(DrtZonalSystemParams.ZoneGeneration.ShapeFile);
-        rebalancingZones.setTargetLinkSelection(DrtZonalSystemParams.TargetLinkSelection.random);
-        rebalancingZones.setZonesShapeFile(DRT_FEEDER_REBALANCING_ZONES);
+        {//rebalancing
+
+            //general
+            RebalancingParams rebalancingParams = new RebalancingParams();
+            rebalancingParams.setInterval(600); //1800 is default. should prbly be the same as demand estimation period
+
+            //zones
+            DrtZonalSystemParams rebalancingZones = new DrtZonalSystemParams();
+            rebalancingZones.setZonesGeneration(DrtZonalSystemParams.ZoneGeneration.ShapeFile);
+            rebalancingZones.setTargetLinkSelection(DrtZonalSystemParams.TargetLinkSelection.random);
+            rebalancingZones.setZonesShapeFile(DRT_FEEDER_REBALANCING_ZONES);
+            drtFeederCfg.addParameterSet(rebalancingZones);
+
+            //algorithm
+            MinCostFlowRebalancingStrategyParams mincostFlowParams = new MinCostFlowRebalancingStrategyParams();
+            mincostFlowParams.setRebalancingTargetCalculatorType(MinCostFlowRebalancingStrategyParams.RebalancingTargetCalculatorType.EstimatedDemand); //Estimated Demand is default
+            mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
+            mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
+            mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+            mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+            rebalancingParams.addParameterSet(mincostFlowParams);
+
+//            PlusOneRebalancingStrategyParams plusOneRebalancingStrategyParams = new PlusOneRebalancingStrategyParams();
+//            rebalancingParams.addParameterSet(plusOneRebalancingStrategyParams);
+        }
 
         //set some standard values
         drtFeederCfg.setMaxTravelTimeAlpha(1.7);
