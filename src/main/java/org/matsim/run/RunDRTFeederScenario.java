@@ -30,8 +30,8 @@ import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTri
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesModule;
+import org.matsim.prepare.ClassifyStationType;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
-import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -48,8 +48,8 @@ public class RunDRTFeederScenario {
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
-    public static final String DRT_FEEDER_SERVICE_AREA = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
-    private static final String DRT_FEEDER_VEHICLES = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
+    public static final String DRT_FEEDER_SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+    private static final String DRT_FEEDER_VEHICLES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
 
@@ -71,9 +71,8 @@ public class RunDRTFeederScenario {
 
         Config config = prepareConfig(args);
 
-        //TODO
-        //set real (1pct) input plans
-        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
+//        //set real (1pct) input plans
+//        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
 
         Scenario scenario = prepareScenario(config);
 
@@ -197,21 +196,39 @@ public class RunDRTFeederScenario {
         DrtConfigs.adjustMultiModeDrtConfig(multiModeDrtCfg, config.planCalcScore(), config.plansCalcRoute());
 
         //add mode params
-        PlanCalcScoreConfigGroup.ModeParams modeParams = new PlanCalcScoreConfigGroup.ModeParams(DRT_FEEDER_MODE);
-        config.planCalcScore().addModeParams(modeParams);
+        PlanCalcScoreConfigGroup.ModeParams carParams = config.planCalcScore().getModes().get(TransportMode.car);
+
+        PlanCalcScoreConfigGroup.ModeParams drtFeederModeParams = new PlanCalcScoreConfigGroup.ModeParams(DRT_FEEDER_MODE);
+        //these values come from project partners. TODO: check if correct
+        drtFeederModeParams.setConstant(carParams.getConstant() - 0.827); //car should be 0
+//        drtFeederModeParams.setMarginalUtilityOfTraveling(-3.396); //TODO talk to KN
+        //copy from car
+        drtFeederModeParams.setMarginalUtilityOfDistance(carParams.getMarginalUtilityOfDistance()); //should be 0
+        config.planCalcScore().addModeParams(drtFeederModeParams);
 
         //configure intermodal pt
         SwissRailRaptorConfigGroup swissRailRaptorConfigGroup = ConfigUtils.addOrGetModule(config,SwissRailRaptorConfigGroup.class);
         swissRailRaptorConfigGroup.setUseIntermodalAccessEgress(true);
-        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet accessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
-        accessEgressParameterSet.setMode(DRT_FEEDER_MODE);
-        accessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
-        accessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
+
+        //add drtFeeder
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet drtFeederAccessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        drtFeederAccessEgressParameterSet.setMode(DRT_FEEDER_MODE);
+        drtFeederAccessEgressParameterSet.setStopFilterAttribute(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE);
+        drtFeederAccessEgressParameterSet.setStopFilterValue(DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE);
         //TODO these values were recommended by GL based on his experiences for Berlin
-        accessEgressParameterSet.setInitialSearchRadius(3_000);
-        accessEgressParameterSet.setSearchExtensionRadius(1_000);
-        accessEgressParameterSet.setMaxRadius(20_000);
-        swissRailRaptorConfigGroup.addIntermodalAccessEgress(accessEgressParameterSet);
+        drtFeederAccessEgressParameterSet.setInitialSearchRadius(3_000);
+        drtFeederAccessEgressParameterSet.setSearchExtensionRadius(1_000);
+        drtFeederAccessEgressParameterSet.setMaxRadius(20_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(drtFeederAccessEgressParameterSet);
+
+        //add walk
+        SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet walkAccessEgressParameterSet = new SwissRailRaptorConfigGroup.IntermodalAccessEgressParameterSet();
+        walkAccessEgressParameterSet.setMode(TransportMode.walk);
+        //TODO these values were recommended copied from GL
+        walkAccessEgressParameterSet.setInitialSearchRadius(1_500);
+        walkAccessEgressParameterSet.setSearchExtensionRadius(1_000);
+        walkAccessEgressParameterSet.setMaxRadius(100_000);
+        swissRailRaptorConfigGroup.addIntermodalAccessEgress(walkAccessEgressParameterSet);
 
         return config;
     }
@@ -291,14 +308,24 @@ public class RunDRTFeederScenario {
                                                      double bufferAroundServiceArea) {
         log.info("Tagging pt stops marked for intermodal access/egress in the service area.");
         HamburgShpUtils shpUtils = new HamburgShpUtils( drtServiceAreaShapeFile );
-        for (TransitStopFacility stop: transitSchedule.getFacilities().values()) {
-            /*if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
-                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {*/
-                    if (shpUtils.isCoordInDrtServiceAreaWithBuffer(stop.getCoord(), bufferAroundServiceArea)) {
-                        stop.getAttributes().putAttribute(newAttributeName, newAttributeValue);
-                    }
+
+        //TODO this rather ugly classification implementation should be replaced by GL's version which directly puts attributes into the transitSchedule
+        ClassifyStationType.getStop2TypesList(transitSchedule).stream()
+                .filter(stop2type -> stop2type.getType() != null && (stop2type.getType().contains("s") || stop2type.getType().contains("r")) ) //filter rail and subway stations
+                .filter(stop2Type -> shpUtils.isCoordInDrtServiceAreaWithBuffer(stop2Type.getStop().getCoord(), bufferAroundServiceArea)) //filter spatially
+                .forEach(stop2type -> stop2type.getStop().getAttributes().putAttribute(newAttributeName, newAttributeValue));
+
+
+//        for (TransitStopFacility stop: transitSchedule.getFacilities().values()) {
+//
+//
+//            /*if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
+//                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {*/
+//                    if (shpUtils.isCoordInDrtServiceAreaWithBuffer(stop.getCoord(), bufferAroundServiceArea)) {
+//                        stop.getAttributes().putAttribute(newAttributeName, newAttributeValue);
+//                    }
 //                }
 //            }
-        }
+//        }
     }
 }

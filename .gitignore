@@ -312,3 +312,4 @@ hs_err_pid*
 lsp/*
 matsim-hamburg.iml
 *output/
+/hamburg-analysis/hamburg-analysis.iml

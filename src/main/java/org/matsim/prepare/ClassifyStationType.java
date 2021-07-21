@@ -1,11 +1,13 @@
 package org.matsim.prepare;
 
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.transitSchedule.api.*;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,22 +16,31 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ClassifyStationType {
+    private static final Logger log = Logger.getLogger(ClassifyStationType.class);
+
     public static void main(String[] args) throws IOException {
-        String check = "no other transport mode!";
-        String check2 = "nothing wrong!";
 
-        List<TransitStopFacility> StopList_bus = new ArrayList<>();
-        List<TransitStopFacility> StopList_subway = new ArrayList<>();
-        List<TransitStopFacility> StopList_rail = new ArrayList<>();
 
-        List<Stop2type> stops = new LinkedList<>();
 
         String configFile = "scenarios/input/hamburg-v1.1-1pct.config.xml";
         Config config = ConfigUtils.loadConfig(configFile);
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
+
         //save stops respectively
         TransitSchedule transitSchedule = scenario.getTransitSchedule();
+
+        List<Stop2type> stops = getStop2TypesList(transitSchedule);
+
+        writeOutput(stops);
+    }
+
+    public static List<Stop2type> getStop2TypesList(TransitSchedule transitSchedule) {
+        List<Stop2type> stops = new LinkedList<>();
+        List<TransitStopFacility> StopList_bus = new ArrayList<>();
+        List<TransitStopFacility> StopList_subway = new ArrayList<>();
+        List<TransitStopFacility> StopList_rail = new ArrayList<>();
+
         for(TransitLine transitLine: transitSchedule.getTransitLines().values()){
             for (TransitRoute transitRoute : transitLine.getRoutes().values()){
                 for(TransitRouteStop stop :transitRoute.getStops()){
@@ -52,14 +63,12 @@ public class ClassifyStationType {
                         }
 
                     }else{
-                        check = "There is other transport mode!";
-
+                        log.warn("There is another transport mode: " + transitRoute.getTransportMode() + " at station " + stop);
                     }
                 }
 
             }
         }
-        System.out.println("For Check: "+check);
 
         //prepare for stopType
         for(TransitStopFacility transitStopFacility: transitSchedule.getFacilities().values()) {
@@ -77,37 +86,45 @@ public class ClassifyStationType {
             stops.add(stop2type);
 
         }
-        System.out.println("For Check2: "+check2);
+        return stops;
+    }
 
+    private static void writeOutput(List<Stop2type> stops) throws IOException {
         //print out
-        FileWriter out = new FileWriter( new File( "out.csv" ) );
+        FileWriter out = new FileWriter( new File( "transitStationTypes.csv" ) );
         //out.write( "X;Y\n" );
         //out.write( xx + ";" + yy + ";\n" );
         out.write("id;x;y;name;stationType\n");
 
         for (Stop2type stop : stops) {
-            out.write(stop.transitStopFacility.getId().toString() + ";" + stop.transitStopFacility.getCoord().getX() + ";" + stop.transitStopFacility.getCoord().getY() + ";" + stop.transitStopFacility.getName().toString() + ";" + stop.getType() + "\n");
+            out.write(stop.transitStopFacility.getId().toString() + ";" + stop.transitStopFacility.getCoord().getX() + ";" + stop.transitStopFacility.getCoord().getY() + ";" + stop.transitStopFacility.getName() + ";" + stop.getType() + "\n");
         }
 
         out.close();
     }
 
-    private static class Stop2type{
+    //should be replaced by a Map<TransitStopFacility,String> or even something cleverer
+    public static class Stop2type{
         TransitStopFacility transitStopFacility;
         String type;
         Stop2type(TransitStopFacility transitStopFacility) {
             this.transitStopFacility = transitStopFacility;
         }
 
-        public void addType(String type) {
+        void addType(String type) {
             if(this.type == null)
                 this.type = type;
             else
                 this.type = this.type + type;
         }
 
+        @Nullable
         public String getType() {
             return type;
+        }
+
+        public TransitStopFacility getStop() {
+            return transitStopFacility;
         }
     }
 }

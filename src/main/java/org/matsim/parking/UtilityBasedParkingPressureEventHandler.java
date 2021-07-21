@@ -7,6 +7,9 @@ import org.matsim.api.core.v01.events.PersonArrivalEvent;
 import org.matsim.api.core.v01.events.PersonScoreEvent;
 import org.matsim.api.core.v01.events.handler.PersonArrivalEventHandler;
 import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.run.RunSharingScenario;
+
+import java.util.Set;
 
 
 /**
@@ -20,7 +23,7 @@ public class UtilityBasedParkingPressureEventHandler implements PersonArrivalEve
     @Inject
     Scenario scenario;
 
-	private final String parkingRelevantTransportMode = TransportMode.car;
+	private final Set<String> parkingRelevantTransportModes = Set.of(TransportMode.car, RunSharingScenario.SHARING_CAR_MODE);
 	static final String parkPressureAttributeName = "parkPressure";
 
     @Override
@@ -31,7 +34,7 @@ public class UtilityBasedParkingPressureEventHandler implements PersonArrivalEve
 	@Override
 	public void handleEvent(PersonArrivalEvent event) {
 
-		if (scenario.getPopulation().getPersons().containsKey(event.getPersonId()) && event.getLegMode().equals(parkingRelevantTransportMode)) {
+		if (scenario.getPopulation().getPersons().containsKey(event.getPersonId()) && parkingRelevantTransportModes.contains(event.getLegMode())) {
 
 			if(!scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAsMap().containsKey(parkPressureAttributeName)){
 				throw new RuntimeException(parkPressureAttributeName + " is not found as an attribute in link: " + event.getLinkId());

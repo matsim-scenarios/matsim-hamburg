@@ -18,7 +18,6 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.NetworkRoutingProvider;
 import org.matsim.core.router.TeleportationRoutingModule;
-import org.matsim.sharingFare.SharingFaresConfigGroup;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,13 +30,11 @@ public class RunSharingScenario {
 
     private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
-    public static final String VERSION = "v2.0";
-
     private static final String SHARING_SERVICE_ID_CAR = "car";
     private static final String SHARING_SERVICE_ID_BIKE = "bike";
 
-    private static final String SHARING_CAR_MODE = "scar";
-    private static final String SHARING_BIKE_MODE = "sbike";
+    public static final String SHARING_CAR_MODE = "scar";
+    public static final String SHARING_BIKE_MODE = "sbike";
 
     private static final String SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
@@ -104,7 +101,6 @@ public class RunSharingScenario {
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
 
         ConfigUtils.addOrGetModule(config, SharingConfigGroup.class);
-        ConfigUtils.addOrGetModule(config, SharingFaresConfigGroup.class);
         //add sharing config group
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
 
@@ -112,7 +108,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(carSharingConfig);
         carSharingConfig.setId(SHARING_SERVICE_ID_CAR);
-        carSharingConfig.setMaximumAccessEgressDistance(2000);
+        carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
@@ -123,7 +119,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup bikeSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(bikeSharingConfig);
         bikeSharingConfig.setId(SHARING_SERVICE_ID_BIKE);
-        bikeSharingConfig.setMaximumAccessEgressDistance(1000);
+        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
         bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
