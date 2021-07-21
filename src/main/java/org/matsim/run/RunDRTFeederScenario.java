@@ -197,7 +197,7 @@ public class RunDRTFeederScenario {
                 mincostFlowParams.setZonalDemandEstimatorType(MinCostFlowRebalancingStrategyParams.ZonalDemandEstimatorType.PreviousIterationDemand); //previousIterationDemand is default
                 mincostFlowParams.setDemandEstimationPeriod(600); //1800 is default. should prbly be the same as interval
                 mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
-                mincostFlowParams.setTargetAlpha(0.5); //0.5 is default
+                mincostFlowParams.setTargetBeta(0.5); //0.5 is default
                 rebalancingParams.addParameterSet(mincostFlowParams);
 
 //            PlusOneRebalancingStrategyParams plusOneRebalancingStrategyParams = new PlusOneRebalancingStrategyParams();
