@@ -1,6 +1,5 @@
 package org.matsim.run;
 
-
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -13,7 +12,6 @@ import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -48,7 +46,9 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            //args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            args = new String[] {"D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\h-v2-10pct-accEcc-c4.output_config.xml"};
+
         }
 
         RunBaseCaseWithMobilityBudgetV2.run(args);
@@ -121,11 +121,9 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
-
-        //useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
+        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
 
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
-        //shareOfIncome =Double.parseDouble(args[10]);
         log.info("share of income: "+ shareOfIncome);
 
 
@@ -138,13 +136,13 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             log.warn("Setting dailyMobilityBudget to default of 100.0");
             dailyMobilityBudget = 100.0;
         }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn(arrayIndexOutOfBoundsException);
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 100.0;
+        }
 
         log.info(dailyMobilityBudget);
-
-
-        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
-
-
         try {
             useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
         }
@@ -153,6 +151,11 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             useIncomeForMobilityBudget = false;
         }
         catch (NullPointerException nullPointerException) {
+            log.warn("Not using income for the MobilityBudget");
+            useIncomeForMobilityBudget = false;
+        }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn(arrayIndexOutOfBoundsException);
             log.warn("Not using income for the MobilityBudget");
             useIncomeForMobilityBudget = false;
         }
@@ -165,6 +168,11 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             shareOfIncome = 0.10;
         }
         catch (NullPointerException nullPointerException) {
+            log.warn("Using default share of income for the MobilityBudget");
+            shareOfIncome = 0.10;
+        }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn(arrayIndexOutOfBoundsException);
             log.warn("Using default share of income for the MobilityBudget");
             shareOfIncome = 0.10;
         }
