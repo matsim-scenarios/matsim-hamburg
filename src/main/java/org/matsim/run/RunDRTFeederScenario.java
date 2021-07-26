@@ -55,9 +55,8 @@ public class RunDRTFeederScenario {
     //TODO: could in fact take the same shape as the rebalancing zones shape file since the latter covers in fact (currently) the same are but is just split into more polygons...
     public static final String DRT_FEEDER_SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
     private static final String DRT_FEEDER_REBALANCING_ZONES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/rebalancing/service-area-divided-1000m.shp";
-    private static final String DRT_FEEDER_VEHICLES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
+    private static String DRT_FEEDER_VEHICLES;
     private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
-
 
     public static void main(String[] args) throws ParseException, IOException {
 
@@ -67,13 +66,26 @@ public class RunDRTFeederScenario {
 
         if (args.length == 0) {
             args = new String[] {"scenarios/input/hamburg-v1.1-1pct.config.xml"};
+            DRT_FEEDER_VEHICLES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
+        } else {
+            if(args.length != 2) throw new IllegalArgumentException("wrong number of arguments");
+            DRT_FEEDER_VEHICLES = args[0];
+            String[] tmp = new String[args.length - 1];
+            for (int i = 1; i < args.length; i++){
+                tmp[i-1] = args[i];
+            }
+            args = tmp;
         }
+
 
         RunDRTFeederScenario realLabHH2030 = new RunDRTFeederScenario();
         realLabHH2030.run(args);
     }
 
     private void run(String[] args) throws IOException {
+
+        String str = String.join("\n", args);
+        log.info("running with args = \n " + str);
 
         Config config = prepareConfig(args);
 
