@@ -11,7 +11,7 @@ import org.matsim.contrib.drt.analysis.zonal.DrtZonalSystemParams;
 import org.matsim.contrib.drt.fare.DrtFareParams;
 import org.matsim.contrib.drt.optimizer.insertion.ExtensiveInsertionSearchParams;
 import org.matsim.contrib.drt.optimizer.rebalancing.RebalancingParams;
-import org.matsim.contrib.drt.optimizer.rebalancing.mincostflow.MinCostFlowRebalancingStrategyParams;
+import org.matsim.contrib.drt.optimizer.rebalancing.plusOne.PlusOneRebalancingStrategyParams;
 import org.matsim.contrib.drt.run.DrtConfigGroup;
 import org.matsim.contrib.drt.run.DrtConfigs;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
@@ -67,7 +67,6 @@ public class RunDRTFeederScenario {
         if (args.length == 0) {
             args = new String[] {"scenarios/input/hamburg-v1.1-1pct.config.xml"};
         } else {
-            if(args.length != 2) throw new IllegalArgumentException("wrong number of arguments");
             DRT_FEEDER_VEHICLES = args[0];
             String[] tmp = new String[args.length - 1];
             for (int i = 1; i < args.length; i++){
@@ -82,9 +81,6 @@ public class RunDRTFeederScenario {
     }
 
     private void run(String[] args) throws IOException {
-
-        String str = String.join("\n", args);
-        log.info("running with args = \n " + str);
 
         Config config = prepareConfig(args);
 
