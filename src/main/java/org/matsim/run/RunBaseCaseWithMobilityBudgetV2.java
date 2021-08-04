@@ -12,6 +12,8 @@ import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
+import org.matsim.prepare.SelectionMobilityBudget;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     static double dailyMobilityBudget;
     static boolean useIncomeForMobilityBudget;
     static double shareOfIncome;
+    private static String shapeFile;
 
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -116,6 +119,8 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                 personsEligibleForMobilityBudget.replace(personId, dailyMobilityBudget);
             }
         }
+
+        SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
         return scenario;
     }
 

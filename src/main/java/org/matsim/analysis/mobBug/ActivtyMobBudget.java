@@ -21,12 +21,13 @@ import java.util.List;
 public class ActivtyMobBudget {
 
     public static void main(String args[]) throws Exception {
-        ArrayList<Id<Person>> list = (ArrayList) readCsv("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\test.csv");
+
+        ArrayList<Id<Person>> list = (ArrayList) readCsv("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\personIdElegibleForMobBud.csv");
         Population pop = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.1-1pct.plans.xml.gz");
 
 
-        FileWriter writer = new FileWriter("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\test2.csv");
-        writer.write("id"+","+"income"+","+"gender"+","+"activityTypeHome"+","+"xCoordOfActivity"+","+"yCoordOfActivity"+","+"numberOfCarLegs");
+        FileWriter writer = new FileWriter("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\informationOfAgents.csv");
+        writer.write("id"+","+"age"+","+"income"+","+"gender"+","+"activityTypeHome"+","+"xCoordOfActivity"+","+"yCoordOfActivity"+","+"numberOfCarLegs");
         writer.append("\n");
 
         for (Id<Person> id: list) {
@@ -42,7 +43,8 @@ public class ActivtyMobBudget {
                     }
                 }
             }
-            writer.append(person.getId()+","+person.getAttributes().getAttribute("income")+","+person.getAttributes().getAttribute("gender")+","+ ((Activity) person.getSelectedPlan().getPlanElements().get(0)).getType()+","+activity.getCoord().getX()+","+activity.getCoord().getY()+","+counterOfCarLegs);
+            System.out.println(person.getAttributes().getAttribute("income"));
+            writer.append(person.getId()+","+person.getAttributes().getAttribute("age")+","+person.getAttributes().getAttribute("income")+","+person.getAttributes().getAttribute("gender")+","+ ((Activity) person.getSelectedPlan().getPlanElements().get(0)).getType()+","+activity.getCoord().getX()+","+activity.getCoord().getY()+","+counterOfCarLegs);
             writer.append("\n");
         }
         writer.close();
