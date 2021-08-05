@@ -13,7 +13,7 @@ import org.opengis.geometry.BoundingBox;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class SelectionMobilityBudget {
@@ -28,7 +28,7 @@ public class SelectionMobilityBudget {
         HashMap<Id, Double> idDoubleHashMap = incomeBasedSelection(population, 10.0);
     }
 
-    static HashMap<Id, Double> filterForRegion(Population population, String shapeFile) {
+    public static HashMap<Id, Double> filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
         BoundingBox box = null;
@@ -52,7 +52,7 @@ public class SelectionMobilityBudget {
             }
 
         }
-        System.out.println(selectedAgents.size());
+
         return selectedAgents;
     }
 
