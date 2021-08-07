@@ -1,5 +1,6 @@
 package org.matsim.prepare;
 
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
@@ -7,28 +8,28 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.utils.gis.ShapeFileReader;
+import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.BoundingBox;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class SelectionMobilityBudget {
 
+    private static final Logger log = Logger.getLogger(SelectionMobilityBudget.class);
+
 
     public static void main (String[] args) {
 
-        String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
-        Population population = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.0-1pct.plans.xml.gz");
+        //String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+        //Population population = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.0-1pct.plans.xml.gz");
 
         //HashMap<Id, Double> idDoubleHashMap = filterForRegion(population, shapeFile);
-        HashMap<Id, Double> idDoubleHashMap = incomeBasedSelection(population, 10.0);
+        //HashMap<Id, Double> idDoubleHashMap = incomeBasedSelection(population, 10.0);
     }
 
-    public static HashMap<Id, Double> filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
+    public static void filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
         BoundingBox box = null;
@@ -38,22 +39,32 @@ public class SelectionMobilityBudget {
             }
         }
 
-
-        HashMap<Id, Double> selectedAgents = new HashMap<>();
-
+        List<Id<Person>> selectedAgents = new ArrayList();
         for (Person p: population.getPersons().values()) {
-
-            TripStructureUtils.StageActivityHandling stageActivityHandling = TripStructureUtils.StageActivityHandling.ExcludeStageActivities;
-            List<Activity> activities = PopulationUtils.getActivities(p.getSelectedPlan(), stageActivityHandling);
-            for (Activity activty: activities) {
-                if (activty.getType().contains("home") && box.contains(activty.getCoord().getX(), activty.getCoord().getY()) ) {
-                    selectedAgents.put(p.getId(),0.0);
+            if (personsEligibleForMobilityBudget.containsKey(p.getId())) {
+                TripStructureUtils.StageActivityHandling stageActivityHandling = TripStructureUtils.StageActivityHandling.ExcludeStageActivities;
+                List<Activity> activities = PopulationUtils.getActivities(p.getSelectedPlan(), stageActivityHandling);
+                for (Activity activty: activities) {
+                    if (activty.getType().contains("home") && box.contains(activty.getCoord().getX(), activty.getCoord().getY()) ) {
+                        log.info("Agent: " + p.getId()+" is in ShapeFile");
+                        selectedAgents.add(p.getId());
+                    }
                 }
             }
-
         }
 
-        return selectedAgents;
+        List<Id<Person>> toRemove = new ArrayList();
+        for( Id<Person> p: personsEligibleForMobilityBudget.keySet() ) {
+            if (!selectedAgents.contains(p)) {
+                toRemove.add(p);
+            }
+        }
+
+        for (Id<Person> personId: toRemove) {
+            personsEligibleForMobilityBudget.remove(personId);
+            log.info("Removed: " + personId);
+        }
+
     }
 
 

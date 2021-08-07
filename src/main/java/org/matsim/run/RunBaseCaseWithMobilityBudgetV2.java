@@ -39,7 +39,9 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     static double dailyMobilityBudget;
     static boolean useIncomeForMobilityBudget;
     static double shareOfIncome;
-    private static String shapeFile;
+    public static boolean useShapeFile;
+    //private static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+    static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
 
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -87,13 +89,12 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
         log.info("filtering population for mobilityBudget");
-        log.info("using income"+ useIncomeForMobilityBudget);
-        log.info("share of income"+shareOfIncome);
+        log.info("using income "+ useIncomeForMobilityBudget);
+        log.info("share of income "+shareOfIncome);
         for (Person person : scenario.getPopulation().getPersons().values()) {
             Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
                 Plan plan = person.getSelectedPlan();
-
                 //TripStructureUtil get Legs
                 List<String> transportModeList = new ArrayList<>();
                 List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
@@ -102,7 +103,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
                     for (Leg leg: listLegs) {
                         transportModeList.add(leg.getMode());
                     }
-
                 }
                 if (transportModeList.contains(TransportMode.car)) {
                     personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
@@ -120,7 +120,11 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             }
         }
 
-        SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
+        if (useShapeFile == true) {
+            log.info("Filtering for Region");
+            SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
+        }
+
         return scenario;
     }
 
@@ -130,7 +134,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
         log.info("share of income: "+ shareOfIncome);
-
 
         try {
             dailyMobilityBudget = Double.parseDouble(args[6]);
@@ -180,6 +183,15 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             log.warn(arrayIndexOutOfBoundsException);
             log.warn("Using default share of income for the MobilityBudget");
             shareOfIncome = 0.10;
+        }
+
+        try {
+            useShapeFile = Boolean.parseBoolean(args[12]);
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using shape File");
+            useShapeFile = false;
         }
 
         return config;
