@@ -41,7 +41,7 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     static double shareOfIncome;
     public static boolean useShapeFile;
     //private static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
-    static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+    static String shapeFile;
 
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -113,8 +113,10 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         if (useIncomeForMobilityBudget == true) {
             log.info("using the income for the MobilityBudget");
             for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
+
+                double monthlyIncomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/12;
                 //divided by 30 because income is needed per day
-                double incomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/30;
+                double incomeOfAgent = monthlyIncomeOfAgent/30;
                 dailyMobilityBudget = incomeOfAgent * shareOfIncome;
                 personsEligibleForMobilityBudget.replace(personId, dailyMobilityBudget);
             }
@@ -149,7 +151,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             log.warn("Setting dailyMobilityBudget to default of 100.0");
             dailyMobilityBudget = 100.0;
         }
-
         log.info(dailyMobilityBudget);
         try {
             useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
@@ -187,12 +188,24 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         try {
             useShapeFile = Boolean.parseBoolean(args[12]);
+            log.info("Using shape File");
         }
 
         catch (IllegalArgumentException illegalArgumentException) {
             log.warn("Not using shape File");
             useShapeFile = false;
         }
+
+        try {
+            shapeFile = args[14];
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not able to read Shape File");
+            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";;
+        }
+
+
 
         return config;
     }

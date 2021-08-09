@@ -20,15 +20,6 @@ public class SelectionMobilityBudget {
     private static final Logger log = Logger.getLogger(SelectionMobilityBudget.class);
 
 
-    public static void main (String[] args) {
-
-        //String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
-        //Population population = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\hamburg-v1.0-1pct.plans.xml.gz");
-
-        //HashMap<Id, Double> idDoubleHashMap = filterForRegion(population, shapeFile);
-        //HashMap<Id, Double> idDoubleHashMap = incomeBasedSelection(population, 10.0);
-    }
-
     public static void filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
@@ -62,24 +53,68 @@ public class SelectionMobilityBudget {
 
         for (Id<Person> personId: toRemove) {
             personsEligibleForMobilityBudget.remove(personId);
-            log.info("Removed: " + personId);
+            log.info("Removed: " + personId + "because he is not in the Shape File");
         }
 
     }
 
 
-    static HashMap<Id, Double> incomeBasedSelection(Population population, double percentage) {
+    public static void  incomeBasedSelection(Population population, double percentage, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
-        HashMap<Id, Double> incomeBasedSelectedAgents = new HashMap<Id, Double>();
+        LinkedHashMap<Id<Person>, Double> incomeBasedSelectedAgents = new LinkedHashMap<>();
 
         for (Person p: population.getPersons().values()) {
-            incomeBasedSelectedAgents.put(p.getId(), (Double) p.getAttributes().getAttribute("income"));
-        }
-        
-        incomeBasedSelectedAgents.entrySet().stream()
-                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
 
-        return incomeBasedSelectedAgents;
+            if (personsEligibleForMobilityBudget.containsKey(p.getId())) {
+                incomeBasedSelectedAgents.put(p.getId(), (Double) p.getAttributes().getAttribute("income"));
+            }
+        }
+
+        int sizeOfMap = incomeBasedSelectedAgents.size();
+        int numberOfAgents = (int) Math.ceil(sizeOfMap * percentage);
+        Map<Id<Person>, Double> sortedIncomeBasedSelection = sortByValue(incomeBasedSelectedAgents);
+
+        /*sortedIncomeBasedSelection.entrySet().stream()
+                //.sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));*/
+
+        int counter = 0;
+        List<Id<Person>> agentsToKeep = new ArrayList();
+        for (Id<Person> personId: sortedIncomeBasedSelection.keySet()) {
+            if (counter < numberOfAgents) {
+                agentsToKeep.add(personId);
+            }
+            else break;
+            counter++;
+        }
+
+        List<Id<Person>> toRemove = new ArrayList();
+        for( Id<Person> p: personsEligibleForMobilityBudget.keySet() ) {
+            if (!agentsToKeep.contains(p)) {
+                toRemove.add(p);
+            }
+        }
+
+        for (Id<Person> personId: toRemove) {
+            personsEligibleForMobilityBudget.remove(personId);
+            log.info("Removed: " + personId + "because of his income");
+        }
+
+
+
+
+    }
+
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
     }
 }
