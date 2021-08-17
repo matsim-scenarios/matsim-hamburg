@@ -56,7 +56,7 @@ public class RunDRTFeederScenario {
     public static final String DRT_FEEDER_SERVICE_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
     private static final String DRT_FEEDER_REBALANCING_ZONES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/rebalancing/service-area-divided-1000m.shp";
     private static String DRT_FEEDER_VEHICLES = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-1000vehicles-8seats.xml.gz";
-    private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
+    private static final String ALL_DRT_OPERATION_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
 
     public static void main(String[] args) throws ParseException, IOException {
 
