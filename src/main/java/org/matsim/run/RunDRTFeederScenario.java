@@ -177,7 +177,7 @@ public class RunDRTFeederScenario {
 
         //operation area (area where all drt modes are allowed on the network
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-        hamburgExperimentalConfigGroup.setDrtOperationArea(ALL_DRT_OPERATION_AREA);
+        hamburgExperimentalConfigGroup.setDrtNetworkOperationArea(ALL_DRT_OPERATION_AREA);
 
         //fleet
         drtFeederCfg.setVehiclesFile(DRT_FEEDER_VEHICLES);
@@ -288,8 +288,8 @@ public class RunDRTFeederScenario {
             // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
             // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
             // A buffer of 10km to the service area Berlin includes the A10 on some useful stretches outside Berlin.
-            if(hamburgExperimentalConfigGroup.getDrtOperationArea() != null){
-                addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtOperationArea(), 0.);
+            if(hamburgExperimentalConfigGroup.getDrtNetworkOperationArea() != null){
+                addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtNetworkOperationArea(), 0.);
             }
 
             if(drtCfg.getMode().equals(DRT_FEEDER_MODE)){
