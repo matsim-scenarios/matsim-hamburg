@@ -43,7 +43,7 @@ public class ActivtyMobBudget {
                     }
                 }
             }
-            System.out.println(person.getAttributes().getAttribute("income"));
+           
             writer.append(person.getId()+","+person.getAttributes().getAttribute("age")+","+person.getAttributes().getAttribute("income")+","+person.getAttributes().getAttribute("gender")+","+ ((Activity) person.getSelectedPlan().getPlanElements().get(0)).getType()+","+activity.getCoord().getX()+","+activity.getCoord().getY()+","+counterOfCarLegs);
             writer.append("\n");
         }

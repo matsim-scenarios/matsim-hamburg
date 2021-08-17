@@ -42,6 +42,8 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static boolean useShapeFile;
     //private static String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
     static String shapeFile;
+    public static boolean incomeBasedSelection;
+    static double shareOfAgents;
 
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -123,8 +125,13 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         }
 
         if (useShapeFile == true) {
-            log.info("Filtering for Region");
+            log.info("Filtering for Region" + useShapeFile);
             SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
+        }
+
+        if (incomeBasedSelection==true) {
+            log.info("Selceting Agents based on Income " + incomeBasedSelection);
+            SelectionMobilityBudget.incomeBasedSelection(scenario.getPopulation(),shareOfAgents, personsEligibleForMobilityBudget);
         }
 
         return scenario;
@@ -136,7 +143,15 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
         log.info("share of income: "+ shareOfIncome);
+        log.info("use ShapeFile "+ useShapeFile);
 
+        processArguments(args);
+
+
+        return config;
+    }
+
+    private static void processArguments(String[] args) {
         try {
             dailyMobilityBudget = Double.parseDouble(args[6]);
         } catch (NumberFormatException numberFormatException) {
@@ -164,7 +179,6 @@ public class RunBaseCaseWithMobilityBudgetV2 {
             useIncomeForMobilityBudget = false;
         }
         catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn(arrayIndexOutOfBoundsException);
             log.warn("Not using income for the MobilityBudget");
             useIncomeForMobilityBudget = false;
         }
@@ -202,12 +216,27 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         catch (IllegalArgumentException illegalArgumentException) {
             log.warn("Not able to read Shape File");
-            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";;
+            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
         }
 
+        try {
+            incomeBasedSelection = Boolean.parseBoolean(args[16]);
+            log.info("Using income based selection");
+        }
 
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using income based selection");
+            incomeBasedSelection = false;
+        }
 
-        return config;
+        try {
+            shareOfAgents = Double.parseDouble(args[18]);
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not able to read  the share of Agents using default value");
+            shareOfAgents = 0.1;
+        }
     }
 }
 

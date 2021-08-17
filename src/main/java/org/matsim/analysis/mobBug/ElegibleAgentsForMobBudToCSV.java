@@ -18,10 +18,10 @@ public class ElegibleAgentsForMobBudToCSV {
 
     public static void main(String args []) throws IOException {
 
-        //String popFile = args[0];
+        String popFile = args[0];
         //read in BaseCase to and check wich agents where allowed to use the mobilityBudget and how many trips they made
-        Population pop = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\h-v2-10pct-accEcc-c4.output_plans.xml.gz");
-        //Population pop = PopulationUtils.readPopulation(popFile);
+       // Population pop = PopulationUtils.readPopulation("D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\MATSim\\input\\h-v2-10pct-accEcc-c4.output_plans.xml.gz");
+        Population pop = PopulationUtils.readPopulation(popFile);
         ArrayList<Id<Person>> personsEligibleForMobilityBudget = new ArrayList<>();
 
         int agentCounter = 0;

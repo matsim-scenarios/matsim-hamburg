@@ -29,10 +29,8 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
                 "--config:controler.lastIteration", "4",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.numOfTrips", "5",
-                "--config:HereAPITravelTimeValidation.timeBin", "3600",
-                "--config:hamburgExperimental.useLinkBasedParkPressure", "true",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg-withIncome.plans.xml",
+                "--","","--","","--","", "--", "", "--", ""
         };
 
         Config config = prepareConfig(args);
@@ -45,7 +43,7 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
         //forcing run class to useIncomeForMobilityBudget with an shareOfIncome of 0.9
-        shareOfIncome = 0.9;
+        shareOfIncome = 10.5;
         useIncomeForMobilityBudget = true;
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
@@ -53,8 +51,8 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
 
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
         HashMap<Id<Person>, Double> scoreStatsFromBaseCase = new HashMap<>();
-        //Agents used car in BaseCase now switched and got the MobilityBudget (amount = (4500*0.9)/30=135)
-        scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"), 164.086211440912123);
+        //Agents used car in BaseCase now switched and got the MobilityBudget (amount = ((4500*10.5)/30)/12=131.25)
+        scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"), 160.3362114409121);
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
