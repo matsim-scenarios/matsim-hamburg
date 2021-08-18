@@ -45,7 +45,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();

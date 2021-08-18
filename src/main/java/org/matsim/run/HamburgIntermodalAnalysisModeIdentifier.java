@@ -30,7 +30,7 @@ public final class HamburgIntermodalAnalysisModeIdentifier implements AnalysisMa
 
     @Inject
     public HamburgIntermodalAnalysisModeIdentifier() {
-        drtModes = Arrays.asList(TransportMode.drt, "drt2", "drt_teleportation", RunDRTFeederScenario.DRT_FEEDER_MODE);
+        drtModes = Arrays.asList(TransportMode.drt, "drt2", "drt_teleportation", RunDRTHamburgScenario.DRT_FEEDER_MODE);
 
         modeHierarchy.add( TransportMode.walk ) ;
         modeHierarchy.add( TransportMode.bike ) ;

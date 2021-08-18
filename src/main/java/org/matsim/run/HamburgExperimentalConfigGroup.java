@@ -18,7 +18,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
-    private static final String DRT_NETWORK_OPERATION_AREA = "drtOperationArea";
+    private static final String DRT_NETWORK_OPERATION_AREA = "drtNetworkOperationArea";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);

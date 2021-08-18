@@ -52,7 +52,7 @@ import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.facilities.MatsimFacilitiesReader;
 import org.matsim.run.HamburgShpUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.matsim.run.RunDRTFeederScenario;
+import org.matsim.run.RunDRTHamburgScenario;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,7 +75,7 @@ public class DrtFeederVehicleCreator {
 	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
 	private final Random random = MatsimRandom.getRandom();
-	private final String drtNetworkMode = RunDRTFeederScenario.DRT_FEEDER_MODE;
+	private final String drtNetworkMode = RunDRTHamburgScenario.DRT_FEEDER_MODE;
 	private final HamburgShpUtils shpUtils;
 	private final Network drtNetwork;
 	private List<Pair<Id<Link>, Double>> links2weights = new ArrayList();
@@ -89,7 +89,7 @@ public class DrtFeederVehicleCreator {
 		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
-		String drtServiceAreaShapeFile = RunDRTFeederScenario.DRT_FEEDER_SERVICE_AREA;
+		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
 		//where vehicles are allowed to drive
 		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
 
@@ -147,7 +147,7 @@ public class DrtFeederVehicleCreator {
 		shpUtils = new HamburgShpUtils(drtServiceAreaShapeFile);
 
 		//prepare network
-		RunDRTFeederScenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
+		RunDRTHamburgScenario.addDRTmode(scenario, drtNetworkMode, drtOperationArea, 0);
 		Set<String> modes = new HashSet<>();
 		modes.add(drtNetworkMode);
 		drtNetwork = NetworkUtils.createNetwork();
