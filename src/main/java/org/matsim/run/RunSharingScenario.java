@@ -224,9 +224,6 @@ public class RunSharingScenario {
         modes.add(SharingUtils.getServiceMode(carSharingConfig));
         modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
 
-        //set new vehicles file
-        config.vehicles().setVehiclesFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/hamburg-v2-vehicle-types.xml");
-
         return config;
     }
 
