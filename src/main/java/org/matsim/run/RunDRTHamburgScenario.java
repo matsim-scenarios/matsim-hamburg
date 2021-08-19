@@ -125,6 +125,14 @@ public class RunDRTHamburgScenario {
         return config;
     }
 
+    /**
+     * loads the scenario based on the {@code config}. Then adds the drt modes to all links inside the area defined by
+     * {@link HamburgExperimentalConfigGroup.drtNetworkOperationArea}.
+     * If a drt service with mode={@value DRT_FEEDER_MODE} is defined, all rail and subway transit stops inside the corresponding service area are marked as intermodal access/egress stops.
+     * @param config
+     * @return
+     * @throws IOException
+     */
     public static Scenario prepareScenario(Config config) throws IOException {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
