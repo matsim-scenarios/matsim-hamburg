@@ -100,9 +100,6 @@ public class SelectionMobilityBudget {
             log.info("Removed: " + personId + "because of his income");
         }
 
-
-
-
     }
 
 
