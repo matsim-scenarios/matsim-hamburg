@@ -83,31 +83,35 @@ public class DrtFeederVehicleCreator {
 	public static void main(String[] args) {
 
 
-		String networkFile = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/hamburg-v1.1-10pct.output_network.xml.gz";
-//		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
-		String populationFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/berlin/berlin-v5.5-10pct/input/berlin-v5.5-10pct.plans.xml.gz";
-		String facilitiesFile = "";
+		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
+//		String populationFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/berlin/berlin-v5.5-10pct/input/berlin-v5.5-10pct.plans.xml.gz";
+//		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
-		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/drtFeeder/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+
+		//insideHH
+//		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/insideHH/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
+		//extended
+		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/extended/serviceArea/hamburg-v2.0-drt-feeder-service-areas-extended.shp";
+
 		//where vehicles are allowed to drive
-		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
+		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
 
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-		String vehiclesFilePrefix = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/input/policyCases/drtFeeder/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-";
+		String vehiclesFilePrefix = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/extended/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
-		numbersOfVehicles.add(20);
-		numbersOfVehicles.add(30);
-		numbersOfVehicles.add(50);
-		numbersOfVehicles.add(80);
+//		numbersOfVehicles.add(20);
+//		numbersOfVehicles.add(30);
+//		numbersOfVehicles.add(50);
+//		numbersOfVehicles.add(80);
 		numbersOfVehicles.add(100);
-		numbersOfVehicles.add(120);
-		numbersOfVehicles.add(150);
+//		numbersOfVehicles.add(120);
+//		numbersOfVehicles.add(150);
 		numbersOfVehicles.add(200);
-		numbersOfVehicles.add(250);
+//		numbersOfVehicles.add(250);
 		numbersOfVehicles.add(300);
 		numbersOfVehicles.add(400);
 		numbersOfVehicles.add(500);
@@ -118,12 +122,12 @@ public class DrtFeederVehicleCreator {
 		numbersOfVehicles.add(1000);
 //		numbersOfVehicles.add(1200);
 //		numbersOfVehicles.add(1500);
-//		numbersOfVehicles.add(2000);
+		numbersOfVehicles.add(2000);
 //		numbersOfVehicles.add(2500);
-//		numbersOfVehicles.add(3000);
-//		numbersOfVehicles.add(4000);
-//		numbersOfVehicles.add(5000);
-//		numbersOfVehicles.add(10000);
+		numbersOfVehicles.add(3000);
+		numbersOfVehicles.add(4000);
+		numbersOfVehicles.add(5000);
+		numbersOfVehicles.add(10000);
 		int seats = 8;
 
 		DrtFeederVehicleCreator tvc = new DrtFeederVehicleCreator(networkFile, drtServiceAreaShapeFile, drtOperationArea, ct);
