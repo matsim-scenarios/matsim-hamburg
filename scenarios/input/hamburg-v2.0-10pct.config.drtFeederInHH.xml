@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config SYSTEM "http://www.matsim.org/files/dtd/config_v2.dtd">
+<config>
+	<module name="HereAPITravelTimeValidation" >
+		<param name="date" value="2021-02-24" />
+		<param name="numOfTrips" value="5000" />
+		<param name="timeBin" value="0" />
+		<param name="timeWindow" value="00:00:00-36:00:00" />
+		<param name="useHereAPI" value="false" />
+	</module>
+	<module name="TimeAllocationMutator" >
+		<!-- Default:1800.0; Defines how many seconds a time mutation can maximally shift a time. -->
+		<param name="mutationRange" value="7200.0" />
+	</module>
+	<module name="controler" >
+		<!-- Default=1000. Last Iteration of a simulation. -->
+		<param name="lastIteration" value="500" />
+		<param name="outputDirectory" value="scenarios/output/output-hamburg-v2.0-10pct-reallabHH2030-drtFeeder" />
+		<!-- Possible values: failIfDirectoryExists, overwriteExistingFiles, deleteDirectoryIfExists -->
+		<param name="overwriteFiles" value="deleteDirectoryIfExists" />
+		<!-- An identifier for the current run which is used as prefix for output files and mentioned in output xml files etc. -->
+		<param name="runId" value="hamburg-v2.0-10pct-drtFeederInHH" />
+		<!-- iterationNumber % writeEventsInterval == 0 defines in which iterations events are written to a file. `0' disables events writing completely. -->
+		<param name="writeEventsInterval" value="50" />
+		<!-- iterationNumber % writePlansInterval == 0 defines (hopefully) in which iterations plans are written to a file. `0' disables plans writing completely.  Some plans in early iterations are always written -->
+		<param name="writePlansInterval" value="50" />
+	</module>
+	<module name="global" >
+		<param name="coordinateSystem" value="EPSG:25832" />
+		<param name="insistingOnDeprecatedConfigVersion" value="false" />
+		<!-- "global" number of threads.  This number is used, e.g., for replanning, but NOT in QSim.  This can typically be set to as many cores as you have available, or possibly even slightly more. -->
+		<param name="numberOfThreads" value="8" />
+	</module>
+	<module name="hamburgExperimental" >
+		<param name="filterCommercial" value="false" />
+		<param name="freeSpeedFactor" value="1.8" />
+		<param name="increaseStorageCapacity" value="false" />
+		<param name="parkPressureScoreConstant" value="-1.0" />
+		<param name="parkPressureScoreParams" value="1.,0.7,0." />
+		<param name="populationDownsampleFactor" value="1.0" />
+		<param name="sampleSize" value="10" />
+		<param name="useLinkBasedParkPressure" value="true" />
+		<param name="usePersonIncomeBasedScoring" value="true" />
+
+		<!-- ######################################################										###################################################################################################### -->
+		<!-- ###################################################### drtFeeder-specific stuff underneath ###################################################################################################### -->
+		<!-- ######################################################										###################################################################################################### -->
+		<!-- where all drt modes are allowed on the network-->
+		<!-- param name="drtNetworkOperationArea" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp" / -->
+		<param name="drtNetworkOperationArea" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp" />
+	</module>
+	<module name="network" >
+		<param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz" />
+	</module>
+	<module name="planCalcScore">
+		<param name="fractionOfIterationsToStartScoreMSA" value="1.0"/>
+		<parameterset type="scoringParameters">
+			<parameterset type="modeParams" >
+				<!-- [utils] alternative-specific constant.  Normally per trip, but that is probably buggy for multi-leg trips. -->
+				<param name="constant" value="-0.1" />
+				<!-- [money] daily monetary constant. default=0 to be backwards compatible -->
+				<param name="dailyMonetaryConstant" value="-5.3" />
+				<!-- [utils/hr] additional marginal utility of traveling.  normally negative.  this comes on top of the opportunity cost of time -->
+				<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
+				<param name="mode" value="car" />
+				<!-- [unit_of_money/m] conversion of distance into money. Normally negative. -->
+				<param name="monetaryDistanceRate" value="-2.0E-4" />
+			</parameterset>
+			<parameterset type="modeParams" >
+				<param name="constant" value="-4.5" />
+				<param name="dailyMonetaryConstant" value="-0.0" />
+				<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
+				<param name="mode" value="ride" />
+				<param name="monetaryDistanceRate" value="-2.0E-4" />
+			</parameterset>
+			<parameterset type="modeParams" >
+				<param name="constant" value="-0.0" />
+				<param name="dailyMonetaryConstant" value="-2.3" />
+				<param name="marginalUtilityOfTraveling_util_hr" value="-10.5" />
+				<param name="mode" value="pt" />
+			</parameterset>
+			<parameterset type="modeParams" >
+				<param name="marginalUtilityOfTraveling_util_hr" value="-12.7" />
+				<param name="mode" value="bike" />
+			</parameterset>
+			<parameterset type="modeParams" >
+				<param name="marginalUtilityOfTraveling_util_hr" value="-0.25" />
+				<param name="mode" value="walk" />
+			</parameterset>
+			<!-- ######################################################										###################################################################################################### -->
+			<!-- ###################################################### drtFeeder-specific stuff underneath ###################################################################################################### -->
+			<!-- ######################################################										###################################################################################################### -->
+			<parameterset type="modeParams" >
+				<!--this comes from project partner's findings from stated-preference research. they found that ASC should be carASC - 0.827-->
+				<param name="constant" value="-0.9269999999999999" /> 
+				<param name="dailyMonetaryConstant" value="0.0" />
+				<param name="dailyUtilityConstant" value="0.0" />
+				<param name="marginalUtilityOfDistance_util_m" value="0.0" />
+				<!--this comes from project partner's findings from stated-preference research. they found that mgnUtlOfTrv should be mgnUtlOfTrv_car + 1.25 -->
+				<!--decided not to use it as car is 0. On the other hand, could be interpreted as "i can do activity stuff while driving the shuttle..." -->
+				<param name="marginalUtilityOfTraveling_util_hr" value="-0.0" />
+				<param name="mode" value="drt_feeder" />
+				<param name="monetaryDistanceRate" value="0.0" />
+			</parameterset>
+		</parameterset>
+	</module>
+	<module name="plans" >
+	    <!-- plans file is not public, the link below requires access-->
+        <param name="inputPlansFile" value="dummy-plan.xml"/>
+		<!-- (not tested) will remove plan attributes that are presumably not used, such as activityStartTime. default=false. Use with Caution! -->
+		<param name="removingUnnecessaryPlanAttributes" value="true" />
+	</module>
+	<module name="planscalcroute" >
+		<!-- Defines how access and egress to main mode is simulated. Either of [none, accessEgressModeToLink, walkConstantTimeToLink, accessEgressModeToLinkPlusTimeConstant], Current default=none which means no access or egress trips are simulated. -->
+		<param name="accessEgressType" value="accessEgressModeToLink" />
+		<!-- All the modes for which the router is supposed to generate network routes (like car) -->
+		<param name="networkModes" value="car,commercial_Lkw-g,commercial_Pkw-Lfw,commercial_Lkw-m,commercial_Lfw,commercial_Lkw-k,commercial_Trans,ride,commercial_PWV_IV" />
+		<parameterset type="teleportedModeParameters" >
+			<param name="beelineDistanceFactor" value="1.45" />
+			<param name="mode" value="bike" />
+			<!-- Speed for a teleported mode. Travel time = (<beeline distance> * beelineDistanceFactor) / teleportedModeSpeed. Insert a line like this for every such mode. -->
+			<param name="teleportedModeSpeed" value="3.1388889" />
+		</parameterset>
+		<parameterset type="teleportedModeParameters" >
+			<param name="beelineDistanceFactor" value="1.45" />
+			<param name="mode" value="walk" />
+			<param name="teleportedModeSpeed" value="1.0555556" />
+		</parameterset>
+	</module>
+	<module name="qsim" >
+		<param name="endTime" value="30:00:00" />
+		<param name="flowCapacityFactor" value="0.1" />
+		<!-- [comma-separated list] Defines which modes are congested modes. Technically, these are the modes that the departure handler of the netsimengine handles.  Effective cell size, effective lane width, flow capacity factor, and storage capacity factor need to be set with diligence.  Need to be vehicular modes to make sense. -->
+		<param name="mainMode" value="car,commercial_Lkw-g,commercial_Pkw-Lfw,commercial_Lkw-m,commercial_Lfw,commercial_Lkw-k,commercial_Trans,commercial_PWV_IV" />
+		<!-- Number of threads used for the QSim.  Note that this setting is independent from the "global" threads setting.  In contrast to earlier versions, the non-parallel special version is no longer there. -->
+		<param name="numberOfThreads" value="8" />
+		<param name="startTime" value="00:00:00" />
+		<param name="storageCapacityFactor" value="0.1" />
+		<!-- time in seconds.  Time after which the frontmost vehicle on a link is called `stuck' if it does not move. -->
+		<param name="stuckTime" value="30.0" />
+		<!-- Set this parameter to true if lanes should be used, false if not. -->
+		<param name="useLanes" value="true" />
+		<!-- If vehicles should all be the same default vehicle, or come from the vehicles file, or something else.  Possible values:  defaultVehicle modeVehicleTypesFromVehiclesData fromVehiclesData -->
+		<param name="vehiclesSource" value="modeVehicleTypesFromVehiclesData" />
+	</module>
+	<module name="strategy" >
+		<!-- fraction of iterations where innovative strategies are switched off.  Something like 0.8 should be good.  E.g. if you run from iteration 400 to iteration 500, innovation is switched off at iteration 480 -->
+		<param name="fractionOfIterationsToDisableInnovation" value="0.8" />
+		<parameterset type="strategysettings" >
+			<!-- strategyName of strategy.  Possible default names: SelectRandom BestScore KeepLastSelected ChangeExpBeta SelectExpBeta SelectPathSizeLogit      (selectors), ReRouteTimeAllocationMutatorTimeAllocationMutator_ReRouteChangeSingleTripModeChangeTripModeSubtourModeChoice (innovative strategies). -->
+			<param name="strategyName" value="ChangeExpBeta" />
+			<!-- subpopulation to which the strategy applies. "null" refers to the default population, that is, the set of persons for which no explicit subpopulation is defined (ie no subpopulation attribute) -->
+			<param name="subpopulation" value="person" />
+			<!-- weight of a strategy: for each agent, a strategy will be selected with a probability proportional to its weight -->
+			<param name="weight" value="0.7" />
+		</parameterset>
+		<parameterset type="strategysettings" >
+			<param name="strategyName" value="ReRoute" />
+			<param name="subpopulation" value="person" />
+			<param name="weight" value="0.05" />
+		</parameterset>
+		<parameterset type="strategysettings" >
+			<param name="strategyName" value="SubtourModeChoice" />
+			<param name="subpopulation" value="person" />
+			<param name="weight" value="0.2" />
+		</parameterset>
+		<parameterset type="strategysettings" >
+			<param name="strategyName" value="TimeAllocationMutator" />
+			<param name="subpopulation" value="person" />
+			<param name="weight" value="0.05" />
+		</parameterset>
+		<parameterset type="strategysettings" >
+			<param name="strategyName" value="ChangeExpBeta" />
+			<param name="subpopulation" value="commercial" />
+			<param name="weight" value="0.95" />
+		</parameterset>
+		<parameterset type="strategysettings" >
+			<param name="strategyName" value="ReRoute" />
+			<param name="subpopulation" value="commercial" />
+			<param name="weight" value="0.05" />
+		</parameterset>
+	</module>
+	<module name="subtourModeChoice" >
+		<!-- Defines whether car availability must be considered or not. A agent has no car only if it has no license, or never access to a car -->
+		<param name="considerCarAvailability" value="true" />
+	</module>
+	<module name="swissRailRaptor" >
+		<!-- Sets whether intermodal access and egress modes are selected by least cost (default) or randomly chosen out of the available access / egress modes. -->
+		<param name="intermodalAccessEgressModeSelection" value="CalcLeastCostModePerStop" />
+		<!-- Possible values: Default, Individual -->
+		<param name="scoringParameters" value="Default" />
+		<param name="transferPenaltyBaseCost" value="0.0" />
+		<param name="transferPenaltyCostPerTravelTimeHour" value="0.0" />
+		<param name="transferPenaltyMaxCost" value="Infinity" />
+		<param name="transferPenaltyMinCost" value="-Infinity" />
+		<!-- time deducted from transfer walk leg during transfers between pt legs in order to avoid missing a vehicle by a few seconds due to delays. -->
+		<param name="transferWalkMargin" value="5.0" />
+		<!-- If true, SwissRailRaptor tries to detect when agents cannot board a vehicle in the previous iteration because it is already full and tries to find an alternative route instead. -->
+		<param name="useCapacityConstraints" value="false" />
+		
+		<param name="useModeMappingForPassengers" value="false" />
+		<param name="useRangeQuery" value="false" />
+
+		<!-- ######################################################										###################################################################################################### -->
+		<!-- ###################################################### drtFeeder-specific stuff underneath ###################################################################################################### -->
+		<!-- ######################################################										###################################################################################################### -->
+		<param name="useIntermodalAccessEgress" value="true" />
+		<parameterset type="intermodalAccessEgress" >
+			<!-- Radius from the origin / destination coord in which transit stops are searched. Only if less than 2 transit stops are found the search radius is increased step-wise until the maximum search radius set in param radius is reached. -->
+			<param name="initialSearchRadius" value="3000.0" />
+			<!-- If the mode is routed on the network, specify which linkId acts as access link to this stop in the transport modes sub-network. -->
+			<param name="linkIdAttribute" value="null" />
+			<!-- Radius from the origin / destination coord in which transit stops are accessible by this mode. -->
+			<param name="maxRadius" value="20000.0" />
+			<param name="mode" value="drt_feeder" />
+			<!-- Name of the person attribute used to figure out if this access/egress mode is available to the person. -->
+			<param name="personFilterAttribute" value="null" />
+			<!-- Only persons where the filter attribute has the value specified here can use this mode for access or egress. The attribute should be of type String. -->
+			<param name="personFilterValue" value="null" />
+			<!-- If less than 2 stops were found in initialSearchRadius take the distance of the closest transit stop and add this extension radius to search again.The search radius will not exceed the maximum search radius set in param radius. Default is 200 meters. -->
+			<param name="searchExtensionRadius" value="1000.0" />
+			<!-- The share of the trip crowfly distance within which the stops for access and egress will be searched for. This is a harder constraint than initial search radius. Default is positive infinity. -->
+			<param name="shareTripSearchRadius" value="Infinity" />
+			<!-- Name of the transit stop attribute used to filter stops that should be included in the set of potential stops for access and egress. The attribute should be of type String. 'null' disables the filter and all stops within the specified radius will be used. -->
+			<param name="stopFilterAttribute" value="drtStopFilter" />
+			<!-- Only stops where the filter attribute has the value specified here will be considered as access or egress stops. -->
+			<param name="stopFilterValue" value="HVV_switch_drtServiceArea" />
+		</parameterset>
+		<parameterset type="intermodalAccessEgress" >
+			<param name="initialSearchRadius" value="1500.0" />
+			<param name="linkIdAttribute" value="null" />
+			<param name="maxRadius" value="100000.0" />
+			<param name="mode" value="walk" />
+			<param name="personFilterAttribute" value="null" />
+			<param name="personFilterValue" value="null" />
+			<param name="searchExtensionRadius" value="1000.0" />
+			<param name="shareTripSearchRadius" value="Infinity" />
+			<param name="stopFilterAttribute" value="null" />
+			<param name="stopFilterValue" value="null" />
+		</parameterset>
+	</module>
+	<module name="transit" >
+		<!-- Input file containing the transit schedule to be simulated. -->
+		<param name="transitScheduleFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitSchedule.xml.gz" />
+		<!-- Set this parameter to true if transit should be simulated, false if not. -->
+		<param name="useTransit" value="true" />
+		<!-- Input file containing the vehicles used by the departures in the transit schedule. -->
+		<param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1-transitVehicles.xml.gz" />
+	</module>
+	<module name="transitRouter" >
+		<!-- step size to increase searchRadius if no stops are found -->
+		<param name="extensionRadius" value="500.0" />
+		<!-- maximum beeline distance between stops that agents could transfer to by walking -->
+		<param name="maxBeelineWalkConnectionDistance" value="300.0" />
+	</module>
+	<module name="travelTimeCalculator" >
+		<!-- (only for backwards compatibility) If false, link travel times are measured and aggregated over all vehicles using the link. -->
+		<param name="separateModes" value="false" />
+	</module>
+	<module name="vehicles" >
+		<param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/hamburg-v2.0-vehicle-types.xml" />
+	</module>
+	<module name="vspExperimental" >
+		<!-- Options: | ignore | info | warn | abort | .  When violating VSP defaults, this results in nothing, logfile infos, logfile warnings, or aborts.  Members of VSP should use `abort' or talk to kai. -->
+		<param name="vspDefaultsCheckingLevel" value="warn" />
+	</module>
+
+
+
+
+	<!-- ######################################################										###################################################################################################### -->
+	<!-- ###################################################### drtFeeder-specific stuff underneath ###################################################################################################### -->
+	<!-- ######################################################										###################################################################################################### -->
+
+	<module name="dvrp" >
+		<param name="initialTravelTimesFile" value="null" />
+		<!-- Mode of which the network will be used for throwing events and hence calculating travel times. Default is car. -->
+		<param name="mobsimMode" value="car" />
+		<!-- Set of modes of which the network will be used for DVRP travel time estimation and routing DVRP vehicles. Each specific DVRP mode may use a subnetwork of this network for routing vehicles (e.g. DRT buses travelling only along a specified links or serving a limited area). Default is "car" (i.e. single-element set of modes), i.e. the car network is used. Empty value "" (i.e. empty set of modes) means no network filtering, i.e. the original scenario.network is used -->
+		<param name="networkModes" value="drt_feeder" />
+		<!-- Used for OFFLINE estimation of travel times for VrpOptimizer by means of the exponential moving average. The weighting decrease, alpha, must be in (0,1]. We suggest small values of alpha, e.g. 0.05. The averaging starts from the initial travel time estimates. If not provided, the free-speed TTs is used as the initial estimates -->
+		<param name="travelTimeEstimationAlpha" value="0.05" />
+		<!-- Used for ONLINE estimation of travel times for VrpOptimizer by combining WithinDayTravelTime and DvrpOfflineTravelTimeEstimator. The beta coefficient is provided in seconds and should be either 0 (no online estimation) or positive (mixed online-offline estimation). For 'beta = 0', only the offline estimate is used: 'onlineTT(t) = offlineTT(t)', where 'offlineTT(t)' in the offline estimate for TT at time 't', For 'beta > 0', estimating future TTs at time 't', uses the currently observed TT to correct the offline estimates is made: where 'currentTT' is the currently observed TT, and 'correction = min(1, max(0, 1 - (time - currentTime) / beta))' The rule is that correction decreases linearly from 1 (when 'time = currentTime') to 0 (when 'time = currentTime + beta' For 'time > currentTime + beta' correction is 0, whereas if 'time < currentTime' it is 1. If beta is sufficiently large, 'beta >> 0', only the currently observed TT is used. -->
+		<param name="travelTimeEstimationBeta" value="0.0" />
+		<parameterset type="travelTimeMatrix" >
+			<!-- size of square cells (meters) used for computing travel time matrix. Default value is 200 m -->
+			<param name="cellSize" value="200" />
+		</parameterset>
+	</module>
+
+	<module name="multiModeDrt" >
+		<parameterset type="drt" >
+			<!-- Mode which will be handled by PassengerEngine and VrpOptimizer (passengers'/customers' perspective) -->
+			<param name="mode" value="drt_feeder" />
+			<!-- If true, the startLink is changed to last link in the current schedule, so the taxi starts the next day at the link where it stopped operating the day before. False by default. -->
+			<param name="changeStartLinkToLastLinkInSchedule" value="false" />
+			<!-- allows to configure a service area per drt mode.Used with serviceArea Operational Scheme -->
+			<param name="drtServiceAreaShapeFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/insideHH/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp" />
+			<!-- Idle vehicles return to the nearest of all start links. See: DvrpVehicle.getStartLink() -->
+			<param name="idleVehiclesReturnToDepots" value="false" />
+			<!-- Defines the slope of the maxTravelTime estimation function (optimisation constraint), i.e. maxTravelTimeAlpha * unsharedRideTime + maxTravelTimeBeta. Alpha should not be smaller than 1. -->
+			<param name="maxTravelTimeAlpha" value="1.7" />
+			<!-- Defines the shift of the maxTravelTime estimation function (optimisation constraint), i.e. maxTravelTimeAlpha * unsharedRideTime + maxTravelTimeBeta. Beta should not be smaller than 0. -->
+			<param name="maxTravelTimeBeta" value="120.0" />
+			<!-- Max wait time for the bus to come (optimisation constraint). -->
+			<param name="maxWaitTime" value="300.0" />
+			<!-- Maximum beeline distance (in meters) to next stop location in stopbased system for access/egress walk leg to/from drt. If no stop can be found within this maximum distance will return null (in most cases caught by fallback routing module). -->
+			<param name="maxWalkDistance" value="1.7976931348623157E308" />
+			<!-- Number of threads used for parallel evaluation of request insertion into existing schedules. Scales well up to 4, due to path data provision, the most computationally intensive part, using up to 4 threads. Default value is 'min(4, no. of cores available to JVM)' -->
+			<param name="numberOfThreads" value="8" />
+			<!-- Operational Scheme, either of door2door, stopbased or serviceAreaBased. door2door by default -->
+			<param name="operationalScheme" value="serviceAreaBased" />
+			<!-- If true, the max travel and wait times of a submitted request are considered hard constraints (the request gets rejected if one of the constraints is violated). If false, the max travel and wait times are considered soft constraints (insertion of a request that violates one of the constraints is allowed, but its cost is increased by additional penalty to make it relatively less attractive). Penalisation of insertions can be customised by injecting a customised InsertionCostCalculator.PenaltyCalculator -->
+			<param name="rejectRequestIfMaxWaitOrTravelTimeViolated" value="false" />
+			<!-- Bus stop duration. Must be positive. -->
+			<param name="stopDuration" value="60.0" />
+			<!-- Stop locations file (transit schedule format, but without lines) for DRT stops. Used only for the stopbased mode -->
+			<param name="transitStopFile" value="null" />
+			<!-- Limit the operation of vehicles to links (of the 'dvrp_routing' network) with 'allowedModes' containing this 'mode'. For backward compatibility, the value is set to false by default - this means that the vehicles are allowed to operate on all links of the 'dvrp_routing' network. The 'dvrp_routing' is defined by DvrpConfigGroup.networkModes) -->
+			<param name="useModeFilteredSubnetwork" value="true" />
+			<!-- An XML file specifying the vehicle fleet. The file format according to dvrp_vehicles_v1.dtd -->
+			<param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/insideHH/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-150vehicles-8seats.xml.gz" />
+			<!-- Writes out detailed DRT customer stats in each iteration. True by default. -->
+			<param name="writeDetailedCustomerStats" value="true" />
+			<parameterset type="ExtensiveInsertionSearch" >
+				<param name="admissibleBeelineSpeedFactor" value="1.0" />
+				<param name="nearestInsertionsAtEndLimit" value="10" />
+			</parameterset>
+			<parameterset type="drtSpeedUp" >
+				<param name="firstSimulatedDrtIterationToReplaceInitialDrtPerformanceParams" value="0" />
+				<param name="fractionOfIterationsSwitchOff" value="0.99" />
+				<param name="fractionOfIterationsSwitchOn" value="0.0" />
+				<param name="initialInVehicleBeelineSpeed" value="4.16667" />
+				<param name="initialWaitingTime" value="900.0" />
+				<param name="intervalDetailedIteration" value="10" />
+				<param name="movingAverageSize" value="1" />
+				<!-- Possible values: Disabled, LinearRegression -->
+				<param name="waitingTimeUpdateDuringSpeedUp" value="Disabled" />
+			</parameterset>
+			<parameterset type="drtfare" >
+				<!-- Basefare per trip (positive or zero value) -->
+				<param name="basefare" value="1.0" />
+				<!-- Daily subscription fee (positive or zero value) -->
+				<param name="dailySubscriptionFee" value="0.0" />
+				<!-- drt fare per meter (positive or zero value) -->
+				<param name="distanceFare_m" value="0.0" />
+				<!-- Minimum fare per trip (paid instead of the sum of base, time and distance fare if that sum would be lower than the minimum fare, positive or zero value). -->
+				<param name="minFarePerTrip" value="1.0" />
+				<!-- drt fare per hour (positive or zero value) -->
+				<param name="timeFare_h" value="0.0" />
+			</parameterset>
+			<parameterset type="rebalancing" >
+				<!-- Specifies how often empty vehicle rebalancing is executed. Must be positive. Default is 1800 s. Expects an Integer Value -->
+				<param name="interval" value="600" />
+				<!-- Maximum remaining time before busy vehicle becomes idle to be considered as soon-idle vehicle. Default is 900 s. In general should be lower than interval (e.g. 0.5 x interval) -->
+				<param name="maxTimeBeforeIdle" value="900.0" />
+				<!-- Minimum remaining service time of an idle/busy vehicle to be considered as rebalancable/soon-idle (respectively). Default is 3600 s. In general, should be higher than interval (e.g. 2 x interval). -->
+				<param name="minServiceTime" value="3600.0" />
+				<parameterset type="minCostFlowRebalancingStrategy" >
+					<!-- Defines the time horizon for predicting the demand. Used when 'zonalDemandEstimatorType' is not set to 'None'. Default value is 1800 s. -->
+					<param name="demandEstimationPeriod" value="600" />
+					<!-- Possible values: EstimatedDemand, EqualRebalancableVehicleDistribution, EqualVehicleDensity, EqualVehiclesToPopulationRatio -->
+					<param name="rebalancingTargetCalculatorType" value="EstimatedDemand" />
+					<!-- alpha coefficient in linear target calculation. In general, should be lower than 1.0 to prevent over-reacting and high empty mileage. -->
+					<param name="targetAlpha" value="0.5" />
+					<!-- beta constant in linear target calculation. In general, should be lower than 1.0 to prevent over-reacting and high empty mileage. -->
+					<param name="targetBeta" value="0.5" />
+					<!-- Defines the methodology for demand estimation. Can be one of [PreviousIterationDemand, None]. Current default is PreviousIterationDemand -->
+					<param name="zonalDemandEstimatorType" value="PreviousIterationDemand" />
+				</parameterset>
+			</parameterset>
+			<parameterset type="zonalSystem" >
+				<!-- size of square cells used for demand aggregation. Depends on demand, supply and network. Often used with values in the range of 500 - 2000 m -->
+				<param name="cellSize" value="null" />
+				<!-- Possible values: random, mostCentral -->
+				<param name="zoneTargetLinkSelection" value="random" />
+				<!-- Logic for generation of zones for the DRT zonal system. Value can be: [GridFromNetwork, ShapeFile]. -->
+				<param name="zonesGeneration" value="ShapeFile" />
+				<!-- allows to configure zones. Used with zonesGeneration=ShapeFile -->
+				<param name="zonesShapeFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/insideHH/rebalancing/service-area-divided-1000m.shp" />
+			</parameterset>
+		</parameterset>
+	</module>
+
+
+</config>
