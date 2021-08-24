@@ -331,7 +331,7 @@
 				<param name="fractionOfIterationsSwitchOff" value="0.99" />
 				<param name="fractionOfIterationsSwitchOn" value="0.0" />
 				<param name="initialInVehicleBeelineSpeed" value="4.16667" />
-				<param name="initialWaitingTime" value="900.0" />
+				<param name="initialWaitingTime" value="600.0" />
 				<param name="intervalDetailedIteration" value="10" />
 				<param name="movingAverageSize" value="1" />
 				<!-- Possible values: Disabled, LinearRegression -->
@@ -353,7 +353,7 @@
 				<!-- Specifies how often empty vehicle rebalancing is executed. Must be positive. Default is 1800 s. Expects an Integer Value -->
 				<param name="interval" value="600" />
 				<!-- Maximum remaining time before busy vehicle becomes idle to be considered as soon-idle vehicle. Default is 900 s. In general should be lower than interval (e.g. 0.5 x interval) -->
-				<param name="maxTimeBeforeIdle" value="900.0" />
+				<param name="maxTimeBeforeIdle" value="300.0" />
 				<!-- Minimum remaining service time of an idle/busy vehicle to be considered as rebalancable/soon-idle (respectively). Default is 3600 s. In general, should be higher than interval (e.g. 2 x interval). -->
 				<param name="minServiceTime" value="3600.0" />
 				<parameterset type="minCostFlowRebalancingStrategy" >
