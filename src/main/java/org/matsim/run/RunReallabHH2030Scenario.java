@@ -40,35 +40,54 @@ public class RunReallabHH2030Scenario {
 		}
 
 		if (args.length == 0) {
+			//TODO change ?!
 			args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHH.xml"};
 		}
 
-		//create config and configure drt
-		Config config = RunDRTHamburgScenario.prepareConfig(args);
-		//configure bike and car sharing services
-		RunSharingScenario.configureBikeAndCarSharingServices(config);
+		Config config = prepareConfig(args);
 
 		{//TODO bfre release: delete!!
 			//set runId and output directory
 			config.controler().setRunId("hamburg-v2.0-10pct-reallab2030");
-			config.controler().setOutputDirectory("scenarios/output/output-hamburg-v2.0-10pct-reallabHH2030");
+//			config.controler().setOutputDirectory("scenarios/output/output-hamburg-v2.0-1pct-reallabHH2030");
 
 			//set real (1pct) input plans
-			config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
+//			config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
 		}
 
-		//load the scenario. Prepare the network and the transit schedule for drt operation.
-		Scenario scenario = RunDRTHamburgScenario.prepareScenario(config);
-		//now add the sharing modes to the network
-		RunSharingScenario.addSharingModesToNetwork(scenario.getNetwork());
+		Scenario scenario = prepareScenario(config);
 
-		//instantiate controler. Load all drt-related modules.
-		Controler controler = RunDRTHamburgScenario.prepareControler(scenario);
-		//add sharing modules and configure the qsim components
-		RunSharingScenario.addModulesAndConfigureQSim(scenario, controler);
+		Controler controler = prepareControler(scenario);
 
 		//run the simulation
 		controler.run();
+	}
+
+	public static Config prepareConfig(String[] args) {
+		//for the config, we need to call RunDRTHamburgScenario before RunSharingScenario because it also loads all config groups needed.
+		//create config and configure drt
+		Config config = RunDRTHamburgScenario.prepareConfig(args);
+		//configure bike and car sharing services
+		RunSharingScenario.configureBikeAndCarSharingServices(config);
+		return config;
+	}
+
+	public static Scenario prepareScenario(Config config) throws IOException {
+		//load the scenario. Add the sharing modes to the network
+		Scenario scenario = RunSharingScenario.prepareScenario(config);
+		//now prepare the network and the transit schedule for drt operation.
+		RunDRTHamburgScenario.prepareNetwork(scenario);
+		return scenario;
+	}
+
+	public static Controler prepareControler(Scenario scenario) {
+		//we need to configure sharing first!! Otherwise, drt will not be simulated and leads to exceptions!!
+
+		//instantiate controler. add sharing modules and configure the qsim components
+		Controler controler = RunSharingScenario.prepareControler(scenario);
+		//Load all drt-related modules and configure the drt qsim components.
+		RunDRTHamburgScenario.prepareControler(controler);
+		return controler;
 	}
 
 }

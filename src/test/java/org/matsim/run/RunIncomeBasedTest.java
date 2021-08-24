@@ -24,7 +24,7 @@ public class RunIncomeBasedTest {
 
     @Test
     public void incomeBasedTest() throws IOException {
-        String args[] = new String[]{
+        String[] args = new String[]{
                 "test/input/test-hamburg.config.xml",
                 "--config:controler.lastIteration" , "5"
         };
@@ -48,6 +48,7 @@ public class RunIncomeBasedTest {
         Controler controler = prepareControler(scenario);
 
         controler.run();
+        //TODO do something more meaningful here! tschlenther aug '21
         Assert.assertNotEquals("after the income based approach a different score should be obtained",68.3508985518222,controler.getScoreStats().getScoreHistory().get(ScoreStatsControlerListener.ScoreItem.executed).get(5));
     }
 }

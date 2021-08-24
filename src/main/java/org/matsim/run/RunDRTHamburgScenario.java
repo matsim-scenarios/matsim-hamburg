@@ -21,6 +21,7 @@ import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.algorithms.MultimodalNetworkCleaner;
+import org.matsim.core.utils.misc.Counter;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsModule;
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
@@ -52,7 +53,7 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHH.xml"};
+            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHHwOSpeedUp.xml"};
         }
 
         RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();
@@ -64,7 +65,7 @@ public class RunDRTHamburgScenario {
         Config config = prepareConfig(args);
 
         //TODO bfre release: delete!!
-//        //set real (1pct) input plans
+        //set real (1pct) input plans
 //        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
 
         Scenario scenario = prepareScenario(config);
@@ -77,8 +78,11 @@ public class RunDRTHamburgScenario {
 
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
+        return prepareControler(controler);
+    }
 
-//        // drt + dvrp module
+    static Controler prepareControler(Controler controler) {
+        //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
         controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
@@ -135,8 +139,12 @@ public class RunDRTHamburgScenario {
      */
     public static Scenario prepareScenario(Config config) throws IOException {
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
-        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-        for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(config).getModalElements()) {
+        return prepareNetwork(scenario);
+    }
+
+    static Scenario prepareNetwork(Scenario scenario) {
+        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
+        for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
             //TODO: this is not the best solution
 
             // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
@@ -165,13 +173,12 @@ public class RunDRTHamburgScenario {
 
         HamburgShpUtils shpUtils = new HamburgShpUtils( drtServiceAreaShapeFile );
 
-        int counter = 0;
         int counterInside = 0;
         int counterOutside = 0;
+
+        Counter counter = new Counter("adjusting link #");
         for (Link link : scenario.getNetwork().getLinks().values()) {
-            if (counter % 10000 == 0)
-                log.info("link #" + counter);
-            counter++;
+            counter.incCounter();
             if (link.getAllowedModes().contains(TransportMode.car)) {
                 if (shpUtils.isCoordInDrtServiceAreaWithBuffer(link.getFromNode().getCoord(), buffer)
                         || shpUtils.isCoordInDrtServiceAreaWithBuffer(link.getToNode().getCoord(), buffer)) {
@@ -192,7 +199,7 @@ public class RunDRTHamburgScenario {
             }
         }
 
-        log.info("Total links: " + counter);
+        log.info("Total links: " + counter.getCounter());
         log.info("Total links inside service area: " + counterInside);
         log.info("Total links outside service area: " + counterOutside);
 

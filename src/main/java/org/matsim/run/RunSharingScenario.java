@@ -79,7 +79,7 @@ public class RunSharingScenario {
                 //bc otherwise, the sharing module routing will be overwritten
                 addRoutingModuleBinding(SHARING_CAR_MODE).toProvider(new NetworkRoutingProvider(SHARING_CAR_MODE));
 
-                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = controler.getConfig().plansCalcRoute().getModeRoutingParams().get("sbike");
+                PlansCalcRouteConfigGroup.ModeRoutingParams sbike = controler.getConfig().plansCalcRoute().getModeRoutingParams().get(SHARING_BIKE_MODE);
                 addRoutingModuleBinding(SHARING_BIKE_MODE).toInstance(new TeleportationRoutingModule(SHARING_BIKE_MODE, scenario, sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
             }
         });
@@ -96,7 +96,6 @@ public class RunSharingScenario {
     }
 
     static Config configureBikeAndCarSharingServices(Config config) {
-        ConfigUtils.addOrGetModule(config, SharingConfigGroup.class);
         //add sharing config group
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
 
@@ -216,7 +215,7 @@ public class RunSharingScenario {
      * and {@code SHARING_CAR_MODE} where {@code car} is allowed. Thus, this method has side effects!
      * @param network
      */
-    static void addSharingModesToNetwork(Network network) {
+    private static void addSharingModesToNetwork(Network network) {
         for (Link link : network.getLinks().values()) {
             if(link.getAllowedModes().contains("car") || link.getAllowedModes().contains("bike")){
                 var allowedModes = link.getAllowedModes();
