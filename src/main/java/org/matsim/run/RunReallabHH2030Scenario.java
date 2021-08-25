@@ -20,9 +20,12 @@
 
 package org.matsim.run;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 
 import java.io.IOException;
@@ -32,7 +35,7 @@ public class RunReallabHH2030Scenario {
 
 	private static final Logger log = Logger.getLogger(RunReallabHH2030Scenario.class);
 
-	//TODO: incorporate 1) mobility budget, 2) increased bike attractiveness !!!
+	//TODO: incorporate mobility budget !!!
 	public static void main(String[] args) throws IOException {
 
 		for (String arg : args) {
@@ -45,6 +48,8 @@ public class RunReallabHH2030Scenario {
 		}
 
 		Config config = prepareConfig(args);
+
+		adjustTimeSensitivityForBike(config);
 
 		{//TODO bfre release: delete!!
 			//set runId and output directory
@@ -61,6 +66,25 @@ public class RunReallabHH2030Scenario {
 
 		//run the simulation
 		controler.run();
+	}
+
+	/** according to investigations of the DLR, daily bike users experience a utility increase equal to 4.2 minutes riding time when
+	 * switching from no bike infrastructure to bike lanes (Radfahrstreifen). For switching (from nothing) to protected bike paths, the utility gain is 8.5 minutes (roughly double);
+	 * for bike paths (Radweg) it is 5 minutes.
+	 * Currently, we have ASC_bike = 0. Moreover, it makes sense not to model this via ASC, as i doubt that persons who travel 1 minute on a street w/o
+	 * bike infrastructure would rather travel 6 minutes on a bike path, but this is rather to be modeled as time sensitivity. Thus, we rather adjust
+	 * the marginalUtilityOfTravelling_hr.
+	 * Finally, we assume in this scenario, that bicycle infrastructure is broadly improved. Where there was no infrastructure, a bike lane is installed;
+	 * where there was a bike lane, a protected bike path is installed. Thus, we reduce the time sensitivity in the equivalent of 4.2 minutes.
+	 * In other words, people accept 7% longer bike rides.
+	 * tschlenther aug '21
+	 */
+	private static void adjustTimeSensitivityForBike(Config config) {
+		PlanCalcScoreConfigGroup.ModeParams bikeParams = config.planCalcScore().getModes().get(TransportMode.bike);
+		double oldValue = bikeParams.getMarginalUtilityOfTraveling();
+		Preconditions.checkArgument(oldValue < 0);
+		double newValue = oldValue - (oldValue / 60) * 4.2;
+		bikeParams.setMarginalUtilityOfTraveling(newValue);
 	}
 
 	public static Config prepareConfig(String[] args) {
