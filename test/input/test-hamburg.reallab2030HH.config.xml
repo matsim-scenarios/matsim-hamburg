@@ -290,7 +290,7 @@
             <!-- Maximum beeline distance (in meters) to next stop location in stopbased system for access/egress walk leg to/from drt. If no stop can be found within this maximum distance will return null (in most cases caught by fallback routing module). -->
             <param name="maxWalkDistance" value="1.7976931348623157E308" />
             <!-- Number of threads used for parallel evaluation of request insertion into existing schedules. Scales well up to 4, due to path data provision, the most computationally intensive part, using up to 4 threads. Default value is 'min(4, no. of cores available to JVM)' -->
-            <param name="numberOfThreads" value="8" />
+            <param name="numberOfThreads" value="1" />
             <!-- Operational Scheme, either of door2door, stopbased or serviceAreaBased. door2door by default -->
             <param name="operationalScheme" value="serviceAreaBased" />
             <!-- If true, the max travel and wait times of a submitted request are considered hard constraints (the request gets rejected if one of the constraints is violated). If false, the max travel and wait times are considered soft constraints (insertion of a request that violates one of the constraints is allowed, but its cost is increased by additional penalty to make it relatively less attractive). Penalisation of insertions can be customised by injecting a customised InsertionCostCalculator.PenaltyCalculator -->
