@@ -95,12 +95,15 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 	public static void main(String[] args) throws IOException {
 
-		//actually the hbefa files need to be set relative to the config or by absolute path...
-		final String hbefaFileCold = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage.csv";
-		final String hbefaFileWarm = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
+		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as envrionment variable to decrypt the files.
 
-		final String hbefaFileCold_2030 = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_ColdStart_Concept_2030_detailed_perTechAverage.csv";
-		final String hbefaFileWarm_2030 = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_HOT_Concept_2030_detailed_perTechAverage.csv";
+		final String hbefaPath = "https://svn.vsp.tu-berlin.de/repos/public-svn/3507bb3997e5657ab9da76dbedbb13c9b5991d3e/";
+		//actually the hbefa files need to be set relative to the config or by absolute path...
+		final String hbefaFileCold = hbefaPath + "0e73947443d68f95202b71a156b337f7f71604ae/5a297db51545335b2f7899002a1ea6c45d4511a3.enc";
+		final String hbefaFileWarm = hbefaPath + "0e73947443d68f95202b71a156b337f7f71604ae/944637571c833ddcf1d0dfcccb59838509f397e6.enc";
+
+		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
+		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
 		final String runId = "hamburg-v1.1-10pct" ;
 		String runDirectory = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
