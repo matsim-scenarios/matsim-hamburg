@@ -14,9 +14,10 @@ import java.util.List;
 /**
  * @author zmeng
  */
+//TODO remove this class
 public class HamburgAnalysisMainModeIdentifier implements AnalysisMainModeIdentifier {
     private final List<String> modeHierarchy = new ArrayList();
-    private final List<String> drtModes = Arrays.asList("drt", "drt1", "drt2", "drt_teleportation", RunDRTFeederScenario.DRT_FEEDER_MODE);
+    private final List<String> drtModes = Arrays.asList("drt", "drt1", "drt2", "drt_teleportation", RunDRTHamburgScenario.DRT_FEEDER_MODE);
     private final List<String> freightModes;
 
     @Inject

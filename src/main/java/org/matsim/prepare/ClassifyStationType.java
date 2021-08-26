@@ -41,6 +41,7 @@ public class ClassifyStationType {
         List<TransitStopFacility> StopList_subway = new ArrayList<>();
         List<TransitStopFacility> StopList_rail = new ArrayList<>();
 
+        int wrnCnt = 5;
         for(TransitLine transitLine: transitSchedule.getTransitLines().values()){
             for (TransitRoute transitRoute : transitLine.getRoutes().values()){
                 for(TransitRouteStop stop :transitRoute.getStops()){
@@ -63,7 +64,13 @@ public class ClassifyStationType {
                         }
 
                     }else{
-                        log.warn("There is another transport mode: " + transitRoute.getTransportMode() + " at station " + stop);
+                        if(wrnCnt > 0){
+                            log.warn("There is another transport mode: " + transitRoute.getTransportMode() + " at station " + stop);
+                            wrnCnt --;
+                            if(wrnCnt == 0) {
+                                log.warn("future warning messages of this type are suppressed");
+                            }
+                        }
                     }
                 }
 

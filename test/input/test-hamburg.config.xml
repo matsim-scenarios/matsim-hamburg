@@ -32,7 +32,7 @@
     </module>
 
     <module name="vehicles">
-        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/hamburg-v2-vehicle-types.xml"/>
+        <param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/hamburg-v2.0-vehicle-types.xml"/>
     </module>
 
     <module name="transit">
