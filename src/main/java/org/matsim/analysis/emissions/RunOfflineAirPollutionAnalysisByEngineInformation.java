@@ -103,7 +103,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileWarm_2030 = "D:/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/2030/EFA_HOT_Concept_2030_detailed_perTechAverage.csv";
 
 		final String runId = "hamburg-v1.1-10pct" ;
-		String runDirectory = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
+		String runDirectory = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
