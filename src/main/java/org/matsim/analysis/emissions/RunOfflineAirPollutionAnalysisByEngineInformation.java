@@ -154,14 +154,14 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 		//lets load the actual output config instead of filling a dummy one. Hopefully this does not size up the scenario too much. This way, we can get access to
 		//actually used values such as freeeSpeedFactor in HamburgExperimentalConfigGroup
-//		Config config = ConfigUtils.createConfig();
-		Config config = ConfigUtils.loadConfig(runDirectory + runId + ".output_config.xml");
+		Config config = ConfigUtils.createConfig();
+//		Config config = ConfigUtils.loadConfig(runDirectory + runId + ".output_config.xml");
 
-		config.vehicles().setVehiclesFile( runId + ".output_allVehicles.xml.gz");
-		config.network().setInputFile( runId + ".output_network.xml.gz");
-		config.transit().setTransitScheduleFile( runId + ".output_transitSchedule.xml.gz");
-		config.transit().setVehiclesFile( runId + ".output_transitVehicles.xml.gz");
-//		config.global().setCoordinateSystem("EPSG:25832");
+		config.vehicles().setVehiclesFile( runDirectory + runId + ".output_allVehicles.xml.gz");
+		config.network().setInputFile( runDirectory +runId + ".output_network.xml.gz");
+		config.transit().setTransitScheduleFile( runDirectory +runId + ".output_transitSchedule.xml.gz");
+		config.transit().setVehiclesFile( runDirectory + runId + ".output_transitVehicles.xml.gz");
+		config.global().setCoordinateSystem("EPSG:25832");
 		config.plans().setInputFile(null);
 		config.parallelEventHandling().setNumberOfThreads(null);
 		config.parallelEventHandling().setEstimatedNumberOfEvents(null);
