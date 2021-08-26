@@ -75,6 +75,10 @@ public class RunBaseCaseWithMobilityBudgetV2 {
     public static Controler prepareControler(Scenario scenario) {
         log.info("Preparing controler");
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
+        return addMobilityBudgetHandler(controler);
+    }
+
+    public static Controler addMobilityBudgetHandler(Controler controler) {
         MobilityBudgetEventHandlerV2 mobilityBudgetEventHandler = new MobilityBudgetEventHandlerV2(personsEligibleForMobilityBudget);
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -90,26 +94,10 @@ public class RunBaseCaseWithMobilityBudgetV2 {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
-        log.info("filtering population for mobilityBudget");
-        log.info("using income "+ useIncomeForMobilityBudget);
-        log.info("share of income "+shareOfIncome);
-        for (Person person : scenario.getPopulation().getPersons().values()) {
-            Id personId = person.getId();
-            if(!personId.toString().contains("commercial")) {
-                Plan plan = person.getSelectedPlan();
-                //TripStructureUtil get Legs
-                List<String> transportModeList = new ArrayList<>();
-                List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
-                for (TripStructureUtils.Trip trip: trips) {
-                    List<Leg> listLegs = trip.getLegsOnly();
-                    for (Leg leg: listLegs) {
-                        transportModeList.add(leg.getMode());
-                    }
-                }
-                if (transportModeList.contains(TransportMode.car)) {
-                    personsEligibleForMobilityBudget.put(personId, dailyMobilityBudget);
-                }
-            }
+        for (Map.Entry<Id<Person>, Double> entry : getPersonsEligibleForMobilityBudget2FixedValue(scenario, dailyMobilityBudget).entrySet()) {
+            Id<Person> person = entry.getKey();
+            Double budget = entry.getValue();
+            personsEligibleForMobilityBudget.put(person, budget);
         }
 
         if (useIncomeForMobilityBudget == true) {
@@ -135,6 +123,34 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         }
 
         return scenario;
+    }
+
+    public static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
+
+        Map<Id<Person>, Double> persons2Budget = new HashMap<>();
+
+        log.info("filtering population for mobilityBudget");
+        log.info("using income "+ useIncomeForMobilityBudget);
+        log.info("share of income "+shareOfIncome);
+        for (Person person : scenario.getPopulation().getPersons().values()) {
+            Id personId = person.getId();
+            if(!personId.toString().contains("commercial")) {
+                Plan plan = person.getSelectedPlan();
+                //TripStructureUtil get Legs
+                List<String> transportModeList = new ArrayList<>();
+                List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
+                for (TripStructureUtils.Trip trip: trips) {
+                    List<Leg> listLegs = trip.getLegsOnly();
+                    for (Leg leg: listLegs) {
+                        transportModeList.add(leg.getMode());
+                    }
+                }
+                if (transportModeList.contains(TransportMode.car)) {
+                   persons2Budget.put(personId, value);
+                }
+            }
+        }
+        return persons2Budget;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
