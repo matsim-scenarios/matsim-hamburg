@@ -13,13 +13,13 @@ import org.matsim.core.utils.misc.Time;
 
 import java.util.*;
 
-class MobilityBudgetEventHandlerV2  implements PersonDepartureEventHandler, AfterMobsimListener {
+class MobilityBudgetEventHandler implements PersonDepartureEventHandler, AfterMobsimListener {
 
-    Logger log = Logger.getLogger(MobilityBudgetEventHandlerV2.class);
+    Logger log = Logger.getLogger(MobilityBudgetEventHandler.class);
     private final Map<Id<Person>, Double> person2MobilityBudget;
     private Map<Id<Person>, Double> currentIterationMobilityBudget = new HashMap<>();
 
-    MobilityBudgetEventHandlerV2(Map<Id<Person>, Double> personsEligibleForMobilityBudget2MoneyValue) {
+    MobilityBudgetEventHandler(Map<Id<Person>, Double> personsEligibleForMobilityBudget2MoneyValue) {
         this.person2MobilityBudget = personsEligibleForMobilityBudget2MoneyValue;
     }
 

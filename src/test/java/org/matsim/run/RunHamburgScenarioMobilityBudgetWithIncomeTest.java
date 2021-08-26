@@ -12,17 +12,18 @@ import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
+import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
 
 public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
     @Rule
     public MatsimTestUtils utils = new MatsimTestUtils();
 
     @Test
-    public void runTest() throws IOException {
+    public void runTest() throws IOException, ParseException {
 
         String[] args = new String[]{
                 "test/input//test-hamburg.config.xml" ,
@@ -34,8 +35,19 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
-                "--","","--","","--","", "--", "", "--", ""
         };
+
+        String[] mobBudgetArgs = new String[]{
+                "dailyMobilityBudget" , "10.0",
+                "useIncomeForMobilityBudget" , "true",
+                "shareOfIncome", "1000.5",
+                "useShapeFile", "false",
+                "shapeFile","",
+                "incomeBasedSelection","false",
+                "shareOfAgents","1.0",
+        };
+
+        main(args);
 
         Config config = prepareConfig(args);
         //adjusting strategy setting of config so agents try out different modes
@@ -46,9 +58,6 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         }
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
-        //forcing run class to useIncomeForMobilityBudget with an shareOfIncome of 0.9
-        shareOfIncome = 10.5;
-        useIncomeForMobilityBudget = true;
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
         controler.run();

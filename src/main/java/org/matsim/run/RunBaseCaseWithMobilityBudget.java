@@ -1,323 +1,275 @@
-/*
 package org.matsim.run;
 
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
-import com.google.inject.Provides;
 import org.apache.log4j.Logger;
-import org.matsim.analysis.DefaultAnalysisMainModeIdentifier;
-import org.matsim.analysis.PlanBasedTripsFileWriter;
-import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
-import org.matsim.analysis.here.HereAPIControlerListener;
-import org.matsim.analysis.here.HereAPITravelTimeValidation;
-import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.events.PersonMoneyEvent;
-import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
-import org.matsim.contrib.drt.routing.DrtRoute;
-import org.matsim.contrib.drt.routing.DrtRouteFactory;
-import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
-import org.matsim.core.controler.events.AfterMobsimEvent;
-import org.matsim.core.controler.listener.AfterMobsimListener;
-import org.matsim.core.mobsim.qsim.AbstractQSimModule;
-import org.matsim.core.mobsim.qsim.QSim;
-import org.matsim.core.mobsim.qsim.qnetsimengine.ConfigurableQNetworkFactory;
-import org.matsim.core.mobsim.qsim.qnetsimengine.QNetworkFactory;
-import org.matsim.core.population.routes.RouteFactories;
-import org.matsim.core.router.AnalysisMainModeIdentifier;
-import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.utils.misc.Time;
-import org.matsim.parking.NetworkParkPressureReader;
-import org.matsim.parking.VehicleHandlerForParking;
-import org.matsim.prepare.freight.AdjustScenarioForFreight;
+import org.matsim.core.router.TripStructureUtils;
+import org.matsim.prepare.SelectionMobilityBudget;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+
+/**
+ * @author zmeng,gryb
+ */
 public class RunBaseCaseWithMobilityBudget {
 
+    private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
+
+    public static final String COORDINATE_SYSTEM = "EPSG:25832";
+    public static final String VERSION = "v1.1";
+    public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
+    public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
+    //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
+    public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
+    public static double totalSumMobilityBudget = 0;
+    static double dailyMobilityBudget;
+    static boolean useIncomeForMobilityBudget;
+    static double shareOfIncome;
+    public static boolean useShapeFile;
+    static String shapeFile;
+    public static boolean incomeBasedSelection;
+    static double shareOfAgents;
 
 
-    */
-/**
-     * @author zmeng
-     *//*
+    public static void main(String[] args) throws ParseException, IOException {
 
-
-        private static final Logger log = Logger.getLogger(org.matsim.run.RunBaseCaseHamburgScenario.class);
-
-        public static final String COORDINATE_SYSTEM = "EPSG:25832";
-        public static final String VERSION = "v1.0";
-        public static final int SCALE = 1;
-        public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
-        public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
-        public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
-        public static double totalSumMobilityBudget = 0;
-
-        public static void main(String[] args) throws ParseException, IOException {
-
-            for (String arg : args) {
-                log.info(arg);
-            }
-
-            if (args.length == 0) {
-                args = new String[] {"../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-1pct/hamburg-v1.1-1pct.config.xml"};
-            }
-            RunBaseCaseWithMobilityBudget baseCaseHH = new RunBaseCaseWithMobilityBudget();
-            baseCaseHH.run(args);
+        int ii=0;
+        for (String arg : args) {
+            System.out.println(ii);
+            log.info(arg);
+            ii++;
         }
 
-        private void run(String[] args) throws IOException {
-
-            Config config = prepareConfig(args);
-            Scenario scenario = prepareScenario(config);
-            org.matsim.core.controler.Controler controler = prepareControler(scenario);
-            controler.run();
-            log.info("Done.");
+        if (args.length == 0) {
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
-
-
-        public static Controler prepareControler(Scenario scenario) {
-            Controler controler = new Controler(scenario);
-
-            // use the sbb pt raptor router
-            controler.addOverridingModule( new AbstractModule() {
-                @Override
-                public void install() {
-                    install( new SwissRailRaptorModule() );
-                }
-            } );
-
-            MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler();
-            controler.addOverridingModule(new AbstractModule() {
-                @Override
-                public void install() {
-                    addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
-                }
-            });
-
-            // use AnalysisMainModeIdentifier instead of RoutingModeIdentifier
-            controler.addOverridingModule(new AbstractModule() {
-                @Override
-                public void install() {
-                    bind(AnalysisMainModeIdentifier.class).to(DefaultAnalysisMainModeIdentifier.class);
-                }
-            });
-            // use PersonIncomeSpecificScoringFunction if is needed
-            controler.addOverridingModule(new AbstractModule() {
-                @Override
-                public void install() {
-                    if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                        // new approach which is maybe not so nice but should require less memory
-                        this.bindScoringFunctionFactory().to(IncomeDependentPlanScoringFunctionFactory.class);
-                    }
-                }
-            });
-            // use HereApiValidator if is needed
-            controler.addOverridingModule(new AbstractModule() {
-                @Override
-                public void install() {
-                    if(ConfigUtils.addOrGetModule(scenario.getConfig(),HereAPITravelTimeValidationConfigGroup.class).isUseHereAPI()){
-                        CarTripsExtractor carTripsExtractor = new CarTripsExtractor(scenario.getPopulation().getPersons().keySet(), scenario.getNetwork());
-                        this.addEventHandlerBinding().toInstance(carTripsExtractor);
-                        this.addControlerListenerBinding().to(HereAPIControlerListener.class);
-                        this.bind(HereAPITravelTimeValidation.class).toInstance(new HereAPITravelTimeValidation(carTripsExtractor,scenario.getConfig()));
-                    }
-                }
-            });
-
-            controler.addOverridingModule(new AbstractModule() {
-                @Override
-                public void install() {
-                    this.bind(PlanBasedTripsFileWriter.class).asEagerSingleton();
-                    this.addControlerListenerBinding().to(PlanBasedTripsWriterControlerListener.class);
-                }
-            });
-
-            // use link-based park time
-            if(ConfigUtils.addOrGetModule(controler.getConfig(),HamburgExperimentalConfigGroup.class).isUseLinkBasedParkPressure()){
-
-                controler.addOverridingQSimModule(new AbstractQSimModule() {
-
-                    protected void configureQSim() {
-                    }
-                    @Provides
-                    QNetworkFactory provideQNetworkFactory(EventsManager eventsManager, Scenario scenario, QSim qSim) {
-                        ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(eventsManager, scenario);
-                        factory.setVehicleHandler(new VehicleHandlerForParking(qSim, scenario));
-                        return factory;
-                    }
-                });
-            }
-
-            // add Freight
-            AdjustScenarioForFreight.adjustControlerForFreight(controler, AdjustScenarioForFreight.getFreightModes());
-
-
-            controler.addControlerListener(new AfterMobsimListener() {
-                @Override
-                public void notifyAfterMobsim(AfterMobsimEvent afterMobsimEvent) {
-                    for (Id<Person> personId : personsWithMobilityBudget.keySet()) {
-                        if (personsWithMobilityBudget.get(personId)>0) {
-                            log.info("Throwing money event" + "Person_Id:" + personId);
-                            afterMobsimEvent.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, personId, personsWithMobilityBudget.get(personId), null, null));
-                            totalSumMobilityBudget = totalSumMobilityBudget + personsWithMobilityBudget.get(personId);
-                        }
-                    }
-                }
-
-            });
-            log.info("This iteration the totalSumMobilityBudget paid to the Agents was:" + totalSumMobilityBudget);
-            return controler;
-        }
-
-        public static Scenario prepareScenario(Config config) throws IOException {
-
-            */
-/*
-             * We need to set the DrtRouteFactory before loading the scenario. Otherwise DrtRoutes in input plans are loaded
-             * as GenericRouteImpls and will later cause exceptions in DrtRequestCreator. So we do this here, although this
-             * class is also used for runs without drt.
-             *//*
-
-            final Scenario scenario = ScenarioUtils.createScenario( config );
-
-            RouteFactories routeFactories = scenario.getPopulation().getFactory().getRouteFactories();
-            routeFactories.setRouteFactory(DrtRoute.class, new DrtRouteFactory());
-
-            ScenarioUtils.loadScenario(scenario);
-
-            HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-
-            org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), hamburgExperimentalConfigGroup.getPopulationDownsampleFactor());
-
-            for (Person person : scenario.getPopulation().getPersons().values()) {
-                Plan selectedPlan = person.getSelectedPlan();
-                person.getPlans().clear();
-                person.addPlan(selectedPlan);
-                person.setSelectedPlan(selectedPlan);
-                person.getAttributes().putAttribute("income", Math.random()*100);
-                double income = (double) person.getAttributes().getAttribute("income");
-                personsWithMobilityBudget.put(person.getId(), income);
-            }
-
-            // increase flowspeed for links, where flowspeed lower than 50kmh
-            for (Link link : scenario.getNetwork().getLinks().values()) {
-                if (link.getFreespeed() < 25.5 / 3.6) {
-                    link.setFreespeed(link.getFreespeed() * hamburgExperimentalConfigGroup.getFreeSpeedFactor());
-                }
-            }
-
-            // add parkPressureAttribute
-            if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-
-                if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
-                    log.info("Adding missing park pressure link attributes based on provided files...");
-                    NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
-                    Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
-                            .map(Double::parseDouble)
-                            .toArray(Double[]::new);
-                    networkParkPressureReader.addLinkParkTimeAsAttribute(parkTime);
-                    log.info("Adding missing park pressure link attributes based on provided files... Done.");
-                }
-
-            }
-
-
-            // add parkPressureAttribute
-            if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-                if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
-                    log.info("Adding missing park pressure link attributes based on provided files...");
-                    NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile());
-                    Double[] parkTime = Arrays.stream(hamburgExperimentalConfigGroup.getParkPressureBasedParkTime().split(","))
-                            .map(Double::parseDouble)
-                            .toArray(Double[]::new);
-                    networkParkPressureReader.addLinkParkTimeAsAttribute(parkTime);
-                    log.info("Adding missing park pressure link attributes based on provided files... Done.");
-                }
-            }
-
-
-            // add Freight if no filter
-            if(hamburgExperimentalConfigGroup.isFilterCommercial()){
-                List<Id<Person>> personIds = new LinkedList<>();
-                for(Person person : scenario.getPopulation().getPersons().values()) {
-                    if (person.getId().toString().contains("commercial")) {
-                        personIds.add(person.getId());
-                    }
-                }
-                for (Id<Person> personId: personIds) {
-                    scenario.getPopulation().removePerson(personId);
-                }
-            } else
-                AdjustScenarioForFreight.adjustScenarioForFreight(scenario, AdjustScenarioForFreight.getFreightModes());
-
-            if (hamburgExperimentalConfigGroup.isIncreaseStorageCapacity()) {
-                for (Link link: scenario.getNetwork().getLinks().values()) {
-                    double originalStorageCapacity = link.getLength() / 15 * link.getNumberOfLanes() * hamburgExperimentalConfigGroup.getSampleSize()
-                            / 100.0;
-                    int minimumLaneRequred = (int) (1 / originalStorageCapacity + 1);
-                    if (originalStorageCapacity < 1) {
-                        link.setNumberOfLanes(minimumLaneRequred);
-                    }
-                }
-            }
-            return scenario;
-        }
-
-        public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
-
-            ConfigGroup[] customModulesAll = new ConfigGroup[customModules.length];
-
-            int counter = 0;
-            for (ConfigGroup customModule : customModules) {
-                customModulesAll[counter] = customModule;
-                counter++;
-            }
-
-
-            final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
-            ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-            ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
-            // delete default modes
-            config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);
-
-            String[] typedArgs = Arrays.copyOfRange(args, 1, args.length);
-            ConfigUtils.applyCommandline(config, typedArgs);
-
-            //todo: think about opening and closing time, there can be some overnight activities like shopping or business...
-            for (long ii = 600; ii <= 97200; ii += 600) {
-
-                for (String act : List.of("educ_higher", "educ_tertiary", "educ_other", "home", "educ_primary", "errands", "educ_secondary", "visit", "other")) {
-                    config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams(act + "_" + ii + ".0").setTypicalDuration(ii));
-                }
-
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("work_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(6. * 3600.).setClosingTime(20. * 3600.));
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("business_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(6. * 3600.).setClosingTime(20. * 3600.));
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("leisure_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(9. * 3600.).setClosingTime(27. * 3600.));
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_daily_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_other_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
-                config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("educ_kiga_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(18. * 3600.));
-            }
-            return config;
-        }
+        processArguments(args);
+        RunBaseCaseWithMobilityBudget.run(args);
     }
 
+    private static void run(String[] args) throws IOException {
+        System.out.println(dailyMobilityBudget);
+        System.out.println(useIncomeForMobilityBudget);
+        System.out.println(shareOfIncome);
+        Config config = prepareConfig(args);
+        Scenario scenario = prepareScenario(config);
+        Controler controler = prepareControler(scenario);
+        controler.run();
+        log.info("Done.");
+    }
+
+    public static Controler prepareControler(Scenario scenario) {
+        log.info("Preparing controler");
+        Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
+        return addMobilityBudgetHandler(controler);
+    }
+
+    public static Controler addMobilityBudgetHandler(Controler controler) {
+        MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler(personsEligibleForMobilityBudget);
+        controler.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                addEventHandlerBinding().toInstance(mobilityBudgetEventHandler);
+                addControlerListenerBinding().toInstance(mobilityBudgetEventHandler);
+            }
+        });
+        return controler;
+    }
+
+    public static Scenario prepareScenario(Config config) throws IOException {
+
+        Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
+
+        for (Map.Entry<Id<Person>, Double> entry : getPersonsEligibleForMobilityBudget2FixedValue(scenario, dailyMobilityBudget).entrySet()) {
+            Id<Person> person = entry.getKey();
+            Double budget = entry.getValue();
+            System.out.println(budget);
+            personsEligibleForMobilityBudget.put(person, budget);
+        }
+
+        log.info("using income "+ useIncomeForMobilityBudget);
+        log.info("share of income "+ shareOfIncome);
+        if (useIncomeForMobilityBudget == true) {
+            log.info("using the income for the MobilityBudget");
+            for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
+                double monthlyIncomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/12;
+                //divided by 30 because income is needed per day
+                double incomeOfAgent = monthlyIncomeOfAgent/30;
+                dailyMobilityBudget = incomeOfAgent * shareOfIncome;
+                personsEligibleForMobilityBudget.replace(personId, dailyMobilityBudget);
+            }
+        }
+
+        if (useShapeFile == true) {
+            log.info("Filtering for Region" + useShapeFile);
+            SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
+        }
+
+        if (incomeBasedSelection==true) {
+            log.info("Selceting Agents based on Income " + incomeBasedSelection);
+            SelectionMobilityBudget.incomeBasedSelection(scenario.getPopulation(),shareOfAgents, personsEligibleForMobilityBudget);
+        }
+
+        return scenario;
+    }
+
+    public static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
+
+        Map<Id<Person>, Double> persons2Budget = new HashMap<>();
+
+        log.info("filtering population for mobilityBudget");
+
+        for (Person person : scenario.getPopulation().getPersons().values()) {
+            Id personId = person.getId();
+            if(!personId.toString().contains("commercial")) {
+                Plan plan = person.getSelectedPlan();
+                //TripStructureUtil get Legs
+                List<String> transportModeList = new ArrayList<>();
+                List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(plan);
+                for (TripStructureUtils.Trip trip: trips) {
+                    List<Leg> listLegs = trip.getLegsOnly();
+                    for (Leg leg: listLegs) {
+                        transportModeList.add(leg.getMode());
+                    }
+                }
+                if (transportModeList.contains(TransportMode.car)) {
+                   persons2Budget.put(personId, value);
+                }
+            }
+        }
+        return persons2Budget;
+    }
+
+    public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
+        log.info("Preparing config");
+        Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
+
+        log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
+        log.info("share of income: "+ shareOfIncome);
+        log.info("use ShapeFile "+ useShapeFile);
+
+        processArguments(args);
 
 
+        return config;
+    }
 
-*/
+    private static void processArguments(String[] args) {
+
+        log.info("Processing arguments for MobBudget");
+
+        int test = (args.length)-13;
+        System.out.println(test);
+        System.out.println(args[test]);
+
+        try {
+            dailyMobilityBudget = Double.parseDouble(args[test]);
+        } /*catch (NumberFormatException numberFormatException) {
+            log.warn(numberFormatException);
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 300.0;
+        } catch (NullPointerException nullPointerException) {
+            log.warn(nullPointerException);
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 200.0;
+        }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn(arrayIndexOutOfBoundsException);
+            log.warn("Setting dailyMobilityBudget to default of 100.0");
+            dailyMobilityBudget = 1000.0;
+        }*/ finally {
+
+        }
+        log.info(dailyMobilityBudget);
+
+        try {
+            useIncomeForMobilityBudget = Boolean.parseBoolean(args[test+2]);
+        }
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using income for the MobilityBudget");
+            useIncomeForMobilityBudget = false;
+        }
+        catch (NullPointerException nullPointerException) {
+            log.warn("Not using income for the MobilityBudget");
+            useIncomeForMobilityBudget = false;
+        }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn("Not using income for the MobilityBudget");
+            useIncomeForMobilityBudget = false;
+        }
+        log.info(useIncomeForMobilityBudget);
+
+        try {
+            shareOfIncome =Double.parseDouble(args[test+4]);
+        }
+        catch (NumberFormatException numberFormatException) {
+            log.warn("Using default share of income for the MobilityBudget");
+            shareOfIncome = 0.10;
+        }
+        catch (NullPointerException nullPointerException) {
+            log.warn("Using default share of income for the MobilityBudget");
+            shareOfIncome = 0.10;
+        }
+        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            log.warn(arrayIndexOutOfBoundsException);
+            log.warn("Using default share of income for the MobilityBudget");
+            shareOfIncome = 0.10;
+        }
+        log.info(shareOfIncome);
+
+        try {
+            useShapeFile = Boolean.parseBoolean(args[test+6]);
+            log.info("Using shape File");
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using shape File");
+            useShapeFile = false;
+        }
+        log.info(useShapeFile);
+
+        try {
+            shapeFile = args[test+8];
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not able to read Shape File");
+            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+        }
+        log.info(shapeFile);
+
+        try {
+            incomeBasedSelection = Boolean.parseBoolean(args[test+10]);
+            log.info("Using income based selection");
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not using income based selection");
+            incomeBasedSelection = false;
+        }
+
+        try {
+            shareOfAgents = Double.parseDouble(args[test+12]);
+        }
+
+        catch (IllegalArgumentException illegalArgumentException) {
+            log.warn("Not able to read  the share of Agents using default value");
+            shareOfAgents = 0.1;
+        }
+    }
+}
+

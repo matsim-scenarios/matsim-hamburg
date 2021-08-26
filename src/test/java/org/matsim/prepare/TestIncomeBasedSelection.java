@@ -10,7 +10,7 @@ import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
+import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
 
 public class TestIncomeBasedSelection {
 

@@ -15,7 +15,7 @@ import org.matsim.testcases.MatsimTestUtils;
 import java.io.IOException;
 import java.util.List;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
+import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
 
 public class TestMobBudgetSelection {
 

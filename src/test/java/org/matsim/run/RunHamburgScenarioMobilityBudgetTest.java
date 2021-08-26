@@ -1,5 +1,6 @@
 package org.matsim.run;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,10 +13,11 @@ import org.matsim.core.controler.Controler;
 import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudgetV2.*;
+import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
 
 /**
  * @author Gryb
@@ -26,22 +28,35 @@ public class RunHamburgScenarioMobilityBudgetTest {
     public MatsimTestUtils utils = new MatsimTestUtils() ;
 
     @Test
-    public void runTest() throws IOException {
+    public void runTest() throws IOException, ParseException {
 
         String[] args = new String[]{
                 "test/input//test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "4",
-                "--config:controler.runId" , "RunHamburgScenarioMobilityBudgetTest",
+                "--config:controler.runId" , "RunBaseCaseHamburgScenarioIT",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
-                "--","","--","","--","", "--", "", "--", ""
         };
 
-        Config config = prepareConfig(args);
+        String[] mobBudgetArgs = new String[]{
+                "--dailyMobilityBudget" , "100.0",
+                "--useIncomeForMobilityBudget" , "false",
+                "--shareOfIncome", "0.0",
+                "--useShapeFile", "false",
+                "--shapeFile","",
+                "--incomeBasedSelection","false",
+                "--shareOfAgents","1.0",
+        };
+
+        String[] both = (String[]) ArrayUtils.addAll(args, mobBudgetArgs);
+
+        main(both);
+
+        Config config = prepareConfig(both);
 
         //adjusting strategy setting of config so agents try out different modes
         for (StrategyConfigGroup.StrategySettings setting:    config.strategy().getStrategySettings()) {
@@ -58,7 +73,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
 
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
         HashMap<Id<Person>, Double> scoreStatsFromBaseCase = new HashMap<>();
-        //Agents used car in BaseCase now switched and got the MobilityBudget (amount = 10.0)
+        //Agents used car in BaseCase now switched and got the MobilityBudget (amount = 100.0)
         scoreStatsFromBaseCase.put(Id.createPersonId("113ecc"),129.086211440912123);
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
