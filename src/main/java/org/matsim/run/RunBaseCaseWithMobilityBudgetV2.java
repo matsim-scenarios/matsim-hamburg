@@ -53,10 +53,13 @@ public class RunBaseCaseWithMobilityBudgetV2 {
         }
 
         if (args.length == 0) {
-            //args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
-            args = new String[] {"D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\h-v2-10pct-accEcc-c4.output_config.xml"};
+
+            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+//            args = new String[] {"D:\\Gregor\\Uni\\TUCloud\\Masterarbeit\\h-v2-10pct-accEcc-c4.output_config.xml"};
 
         }
+
+        processArguments(args);
 
         RunBaseCaseWithMobilityBudgetV2.run(args);
     }

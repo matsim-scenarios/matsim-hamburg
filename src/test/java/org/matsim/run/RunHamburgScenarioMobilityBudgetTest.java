@@ -28,18 +28,17 @@ public class RunHamburgScenarioMobilityBudgetTest {
     @Test
     public void runTest() throws IOException {
 
-        String args[] = new String[]{
-                "test/input/test-hamburg.config.xml" ,
+        String[] args = new String[]{
+                "test/input//test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "4",
+                "--config:controler.runId" , "RunHamburgScenarioMobilityBudgetTest",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.date","2019-06-13",
-                "--config:HereAPITravelTimeValidation.HereMapsAPIKey","",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:HereAPITravelTimeValidation.numOfTrips","5",
-                "--config:HereAPITravelTimeValidation.timeBin","3600",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
-                "--config:plans.inputPlansFile" , "plans/test-hamburg-freight.plans.xml",
+                "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
+                "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
+                "--","","--","","--","", "--", "", "--", ""
         };
 
         Config config = prepareConfig(args);

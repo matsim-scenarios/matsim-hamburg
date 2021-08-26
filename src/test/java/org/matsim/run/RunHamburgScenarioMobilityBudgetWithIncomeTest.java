@@ -24,12 +24,16 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
     @Test
     public void runTest() throws IOException {
 
-        String args[] = new String[]{
-                "test/input/test-hamburg.config.xml",
-                "--config:controler.lastIteration", "4",
+        String[] args = new String[]{
+                "test/input//test-hamburg.config.xml" ,
+                "--config:controler.lastIteration" , "4",
+                "--config:controler.runId" , "RunHamburgScenarioMobilityBudgetWithIncomeTest",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:plans.inputPlansFile" , "plans/test-hamburg-withIncome.plans.xml",
+                "--config:HereAPITravelTimeValidation.useHereAPI","false",
+                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
+                "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
+                "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
                 "--","","--","","--","", "--", "", "--", ""
         };
 

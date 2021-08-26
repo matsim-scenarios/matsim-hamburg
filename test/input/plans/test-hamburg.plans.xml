@@ -21,7 +21,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
-            <attribute name="income" class="java.lang.Double">1</attribute>
+            <attribute name="income" class="java.lang.Double">4500.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_59400.0" x="597163.9269612308" y="5984292.652443141" end_time="09:04:00" >
@@ -71,7 +71,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
-            <attribute name="income" class="java.lang.Double">1</attribute>
+            <attribute name="income" class="java.lang.Double">2500.10</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_86400.0" x="596964.9221933321" y="5984433.177637921" >
@@ -94,7 +94,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
-            <attribute name="income" class="java.lang.Double">1</attribute>
+            <attribute name="income" class="java.lang.Double">1500.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
@@ -257,7 +257,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
-            <attribute name="income" class="java.lang.Double">1</attribute>
+            <attribute name="income" class="java.lang.Double">1500.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
@@ -420,7 +420,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
-            <attribute name="income" class="java.lang.Double">1</attribute>
+            <attribute name="income" class="java.lang.Double">2300.0</attribute>
         </attributes>
         <plan selected="yes">
             <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" end_time="05:31:23" >
@@ -466,6 +466,23 @@
                 </attributes>
             </leg>
             <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" start_time="22:56:43" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
+    <person id="commercial_1000074">
+        <attributes>
+            <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="commercial" x="487749.0798673321" y="5891533.800535473" end_time="14:53:14" >
+            </activity>
+            <leg mode="commercial_Lkw-g">
+            </leg>
+            <activity type="commercial" x="488837.81420164264" y="5904492.799498616" >
             </activity>
         </plan>
 

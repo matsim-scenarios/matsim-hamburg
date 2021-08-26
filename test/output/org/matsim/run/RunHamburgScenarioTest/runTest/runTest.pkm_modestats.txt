@@ -1,3 +1,0 @@
-Iteration	bike	car	pt	ride	walk
-0	5	198	204	26	35
-1	5	198	204	26	35
