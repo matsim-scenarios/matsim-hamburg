@@ -75,11 +75,12 @@ public class RunBaseCaseWithMobilityBudget {
     public static Controler prepareControler(Scenario scenario) {
         log.info("Preparing controler");
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
-        return addMobilityBudgetHandler(controler);
+        MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler(personsEligibleForMobilityBudget);
+        addMobilityBudgetHandler(controler, mobilityBudgetEventHandler);
+        return controler;
     }
 
-    public static Controler addMobilityBudgetHandler(Controler controler) {
-        MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler(personsEligibleForMobilityBudget);
+    public static void addMobilityBudgetHandler(Controler controler, MobilityBudgetEventHandler mobilityBudgetEventHandler) {
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
@@ -87,7 +88,6 @@ public class RunBaseCaseWithMobilityBudget {
                 addControlerListenerBinding().toInstance(mobilityBudgetEventHandler);
             }
         });
-        return controler;
     }
 
     public static Scenario prepareScenario(Config config) throws IOException {
