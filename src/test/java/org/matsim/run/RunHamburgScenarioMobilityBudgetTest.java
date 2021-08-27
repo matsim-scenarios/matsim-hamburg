@@ -53,9 +53,8 @@ public class RunHamburgScenarioMobilityBudgetTest {
         };
 
         String[] both = (String[]) ArrayUtils.addAll(args, mobBudgetArgs);
-
+        //need to call main method
         main(both);
-
         Config config = prepareConfig(both);
 
         //adjusting strategy setting of config so agents try out different modes
@@ -78,11 +77,13 @@ public class RunHamburgScenarioMobilityBudgetTest {
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"),47.09443917204786);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"),46.88012044666017);
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f02"),117.86871825413606);
         //Agent with commercial activiets are excluded from the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"),121.90659700031605);
+        //Agent didn´t use car in Base Case
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 48.067622301140034);
 
         for (Person p: persons.values()) {
             Assert.assertEquals(scoreStatsFromBaseCase.get(p.getId()), p.getSelectedPlan().getScore(), 0);

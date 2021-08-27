@@ -29,11 +29,7 @@ public class RunBaseCaseWithMobilityBudget {
 
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
-    public static final String COORDINATE_SYSTEM = "EPSG:25832";
     public static final String VERSION = "v1.1";
-    public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
-    public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
-    //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
     public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
     public static double totalSumMobilityBudget = 0;
     static double dailyMobilityBudget;
@@ -47,24 +43,19 @@ public class RunBaseCaseWithMobilityBudget {
 
     public static void main(String[] args) throws ParseException, IOException {
 
-        int ii=0;
         for (String arg : args) {
-            System.out.println(ii);
             log.info(arg);
-            ii++;
         }
 
         if (args.length == 0) {
             args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
         }
+
         processArguments(args);
         RunBaseCaseWithMobilityBudget.run(args);
     }
 
     private static void run(String[] args) throws IOException {
-        System.out.println(dailyMobilityBudget);
-        System.out.println(useIncomeForMobilityBudget);
-        System.out.println(shareOfIncome);
         Config config = prepareConfig(args);
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
@@ -134,7 +125,7 @@ public class RunBaseCaseWithMobilityBudget {
         log.info("filtering population for mobilityBudget");
 
         for (Person person : scenario.getPopulation().getPersons().values()) {
-            Id personId = person.getId();
+            Id<Person> personId = person.getId();
             if(!personId.toString().contains("commercial")) {
                 Plan plan = person.getSelectedPlan();
                 //TripStructureUtil get Legs
@@ -157,14 +148,9 @@ public class RunBaseCaseWithMobilityBudget {
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
-
         log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
         log.info("share of income: "+ shareOfIncome);
         log.info("use ShapeFile "+ useShapeFile);
-
-        processArguments(args);
-
-
         return config;
     }
 
@@ -172,104 +158,106 @@ public class RunBaseCaseWithMobilityBudget {
 
         log.info("Processing arguments for MobBudget");
 
-        int test = (args.length)-13;
-        System.out.println(test);
-        System.out.println(args[test]);
-
-        try {
-            dailyMobilityBudget = Double.parseDouble(args[test]);
-        } /*catch (NumberFormatException numberFormatException) {
-            log.warn(numberFormatException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 300.0;
-        } catch (NullPointerException nullPointerException) {
-            log.warn(nullPointerException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 200.0;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn(arrayIndexOutOfBoundsException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 1000.0;
-        }*/ finally {
-
-        }
-        log.info(dailyMobilityBudget);
-
-        try {
-            useIncomeForMobilityBudget = Boolean.parseBoolean(args[test+2]);
-        }
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using income for the MobilityBudget");
+        if (args.length<13) {
+            log.info("seems like no args for MobBudget are provided. Setting some default values...");
+            dailyMobilityBudget = 10.0;
             useIncomeForMobilityBudget = false;
-        }
-        catch (NullPointerException nullPointerException) {
-            log.warn("Not using income for the MobilityBudget");
-            useIncomeForMobilityBudget = false;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn("Not using income for the MobilityBudget");
-            useIncomeForMobilityBudget = false;
-        }
-        log.info(useIncomeForMobilityBudget);
-
-        try {
-            shareOfIncome =Double.parseDouble(args[test+4]);
-        }
-        catch (NumberFormatException numberFormatException) {
-            log.warn("Using default share of income for the MobilityBudget");
-            shareOfIncome = 0.10;
-        }
-        catch (NullPointerException nullPointerException) {
-            log.warn("Using default share of income for the MobilityBudget");
-            shareOfIncome = 0.10;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn(arrayIndexOutOfBoundsException);
-            log.warn("Using default share of income for the MobilityBudget");
-            shareOfIncome = 0.10;
-        }
-        log.info(shareOfIncome);
-
-        try {
-            useShapeFile = Boolean.parseBoolean(args[test+6]);
-            log.info("Using shape File");
+            shareOfIncome=0.0;
+            useShapeFile=false;
+            shapeFile="";
+            incomeBasedSelection=false;
+            shareOfAgents =1.0;
         }
 
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using shape File");
-            useShapeFile = false;
-        }
-        log.info(useShapeFile);
+        if (args.length>13) {
+            int test = (args.length)-13;
 
-        try {
-            shapeFile = args[test+8];
+            try {
+                dailyMobilityBudget = Double.parseDouble(args[test]);
+            }
+            finally {
+                log.info(dailyMobilityBudget);
+            }
+
+            try {
+                useIncomeForMobilityBudget = Boolean.parseBoolean(args[test+2]);
+            }
+            catch (IllegalArgumentException illegalArgumentException) {
+                log.warn("Not using income for the MobilityBudget");
+                useIncomeForMobilityBudget = false;
+            }
+            catch (NullPointerException nullPointerException) {
+                log.warn(nullPointerException);
+                log.warn("Not using income for the MobilityBudget");
+                useIncomeForMobilityBudget = false;
+            }
+            catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+                log.warn(arrayIndexOutOfBoundsException);
+                log.warn("Not using income for the MobilityBudget");
+                useIncomeForMobilityBudget = false;
+            }
+            log.info(useIncomeForMobilityBudget);
+
+            try {
+                shareOfIncome =Double.parseDouble(args[test+4]);
+            }
+            catch (NumberFormatException numberFormatException) {
+                log.warn("Using default share of income for the MobilityBudget");
+                shareOfIncome = 0.10;
+            }
+            catch (NullPointerException nullPointerException) {
+                log.warn("Using default share of income for the MobilityBudget");
+                shareOfIncome = 0.10;
+            }
+            catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+                log.warn(arrayIndexOutOfBoundsException);
+                log.warn("Using default share of income for the MobilityBudget");
+                shareOfIncome = 0.10;
+            }
+            log.info(shareOfIncome);
+
+            try {
+                useShapeFile = Boolean.parseBoolean(args[test+6]);
+                log.info("Using shape File");
+            }
+
+            catch (IllegalArgumentException illegalArgumentException) {
+                log.warn("Not using shape File");
+                useShapeFile = false;
+            }
+            log.info(useShapeFile);
+
+            try {
+                shapeFile = args[test+8];
+            }
+
+            catch (IllegalArgumentException illegalArgumentException) {
+                log.warn("Not able to read Shape File");
+                shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+            }
+            log.info(shapeFile);
+
+            try {
+                incomeBasedSelection = Boolean.parseBoolean(args[test+10]);
+                log.info("Using income based selection");
+            }
+
+            catch (IllegalArgumentException illegalArgumentException) {
+                log.warn("Not using income based selection");
+                incomeBasedSelection = false;
+            }
+
+            try {
+                shareOfAgents = Double.parseDouble(args[test+12]);
+            }
+
+            catch (IllegalArgumentException illegalArgumentException) {
+                log.warn("Not able to read  the share of Agents using default value");
+                shareOfAgents = 0.1;
+            }
         }
 
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read Shape File");
-            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
-        }
-        log.info(shapeFile);
 
-        try {
-            incomeBasedSelection = Boolean.parseBoolean(args[test+10]);
-            log.info("Using income based selection");
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using income based selection");
-            incomeBasedSelection = false;
-        }
-
-        try {
-            shareOfAgents = Double.parseDouble(args[test+12]);
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read  the share of Agents using default value");
-            shareOfAgents = 0.1;
-        }
     }
 }
 

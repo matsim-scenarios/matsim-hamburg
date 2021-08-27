@@ -1,5 +1,6 @@
 package org.matsim.run;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         String[] args = new String[]{
                 "test/input//test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "4",
-                "--config:controler.runId" , "RunHamburgScenarioMobilityBudgetWithIncomeTest",
+                "--config:controler.runId" , "RunBaseCaseHamburgScenarioIT",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
@@ -38,18 +39,19 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         };
 
         String[] mobBudgetArgs = new String[]{
-                "dailyMobilityBudget" , "10.0",
-                "useIncomeForMobilityBudget" , "true",
-                "shareOfIncome", "1000.5",
-                "useShapeFile", "false",
-                "shapeFile","",
-                "incomeBasedSelection","false",
-                "shareOfAgents","1.0",
+                "--dailyMobilityBudget" , "10.0",
+                "--useIncomeForMobilityBudget" , "true",
+                "--shareOfIncome", "10.5",
+                "--useShapeFile", "false",
+                "--shapeFile","",
+                "--incomeBasedSelection","false",
+                "--shareOfAgents","1.0",
         };
 
-        main(args);
+        String[] both = (String[]) ArrayUtils.addAll(args, mobBudgetArgs);
 
-        Config config = prepareConfig(args);
+        main(both);
+        Config config = prepareConfig(both);
         //adjusting strategy setting of config so agents try out different modes
         for (StrategyConfigGroup.StrategySettings setting:    config.strategy().getStrategySettings()) {
             if (setting.getStrategyName().equals("SubtourModeChoice")) {
@@ -69,13 +71,16 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"), 47.09443917204786);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"), 46.88012044666017);
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f02"), 117.86871825413606);
         //Agent with commercial activity are excluded from the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"), 121.90659700031605);
+        //Agent didn´t use car in Base Case
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 48.067622301140034);
 
         for (Person p : persons.values()) {
+            System.out.println(p.getId());
             Assert.assertEquals(scoreStatsFromBaseCase.get(p.getId()), p.getSelectedPlan().getScore(), 0);
         }
 

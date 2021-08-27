@@ -38,9 +38,10 @@ public class TestIncomeBasedSelection {
 
         Scenario scenario = prepareScenario(config);
 
-
         for (Person p: scenario.getPopulation().getPersons().values()) {
-            personsEligibleForMobilityBudget.put(p.getId(), (double) p.getAttributes().getAttribute("income"));
+            if (!p.getId().toString().contains("commercial")) {
+                personsEligibleForMobilityBudget.put(p.getId(), (double) p.getAttributes().getAttribute("income"));
+            }
         }
 
         int originalSize = personsEligibleForMobilityBudget.size();
