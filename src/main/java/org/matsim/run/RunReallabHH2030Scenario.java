@@ -50,8 +50,6 @@ public class RunReallabHH2030Scenario {
 
 		Config config = prepareConfig(args);
 
-		adjustTimeSensitivityForBike(config);
-
 		{//TODO bfre release: delete!!
 			//set runId and output directory
 			config.controler().setRunId("hamburg-v2.0-10pct-reallab2030");
@@ -63,12 +61,7 @@ public class RunReallabHH2030Scenario {
 
 		Scenario scenario = prepareScenario(config);
 
-		//add mobility budget (monetary incentive to abandon car) of 5 €/day
-		Map<Id<Person>, Double> person2MobilityBudget = RunBaseCaseWithMobilityBudget.getPersonsEligibleForMobilityBudget2FixedValue(scenario, 5.0);
-		MobilityBudgetEventHandler mobilityBudgetHandler = new MobilityBudgetEventHandler(person2MobilityBudget);
-
 		Controler controler = prepareControler(scenario);
-		RunBaseCaseWithMobilityBudget.addMobilityBudgetHandler(controler, mobilityBudgetHandler);
 
 		//run the simulation
 		controler.run();
@@ -119,6 +112,8 @@ public class RunReallabHH2030Scenario {
 		Config config = RunDRTHamburgScenario.prepareConfig(args);
 		//configure bike and car sharing services
 		RunSharingScenario.configureBikeAndCarSharingServices(config);
+
+		adjustTimeSensitivityForBike(config);
 		return config;
 	}
 
@@ -137,6 +132,11 @@ public class RunReallabHH2030Scenario {
 		Controler controler = RunSharingScenario.prepareControler(scenario);
 		//Load all drt-related modules and configure the drt qsim components.
 		RunDRTHamburgScenario.prepareControler(controler);
+
+		//add mobility budget (monetary incentive to abandon car) of 5 €/day. this is available for persons that had used car in the input plans, only.
+		Map<Id<Person>, Double> person2MobilityBudget = RunBaseCaseWithMobilityBudget.getPersonsEligibleForMobilityBudget2FixedValue(scenario, 5.0);
+		MobilityBudgetEventHandler mobilityBudgetHandler = new MobilityBudgetEventHandler(person2MobilityBudget);
+		RunBaseCaseWithMobilityBudget.addMobilityBudgetHandler(controler, mobilityBudgetHandler);
 		return controler;
 	}
 
