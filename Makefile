@@ -1,6 +1,7 @@
 
 JAR := matsim-hamburg-*.jar
-V := v1.2
+V := v2.0
+CRS := EPSG:25832
 
 export SUMO_HOME := $(abspath ../../sumo-1.8.0/)
 osmosis := osmosis\bin\osmosis
@@ -54,6 +55,11 @@ scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/hamburg-sumo.net.xml
 	 --capacities ../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.2/RLHH_analyze_Q_at_LSA_all.csv\
 	 --output $@
 
+scenarios/input/hamburg-$V-network-with-pt.xml.gz: scenarios/input/hamburg-$V-network.xml.gz
+	java -cp $(JAR) org.matsim.application.prepare.pt.CreateTransitScheduleFromGtfs ../shared-svn/projects/realLabHH/data/gtfs_2019/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip\
+	 --network $<\
+	 --name hamburg-$V --date "2020-09-09" --target-crs $(CRS)
+
 # Aggregated target
-prepare: scenarios/input/hamburg-$V-network.xml.gz
+prepare: scenarios/input/hamburg-$V-network-with-pt.xml.gz
 	echo "Done"
