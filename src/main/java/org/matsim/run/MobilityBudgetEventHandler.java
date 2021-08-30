@@ -45,7 +45,6 @@ class MobilityBudgetEventHandler implements PersonDepartureEventHandler, AfterMo
         for (Map.Entry<Id<Person>, Double> idDoubleEntry : currentIterationMobilityBudget.entrySet()) {
             Id<Person> person = idDoubleEntry.getKey();
             Double mobilityBudget = idDoubleEntry.getValue();
-            log.info("Throwing money event" + "Person_Id:" + person);
             event.getServices().getEvents().processEvent(new PersonMoneyEvent(Time.MIDNIGHT, person, mobilityBudget, "mobilityBudget", null));
             totalSumMobilityBudget = totalSumMobilityBudget + mobilityBudget;
             //}
