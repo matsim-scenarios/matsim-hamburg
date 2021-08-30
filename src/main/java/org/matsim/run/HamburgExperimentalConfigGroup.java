@@ -30,7 +30,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean useLinkBasedParkPressure = false;
     private String parkPressureLinkAttributeFile = null;
     private String parkPressureScoreParams = "1.,0.7,0.";
-    private double parkPressureScoreConstant = 0.;
+    private double parkPressureScoreConstant = -1.0;
     private boolean increaseStorageCapacity = true;
     private boolean filterCommercial = false;
     private int sampleSize = 10;
