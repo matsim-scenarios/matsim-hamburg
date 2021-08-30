@@ -68,26 +68,38 @@ public class RunReallabHH2030Scenario {
 	}
 
 
-	private static void adjustTimeSensitivityForBike(Config config) {
+	private static void adjustBikeParameters(Config config) {
 		PlanCalcScoreConfigGroup.ModeParams bikeParams = config.planCalcScore().getModes().get(TransportMode.bike);
 
-//		prefix ce is for 'choiceExperiment'
-		double ce_avg_tt = 11.2; //11.2 minutes
 		double ce_beta_lane = 1.08; //utility increase of a bike lane over no bike infrastructure
 		double ce_beta_time = -0.258; // in utils/minute
-		double ce_beta_time_adj = ce_beta_time + (ce_beta_lane / ce_avg_tt);
+		double ce_timeUtility_min_lane = ce_beta_lane / ce_beta_time * -1;
 
-		//mtsm prefix is for MATSim
 		double mtsm_total_time_costs_min = (bikeParams.getMarginalUtilityOfTraveling() - config.planCalcScore().getPerforming_utils_hr()) / 60.;
+		double mtsm_utility_lane = mtsm_total_time_costs_min * ce_timeUtility_min_lane;
 
-		//now say that ce_beta_time_adj/ce_beta_time = mtsm_total_time_costs_min_adj = mtsm_total_time_costs_min_adj
-		double mtsm_total_time_costs_min_adj = ce_beta_time_adj / ce_beta_time * mtsm_total_time_costs_min;
-		double mtsm_beta_time_bike_adj_hr = mtsm_total_time_costs_min_adj * 60. + config.planCalcScore().getPerforming_utils_hr();
-
-		bikeParams.setMarginalUtilityOfTraveling(mtsm_beta_time_bike_adj_hr);
+		bikeParams.setConstant(bikeParams.getConstant() + mtsm_utility_lane);
 
 
 		//the stuff underneath is old! TODO delete
+//		VERSION 2 => wrong, because the underlying choice experiment does not really allow for a relation of beta_lane and avg_tt!
+//
+//		//		prefix ce is for 'choiceExperiment'
+//		double ce_avg_tt = 11.2; //11.2 minutes
+//		double ce_beta_lane = 1.08; //utility increase of a bike lane over no bike infrastructure
+//		double ce_beta_time = -0.258; // in utils/minute
+//		double ce_beta_time_adj = ce_beta_time + (ce_beta_lane / ce_avg_tt);
+//
+//		//mtsm prefix is for MATSim
+//		double mtsm_total_time_costs_min = (bikeParams.getMarginalUtilityOfTraveling() - config.planCalcScore().getPerforming_utils_hr()) / 60.;
+//
+//		//now say that ce_beta_time_adj/ce_beta_time = mtsm_total_time_costs_min_adj = mtsm_total_time_costs_min_adj
+//		double mtsm_total_time_costs_min_adj = ce_beta_time_adj / ce_beta_time * mtsm_total_time_costs_min;
+//		double mtsm_beta_time_bike_adj_hr = mtsm_total_time_costs_min_adj * 60. + config.planCalcScore().getPerforming_utils_hr();
+//
+//		bikeParams.setMarginalUtilityOfTraveling(mtsm_beta_time_bike_adj_hr);
+
+//		VERSION 1 => definitely wrong!
 
 		/** according to investigations of the DLR, daily bike users experience a utility increase equal to 4.2 minutes riding time when
 		 * switching from no bike infrastructure to bike lanes (Radfahrstreifen). For switching (from nothing) to protected bike paths, the utility gain is 8.5 minutes (roughly double);
@@ -113,7 +125,7 @@ public class RunReallabHH2030Scenario {
 		//configure bike and car sharing services
 		RunSharingScenario.configureBikeAndCarSharingServices(config);
 
-		adjustTimeSensitivityForBike(config);
+		adjustBikeParameters(config);
 		return config;
 	}
 
