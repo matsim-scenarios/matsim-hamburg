@@ -67,10 +67,21 @@ public class RunReallabHH2030Scenario {
 		controler.run();
 	}
 
+	public static Config prepareConfig(String[] args) {
+		//for the config, we need to call RunDRTHamburgScenario before RunSharingScenario because it also loads all config groups needed.
+		//create config and configure drt
+		Config config = RunDRTHamburgScenario.prepareConfig(args);
 
+		//important: do this first as later, the modeParams for bike are copied into modeParams for bike sharing!
+		adjustBikeParameters(config);
+
+		//configure bike and car sharing services
+		RunSharingScenario.configureBikeAndCarSharingServices(config);
+
+		return config;
+	}
 
 	private static void adjustBikeParameters(Config config) {
-		//TODO: also adjust bike sharing mode params!!!
 		PlanCalcScoreConfigGroup.ModeParams bikeParams = config.planCalcScore().getModes().get(TransportMode.bike);
 
 		double ce_beta_lane = 1.08; //utility increase of a bike lane over no bike infrastructure
@@ -118,17 +129,6 @@ public class RunReallabHH2030Scenario {
 //		Preconditions.checkArgument(oldValue < 0);
 //		double newValue = oldValue - (oldValue / 60) * 4.2;
 //		bikeParams.setMarginalUtilityOfTraveling(newValue);
-	}
-
-	public static Config prepareConfig(String[] args) {
-		//for the config, we need to call RunDRTHamburgScenario before RunSharingScenario because it also loads all config groups needed.
-		//create config and configure drt
-		Config config = RunDRTHamburgScenario.prepareConfig(args);
-		//configure bike and car sharing services
-		RunSharingScenario.configureBikeAndCarSharingServices(config);
-
-		adjustBikeParameters(config);
-		return config;
 	}
 
 	public static Scenario prepareScenario(Config config) throws IOException {
