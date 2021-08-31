@@ -7,6 +7,7 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.run.HamburgExperimentalConfigGroup;
 
@@ -35,21 +36,23 @@ public class NetworkParkPressureReader {
     private final Map<String, Double> link2ParkPressure = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
-//        Config config = ConfigUtils.createConfig();
-//        config.network().setInputFile("/Users/meng/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-network-with-pt.xml.gz");
-//        Scenario scenario = ScenarioUtils.loadScenario(config);
-//        Network network = scenario.getNetwork();
-//        NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(network,"/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0/network_specific_info/link2parkpressure.csv");
-//        networkParkPressureReader.addLinkParkTimeAsAttribute(new Double[]{1200.,720.,0.});
-////        networkParkPressureReader.addLinkParkTimeAsAttribute(new Double[]{1.,0.5,0.});
-//
-//        for (Link link :
-//                network.getLinks().values()) {
-//            if (!link.getAttributes().getAsMap().containsKey("parkTime"))
-//                System.out.println(link.getId());
-//        }
-//        System.out.println("done");
-//        //NetworkUtils.writeNetwork(network,"/Users/meng/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1.0-1pct/input/hamburg-v1.0-network-with-pt-park.xml.gz");
+        Config config = ConfigUtils.createConfig();
+        config.network().setInputFile("D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-network-with-pt.xml.gz");
+        Scenario scenario = ScenarioUtils.loadScenario(config);
+        Network network = scenario.getNetwork();
+
+        HamburgExperimentalConfigGroup cfg = new HamburgExperimentalConfigGroup();
+        cfg.setParkPressureLinkAttributeFile("D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-sumo-network-with-pt.link2ParkPressure.csv");
+        NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(network,cfg);
+        networkParkPressureReader.addLinkParkTimeAsAttribute();
+
+        for (Link link :
+                network.getLinks().values()) {
+            if (!link.getAttributes().getAsMap().containsKey("parkTime"))
+                System.out.println(link.getId());
+        }
+        NetworkUtils.writeNetwork(network,"D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-network-with-pt-withParkPressure.xml.gz");
+        System.out.println("done");
     }
 
     public void addLinkParkTimeAsAttribute() throws IOException {
