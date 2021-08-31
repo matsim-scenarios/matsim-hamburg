@@ -46,11 +46,12 @@ public class NetworkParkPressureReader {
         NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(network,cfg);
         networkParkPressureReader.addLinkParkTimeAsAttribute();
 
-        for (Link link :
-                network.getLinks().values()) {
-            if (!link.getAttributes().getAsMap().containsKey("parkTime"))
-                System.out.println(link.getId());
-        }
+//        for (Link link :
+//                network.getLinks().values()) {
+//            if (!link.getAttributes().getAsMap().containsKey("parkTime"))
+//                System.out.println(link.getId());
+//        }
+        network.getAttributes().putAttribute("coordinateReferenceSystem", "EPSG:25832");
         NetworkUtils.writeNetwork(network,"D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-network-with-pt-withParkPressure.xml.gz");
         System.out.println("done");
     }

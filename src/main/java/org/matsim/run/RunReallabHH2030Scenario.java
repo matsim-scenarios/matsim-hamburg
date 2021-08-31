@@ -68,7 +68,9 @@ public class RunReallabHH2030Scenario {
 	}
 
 
+
 	private static void adjustBikeParameters(Config config) {
+		//TODO: also adjust bike sharing mode params!!!
 		PlanCalcScoreConfigGroup.ModeParams bikeParams = config.planCalcScore().getModes().get(TransportMode.bike);
 
 		double ce_beta_lane = 1.08; //utility increase of a bike lane over no bike infrastructure
