@@ -24,7 +24,7 @@ public class RunBaseCaseHamburgScenarioTest {
 
         String[] args = new String[]{
                 "test/input//test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "4",
+                "--config:controler.lastIteration" , "1",
                 "--config:controler.runId" , "RunBaseCaseHamburgScenarioIT",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
