@@ -58,7 +58,6 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
                 setting.setWeight(1.0);
             }
         }
-        config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
         Scenario scenario = prepareScenario(config);
         Controler controler = prepareControler(scenario);
