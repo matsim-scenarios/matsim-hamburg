@@ -9,7 +9,6 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
 import org.matsim.contrib.sharing.run.SharingModule;
 import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
-import org.matsim.contrib.sharing.service.SharingNetworkRentalsHandler;
 import org.matsim.contrib.sharing.service.SharingUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
@@ -106,8 +105,12 @@ public class RunSharingScenario {
     }
 
     static Config configureBikeAndCarSharingServices(Config config) {
+        //the SharingServiceConfigGroups (and SharingConfigGroup) can not be read from xml yet!
+        //This is why we set the input files from our experimental config groups. I know, it is ugly.... tschlenther sep '21.
+
         //add sharing config group
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
+        HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
         // define a car sharing service
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
@@ -116,7 +119,8 @@ public class RunSharingScenario {
         carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
+//        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
+        carSharingConfig.setServiceInputFile(hamburgCfg.getCarSharingServiceInputFile()); //see comment above
         carSharingConfig.setMode(SHARING_CAR_MODE);
 
         // define a bike sharing service
@@ -126,7 +130,8 @@ public class RunSharingScenario {
         bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
+//        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
+        bikeSharingConfig.setServiceInputFile(hamburgCfg.getBikeSharingServiceInputFile()); //see comment above
         bikeSharingConfig.setMode(SHARING_BIKE_MODE);
 
         // add sharing modes to mode choice

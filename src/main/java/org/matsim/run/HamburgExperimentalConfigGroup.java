@@ -20,10 +20,13 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Filter_Commercial = "filterCommercial";
     private static final String DRT_NETWORK_OPERATION_AREA = "drtNetworkOperationArea";
     private static final String FIXED_DAILY_MOBILITY_BUDGET = "fixedDailyMobilityBudget";
+    private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
+    private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
     }
+
 
     private double populationDownsampleFactor = 1.0;
     private boolean usePersonIncomeBasedScoring = true;
@@ -37,6 +40,9 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private int sampleSize = 10;
     private String drtNetworkOperationArea = null;
     private Double fixedDailyMobilityBudget = null;
+    private String carSharingServiceInputFile = null;
+    private String bikeSharingServiceInputFile = null;
+
 
     @StringGetter(Filter_Commercial)
     public boolean isFilterCommercial() {
@@ -135,4 +141,14 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     }
     @StringSetter(FIXED_DAILY_MOBILITY_BUDGET)
     public void setfixedDailyMobilityBudget(Double fixedDailyMobilityBudget) {this.fixedDailyMobilityBudget = fixedDailyMobilityBudget;}
+
+    @StringGetter(CAR_SHARING_SERVICE_INPUT_FILE)
+    public String getCarSharingServiceInputFile() { return carSharingServiceInputFile; }
+    @StringSetter(CAR_SHARING_SERVICE_INPUT_FILE)
+    public void setCarSharingServiceInputFile(String carSharingServiceInputFile) { this.carSharingServiceInputFile = carSharingServiceInputFile; }
+
+    @StringGetter(BIKE_SHARING_SERVICE_INPUT_FILE)
+    public String getBikeSharingServiceInputFile() { return bikeSharingServiceInputFile; }
+    @StringSetter(BIKE_SHARING_SERVICE_INPUT_FILE)
+    public void setBikeSharingServiceInputFile(String bikeSharingServiceInputFile) { this.bikeSharingServiceInputFile = bikeSharingServiceInputFile; }
 }

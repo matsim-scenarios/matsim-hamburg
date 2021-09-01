@@ -39,8 +39,11 @@ public class RunSharingScenarioTest {
         String[] args = new String[]{
                 "test/input/test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "0",
+                "--config:controler.runId" , "RunSharingScenarioTest",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
+                "--config:hamburgExperimental.carSharingServiceInputFile", "shared_car_vehicles_stations.xml",
+                "--config:hamburgExperimental.bikeSharingServiceInputFile", "shared_bike_vehicles_stations.xml",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
@@ -52,26 +55,25 @@ public class RunSharingScenarioTest {
 
         config.transit().setUseTransit(false);
 
-        config.controler().setRunId("runTest");
         config.controler().setWriteEventsInterval(1);
         config.controler().setWritePlansInterval(1);
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
         config.plansCalcRoute().setAccessEgressType(PlansCalcRouteConfigGroup.AccessEgressType.accessEgressModeToLink);
 
-        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
-        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
-            switch (service.getMode()){
-                case "sbike":
-                    service.setServiceInputFile("shared_bike_vehicles_stations.xml");
-                    break;
-                case "scar":
-                    service.setServiceInputFile("shared_car_vehicles_stations.xml");
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
+//        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
+//        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
+//            switch (service.getMode()){
+//                case "sbike":
+//                    service.setServiceInputFile("shared_bike_vehicles_stations.xml");
+//                    break;
+//                case "scar":
+//                    service.setServiceInputFile("shared_car_vehicles_stations.xml");
+//                    break;
+//                default:
+//                    throw new IllegalArgumentException();
+//            }
+//        }
 
 
         Scenario scenario = prepareScenario(config);
