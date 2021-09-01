@@ -130,7 +130,7 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>8.4.4</version>
+            <version>8.5.4</version>
         </dependency>
 
         <!-- Include the JUnit testing library.  Not transitive. -->

@@ -31,13 +31,16 @@ import java.io.IOException;
 
 public class RunReallabHH2030ScenarioIT {
 
-	private final static String CONFIG = "test/input/test-hamburg.reallab2030HH.config.xml";
+	String[] args = new String[]{
+			"test/input/test-hamburg.reallab2030HH.config.xml" ,
+			"--config:hamburgExperimental.fixedDailyMobilityBudget" , "2.5",
+	};
 
 	@Test
 	public void testRunReallabHH2030Scenario(){
 		Exception exception = null;
 		try {
-			Config config = RunReallabHH2030Scenario.prepareConfig(new String[]{CONFIG});
+			Config config = RunReallabHH2030Scenario.prepareConfig(args);
 
 			//TODO: avoid this configuration?!
 			SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);

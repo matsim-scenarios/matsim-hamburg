@@ -19,10 +19,14 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
     private static final String DRT_NETWORK_OPERATION_AREA = "drtNetworkOperationArea";
+    private static final String FIXED_DAILY_MOBILITY_BUDGET = "fixedDailyMobilityBudget";
+    private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
+    private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
     }
+
 
     private double populationDownsampleFactor = 1.0;
     private boolean usePersonIncomeBasedScoring = true;
@@ -30,11 +34,15 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean useLinkBasedParkPressure = false;
     private String parkPressureLinkAttributeFile = null;
     private String parkPressureScoreParams = "1.,0.7,0.";
-    private double parkPressureScoreConstant = 0.;
+    private double parkPressureScoreConstant = -1.0;
     private boolean increaseStorageCapacity = true;
     private boolean filterCommercial = false;
     private int sampleSize = 10;
     private String drtNetworkOperationArea = null;
+    private Double fixedDailyMobilityBudget = null;
+    private String carSharingServiceInputFile = null;
+    private String bikeSharingServiceInputFile = null;
+
 
     @StringGetter(Filter_Commercial)
     public boolean isFilterCommercial() {
@@ -126,4 +134,21 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     }
     @StringSetter(DRT_NETWORK_OPERATION_AREA)
     public void setDrtNetworkOperationArea(String drtNetworkOperationArea) {      this.drtNetworkOperationArea = drtNetworkOperationArea;  }
+
+    @StringGetter(FIXED_DAILY_MOBILITY_BUDGET)
+    public Double getfixedDailyMobilityBudget() {
+        return fixedDailyMobilityBudget;
+    }
+    @StringSetter(FIXED_DAILY_MOBILITY_BUDGET)
+    public void setfixedDailyMobilityBudget(Double fixedDailyMobilityBudget) {this.fixedDailyMobilityBudget = fixedDailyMobilityBudget;}
+
+    @StringGetter(CAR_SHARING_SERVICE_INPUT_FILE)
+    public String getCarSharingServiceInputFile() { return carSharingServiceInputFile; }
+    @StringSetter(CAR_SHARING_SERVICE_INPUT_FILE)
+    public void setCarSharingServiceInputFile(String carSharingServiceInputFile) { this.carSharingServiceInputFile = carSharingServiceInputFile; }
+
+    @StringGetter(BIKE_SHARING_SERVICE_INPUT_FILE)
+    public String getBikeSharingServiceInputFile() { return bikeSharingServiceInputFile; }
+    @StringSetter(BIKE_SHARING_SERVICE_INPUT_FILE)
+    public void setBikeSharingServiceInputFile(String bikeSharingServiceInputFile) { this.bikeSharingServiceInputFile = bikeSharingServiceInputFile; }
 }

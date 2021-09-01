@@ -1,6 +1,7 @@
 package org.matsim.run;
 
 import org.apache.log4j.Logger;
+import org.matsim.analysis.SharingIdleVehiclesXYWriter;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -81,6 +82,14 @@ public class RunSharingScenario {
 
                 PlansCalcRouteConfigGroup.ModeRoutingParams sbike = controler.getConfig().plansCalcRoute().getModeRoutingParams().get(SHARING_BIKE_MODE);
                 addRoutingModuleBinding(SHARING_BIKE_MODE).toInstance(new TeleportationRoutingModule(SHARING_BIKE_MODE, scenario, sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
+
+                SharingIdleVehiclesXYWriter idleBikesWriter = new SharingIdleVehiclesXYWriter(SHARING_SERVICE_ID_BIKE, scenario.getNetwork());
+                addEventHandlerBinding().toInstance(idleBikesWriter);
+                addControlerListenerBinding().toInstance(idleBikesWriter);
+
+                SharingIdleVehiclesXYWriter idleCarsWriter = new SharingIdleVehiclesXYWriter(SHARING_SERVICE_ID_CAR, scenario.getNetwork());
+                addEventHandlerBinding().toInstance(idleCarsWriter);
+                addControlerListenerBinding().toInstance(idleCarsWriter);
             }
         });
 
@@ -96,8 +105,12 @@ public class RunSharingScenario {
     }
 
     static Config configureBikeAndCarSharingServices(Config config) {
+        //the SharingServiceConfigGroups (and SharingConfigGroup) can not be read from xml yet!
+        //This is why we set the input files from our experimental config groups. I know, it is ugly.... tschlenther sep '21.
+
         //add sharing config group
         SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
+        HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
         // define a car sharing service
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
@@ -106,7 +119,8 @@ public class RunSharingScenario {
         carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
+//        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
+        carSharingConfig.setServiceInputFile(hamburgCfg.getCarSharingServiceInputFile()); //see comment above
         carSharingConfig.setMode(SHARING_CAR_MODE);
 
         // define a bike sharing service
@@ -116,7 +130,8 @@ public class RunSharingScenario {
         bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
-        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
+//        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
+        bikeSharingConfig.setServiceInputFile(hamburgCfg.getBikeSharingServiceInputFile()); //see comment above
         bikeSharingConfig.setMode(SHARING_BIKE_MODE);
 
         // add sharing modes to mode choice
