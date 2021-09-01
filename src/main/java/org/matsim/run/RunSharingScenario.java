@@ -1,6 +1,7 @@
 package org.matsim.run;
 
 import org.apache.log4j.Logger;
+import org.matsim.analysis.SharingIdleVehiclesXYWriter;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -8,6 +9,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
 import org.matsim.contrib.sharing.run.SharingModule;
 import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
+import org.matsim.contrib.sharing.service.SharingNetworkRentalsHandler;
 import org.matsim.contrib.sharing.service.SharingUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
@@ -81,6 +83,14 @@ public class RunSharingScenario {
 
                 PlansCalcRouteConfigGroup.ModeRoutingParams sbike = controler.getConfig().plansCalcRoute().getModeRoutingParams().get(SHARING_BIKE_MODE);
                 addRoutingModuleBinding(SHARING_BIKE_MODE).toInstance(new TeleportationRoutingModule(SHARING_BIKE_MODE, scenario, sbike.getTeleportedModeSpeed(),sbike.getBeelineDistanceFactor()));
+
+                SharingIdleVehiclesXYWriter idleBikesWriter = new SharingIdleVehiclesXYWriter(SHARING_SERVICE_ID_BIKE, scenario.getNetwork());
+                addEventHandlerBinding().toInstance(idleBikesWriter);
+                addControlerListenerBinding().toInstance(idleBikesWriter);
+
+                SharingIdleVehiclesXYWriter idleCarsWriter = new SharingIdleVehiclesXYWriter(SHARING_SERVICE_ID_CAR, scenario.getNetwork());
+                addEventHandlerBinding().toInstance(idleCarsWriter);
+                addControlerListenerBinding().toInstance(idleCarsWriter);
             }
         });
 
