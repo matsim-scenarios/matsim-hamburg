@@ -20,12 +20,14 @@
 
 package org.matsim.run;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 
@@ -72,7 +74,7 @@ public class RunReallabHH2030Scenario {
 		//create config and configure drt
 		Config config = RunDRTHamburgScenario.prepareConfig(args);
 
-		//important: do this first as later, the modeParams for bike are copied into modeParams for bike sharing!
+		//important: do this first, as later, the modeParams for bike are copied into modeParams for bike sharing!
 		adjustBikeParameters(config);
 
 		//configure bike and car sharing services
@@ -110,8 +112,10 @@ public class RunReallabHH2030Scenario {
 		//Load all drt-related modules and configure the drt qsim components.
 		RunDRTHamburgScenario.prepareControler(controler);
 
-		//add mobility budget (monetary incentive to abandon car) of 5 €/day. this is available for persons that had used car in the input plans, only.
-		Map<Id<Person>, Double> person2MobilityBudget = RunBaseCaseWithMobilityBudget.getPersonsEligibleForMobilityBudget2FixedValue(scenario, 5.0);
+		//add mobility budget (monetary incentive to abandon car) in €/day. this is available for persons that had used car in the input plans, only.
+		Double mobilityBudget = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getfixedDailyMobilityBudget();
+		Preconditions.checkNotNull(mobilityBudget, "you need to specify fixedDailyMobilityBudget in " + HamburgExperimentalConfigGroup.class);
+		Map<Id<Person>, Double> person2MobilityBudget = RunBaseCaseWithMobilityBudget.getPersonsEligibleForMobilityBudget2FixedValue(scenario, mobilityBudget);
 		MobilityBudgetEventHandler mobilityBudgetHandler = new MobilityBudgetEventHandler(person2MobilityBudget);
 		RunBaseCaseWithMobilityBudget.addMobilityBudgetHandler(controler, mobilityBudgetHandler);
 		return controler;

@@ -19,6 +19,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
     private static final String DRT_NETWORK_OPERATION_AREA = "drtNetworkOperationArea";
+    private static final String FIXED_DAILY_MOBILITY_BUDGET = "fixedDailyMobilityBudget";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -35,6 +36,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private boolean filterCommercial = false;
     private int sampleSize = 10;
     private String drtNetworkOperationArea = null;
+    private Double fixedDailyMobilityBudget = null;
 
     @StringGetter(Filter_Commercial)
     public boolean isFilterCommercial() {
@@ -126,4 +128,11 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     }
     @StringSetter(DRT_NETWORK_OPERATION_AREA)
     public void setDrtNetworkOperationArea(String drtNetworkOperationArea) {      this.drtNetworkOperationArea = drtNetworkOperationArea;  }
+
+    @StringGetter(FIXED_DAILY_MOBILITY_BUDGET)
+    public Double getfixedDailyMobilityBudget() {
+        return fixedDailyMobilityBudget;
+    }
+    @StringSetter(FIXED_DAILY_MOBILITY_BUDGET)
+    public void setfixedDailyMobilityBudget(Double fixedDailyMobilityBudget) {this.fixedDailyMobilityBudget = fixedDailyMobilityBudget;}
 }
