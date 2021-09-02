@@ -134,7 +134,6 @@ public class RunBaseCaseWithMobilityBudget {
         log.info("filtering population for mobilityBudget");
 
         for (Person person : scenario.getPopulation().getPersons().values()) {
-            Id personId = person.getId();
             Id<Person> personId = person.getId();
             if(!personId.toString().contains("commercial")) {
                 Plan plan = person.getSelectedPlan();
