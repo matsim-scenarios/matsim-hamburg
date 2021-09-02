@@ -27,7 +27,7 @@ import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTri
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesModule;
-import org.matsim.prepare.ClassifyStationType;
+import org.matsim.prepare.pt.ClassifyStationType;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 
 import java.io.IOException;

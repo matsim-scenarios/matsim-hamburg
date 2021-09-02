@@ -1,13 +1,10 @@
-package org.matsim.prepare;
+package org.matsim.prepare.pt;
 
-import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.contrib.gtfs.GtfsConverter;
-import org.matsim.contrib.gtfs.RunGTFS2MATSim;
 import org.matsim.contrib.gtfs.TransitSchedulePostProcessTools;
-import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.scenario.ScenarioUtils;

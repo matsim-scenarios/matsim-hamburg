@@ -1,4 +1,4 @@
-package org.matsim.prepare;
+package org.matsim.prepare.pt;
 
 import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
