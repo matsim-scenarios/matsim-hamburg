@@ -18,17 +18,23 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.analysis;
+package org.matsim.analysis.sharing;
 
 import com.opencsv.CSVWriter;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.sharing.service.SharingService;
 import org.matsim.contrib.sharing.service.events.*;
+import org.matsim.core.api.experimental.events.EventsManager;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.events.IterationEndsEvent;
 import org.matsim.core.controler.listener.IterationEndsListener;
+import org.matsim.core.events.EventsUtils;
+import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.run.RunSharingScenario;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,6 +50,27 @@ public class SharingIdleVehiclesXYWriter implements SharingPickupEventHandler, S
 	private final Network network;
 	private final List<String[]> entries = new ArrayList<>();
 
+
+	public static void main(String[] args) {
+
+		String eventsFile = "D:/ReallabHH/runs/reallabHH2030/hamburg-v2.0-10pct-reallab2030.output_events.xml.gz";
+		String networkFile = "D:/ReallabHH/runs/reallabHH2030/hamburg-v2.0-10pct-reallab2030.output_network.xml.gz";
+
+		Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
+		NetworkUtils.readNetwork(scenario.getNetwork(), networkFile);
+
+		EventsManager manager= EventsUtils.createEventsManager();
+		SharingIdleVehiclesXYWriter carHandler = new SharingIdleVehiclesXYWriter(RunSharingScenario.SHARING_SERVICE_ID_CAR, scenario.getNetwork());
+		manager.addHandler(carHandler);
+		SharingIdleVehiclesXYWriter bikeHandler = new SharingIdleVehiclesXYWriter(RunSharingScenario.SHARING_SERVICE_ID_BIKE, scenario.getNetwork());
+		manager.addHandler(bikeHandler);
+
+		SharingEventsReader.create(manager).readFile(eventsFile);
+
+		carHandler.writeOutput("D:/ReallabHH/runs/reallabHH2030/hamburg-v2.0-10pct-reallab2030.car_idleVehiclesXY.csv");
+		bikeHandler.writeOutput("D:/ReallabHH/runs/reallabHH2030/hamburg-v2.0-10pct-reallab2030.bike_idleVehiclesXY.csv");
+
+	}
 
 	public SharingIdleVehiclesXYWriter(String sharingServiceIdString, Network network) {
 		service = sharingServiceIdString;
@@ -93,7 +120,11 @@ public class SharingIdleVehiclesXYWriter implements SharingPickupEventHandler, S
 
 	@Override
 	public void notifyIterationEnds(IterationEndsEvent event) {
-		String fileName = event.getServices().getControlerIO().getIterationFilename(event.getIteration(), service.toString() + "_idleVehiclesXY.csv");
+		String fileName = event.getServices().getControlerIO().getIterationFilename(event.getIteration(), service + "_idleVehiclesXY.csv");
+		writeOutput(fileName);
+	}
+
+	private void writeOutput(String fileName) {
 		try {
 			CSVWriter writer = new CSVWriter(new FileWriter(fileName));
 			writer.writeNext(getHeader());
