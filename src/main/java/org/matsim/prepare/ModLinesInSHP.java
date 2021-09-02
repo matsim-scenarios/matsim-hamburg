@@ -42,7 +42,7 @@ public class ModLinesInSHP {
                     "h-v2-10pct-accEcc-c4.output_network-with-pt.xml.gz", // [1] "Network with pt path",
                     "hamburg-v2.0-2030-transitSchedule.xml.gz", // [2] "TransitSchedule input Path",
                     "scenarios/input/hamburg-v2.0-2030-transitSchedule_new.xml.gz", // [3] "TransitSchedule output Path",
-                    "scenarios/input/hamburg_hvv_new.shp", // [4] "shp file path"
+                    "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_hvv_incl_gtfs2019stops/hamburg_hvv_new.shp", // [4] "shp file path"
             };
         }
 
