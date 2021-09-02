@@ -1,6 +1,11 @@
 package org.matsim.prepare;
 
+import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.io.IOUtils;
 import org.matsim.pt.transitSchedule.api.*;
 import org.matsim.utils.gis.shp2matsim.ShpGeometryUtils;
@@ -10,65 +15,97 @@ import java.util.List;
 
 public class ModLinesInSHP {
 
-    TransitSchedule tsInput = null;
-    TransitSchedule tsOutput = null;
-    String shpPath = "scenarios/berlin-v5.4-1pct/input/SHP.shp";
-    String tsOutputPath = "./transitScheduleName_cut.xml.gz";
-    List<TransitRoute> trToDelete = new ArrayList<>();
-    List<TransitLine> tlToDelete = new ArrayList<>();
+    static List<TransitRoute> trToDelete = new ArrayList<>();
+    static List<TransitLine> tlToDelete = new ArrayList<>();
+    private static final Logger log = Logger.getLogger(ModLinesInSHP.class);
 
-    ModLinesInSHP(){
-        System.out.println("No inputs found. Using presets ...");
-        modify();
+//    Old version with constructor
+//    ModLinesInSHP(){
+//        System.out.println("No inputs found. Using presets ...");
+//    }
+//
+//    ModLinesInSHP(TransitSchedule transitScheduleInput, String shpPathInput, String transitScheduleOutputPath){
+//        tsInput = transitScheduleInput;
+//        shpPath = shpPathInput;
+//        tsOutputPath = transitScheduleOutputPath;
+//    }
+
+    public static void main(String[] args) {
+
+        for (String arg : args) {
+            log.info(arg);
+        }
+
+        if (args.length == 0) {
+            args = new String[] {
+                    "scenarios/input/hamburg-v2.0-10pct.config.xml", // [0] "Config file path",
+                    "h-v2-10pct-accEcc-c4.output_network-with-pt.xml.gz", // [1] "Network with pt path",
+                    "hamburg-v2.0-2030-transitSchedule.xml.gz", // [2] "TransitSchedule input Path",
+                    "scenarios/input/hamburg-v2.0-2030-transitSchedule_new.xml.gz", // [3] "TransitSchedule output Path",
+                    "scenarios/input/hamburg_hvv_new.shp", // [4] "shp file path"
+            };
+        }
+
+        ModLinesInSHP routeModifier = new ModLinesInSHP();
+        TransitSchedule tsInput = routeModifier.getTransitSchedule(args[0], args[1], args[2]);
+        routeModifier.modify(tsInput, args[3], args[4]);
     }
 
-    ModLinesInSHP(TransitSchedule transitScheduleInput, String shpPathInput, String transitScheduleOutputPath){
-        tsInput = transitScheduleInput;
-        shpPath = shpPathInput;
-        tsOutputPath = transitScheduleOutputPath;
-        modify();
+    private TransitSchedule getTransitSchedule(String configPath, String networkPath, String tsInputPath){
+        Config config = ConfigUtils.loadConfig(configPath);
+        config.network().setInputFile(networkPath);
+        config.transit().setTransitScheduleFile(tsInputPath);
+        Scenario scenario = ScenarioUtils.loadScenario(config);
+        return scenario.getTransitSchedule();
     }
 
-    void modify(){
+
+    private void modify(TransitSchedule tsInput, String tsOutputPath, String shpPath){
+//        presets
+        TransitSchedule tsOutput = tsInput;
+//        String shpPath = "scenarios/berlin-v5.4-1pct/input/SHP.shp";
+//        String tsInputPath = "./transitScheduleName.xml.gz";
+//        String tsOutputPath = "./transitScheduleName_cut.xml.gz";
+
         List<PreparedGeometry> polygons = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(shpPath));
-        tsOutput = tsInput;
         int inShpCtr, tlDelCtr = 0, trDelCtr = 0;
 //    Iterating through all stops to detect which ones to delete
-        for(TransitLine tl:tsOutput.getTransitLines().values()){
-            for(TransitRoute tr:tl.getRoutes().values()){
+        for (TransitLine tl : tsOutput.getTransitLines().values()) {
+            for (TransitRoute tr : tl.getRoutes().values()) {
                 inShpCtr = 0;
-                for(TransitRouteStop trStop:tr.getStops()){
-                    if(ShpGeometryUtils.isCoordInPreparedGeometries(trStop.getStopFacility().getCoord(), polygons)){
+                for (TransitRouteStop trStop : tr.getStops()) {
+                    if (ShpGeometryUtils.isCoordInPreparedGeometries(trStop.getStopFacility().getCoord(), polygons)) {
                         inShpCtr++;
                         break;
                     }
                 }
-                if(inShpCtr == 0){
+                if (inShpCtr == 0) {
                     trToDelete.add(tr);
-                    System.out.println("Removing Route "+tr.getId().toString()+" ...");
+                    System.out.println("Removing Route " + tr.getId().toString() + " ...");
                     tl.removeRoute(tr);
                     trDelCtr++;
                 }
             }
-            if(tl.getRoutes().size() == 0){
+            if (tl.getRoutes().size() == 0) {
                 tlToDelete.add(tl);
-                System.out.println("Removing Line "+tl.getId().toString()+" ...");
+                System.out.println("Removing Line " + tl.getId().toString() + " ...");
                 tsOutput.removeTransitLine(tl);
                 tlDelCtr++;
             }
         }
-        System.out.println("Write new TransitSchedule to "+tsOutputPath+" ...");
+        System.out.println("Write new TransitSchedule to " + tsOutputPath + " ...");
         new TransitScheduleWriter(tsOutput).writeFile(tsOutputPath);
         System.out.println("Done. Summary:");
-        System.out.println("In total "+tlDelCtr+" TransitLines have been deleted. Check details with getTlToDelete()\n");
-        System.out.println("In total "+trDelCtr+" TransitRoutes have been deleted. Check details with getTrToDelete()\n");
+        System.out.println("In total " + tlDelCtr + " TransitLines have been deleted. Check details with getTlToDelete()\n");
+        System.out.println("In total " + trDelCtr + " TransitRoutes have been deleted. Check details with getTrToDelete()\n");
     }
 
-    public List<TransitRoute> getTrToDelete() {
+    public List<TransitRoute> getTrToDelete () {
         return trToDelete;
     }
 
-    public List<TransitLine> getTlToDelete() {
+    public List<TransitLine> getTlToDelete () {
         return tlToDelete;
     }
+
 }
