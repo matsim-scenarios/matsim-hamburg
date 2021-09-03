@@ -107,10 +107,11 @@ public class RunReallabHH2030Scenario {
 	public static Controler prepareControler(Scenario scenario) {
 		//we need to configure sharing first!! Otherwise, drt will not be simulated and leads to exceptions!!
 
-		//instantiate controler. add sharing modules and configure the qsim components
+		//instantiate controler. add sharing modules and configure the qsim components (we have to reconfigure the latter later again, see below. otherwise they get overwritten by drt)
 		Controler controler = RunSharingScenario.prepareControler(scenario);
-		//Load all drt-related modules and configure the drt qsim components.
-		RunDRTHamburgScenario.prepareControler(controler);
+
+		//Load all drt-related modules and configure the drt qsim components. We need to additionally register the sharing services
+		RunDRTHamburgScenario.prepareControler(controler, RunSharingScenario.SHARING_SERVICE_ID_BIKE, RunSharingScenario.SHARING_CAR_MODE);
 
 		//add mobility budget (monetary incentive to abandon car) in €/day. this is available for persons that had used car in the input plans, only.
 		Double mobilityBudget = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getfixedDailyMobilityBudget();

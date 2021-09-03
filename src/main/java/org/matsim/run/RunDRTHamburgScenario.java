@@ -14,6 +14,7 @@ import org.matsim.contrib.drt.run.MultiModeDrtModule;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
+import org.matsim.contrib.dvrp.run.MultiModal;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
@@ -32,8 +33,12 @@ import org.matsim.pt.transitSchedule.api.TransitSchedule;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author tschlenther
@@ -81,11 +86,16 @@ public class RunDRTHamburgScenario {
         return prepareControler(controler);
     }
 
-    static Controler prepareControler(Controler controler) {
+    static Controler prepareControler(Controler controler, String... additionalDvrpModes) {
         //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
-        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(MultiModeDrtConfigGroup.get(controler.getConfig())));
+
+        //configureQSim: activate all dvrp modes
+        MultiModeDrtConfigGroup mmCfg = MultiModeDrtConfigGroup.get(controler.getConfig());
+        List<String> drtModes = Arrays.stream(new MultiModeDrtConfigGroup[]{mmCfg}).flatMap(MultiModal::modes).collect(toList());
+        drtModes.addAll(List.of(additionalDvrpModes));
+        controler.configureQSimComponents(DvrpQSimComponents.activateModes(List.of(),drtModes));
 
         controler.addOverridingModule(new AbstractModule() {
 

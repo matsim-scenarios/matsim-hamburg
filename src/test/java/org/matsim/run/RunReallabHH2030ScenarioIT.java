@@ -21,46 +21,107 @@
 package org.matsim.run;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-import org.matsim.contrib.sharing.run.SharingConfigGroup;
-import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.events.Event;
+import org.matsim.contrib.dvrp.passenger.PassengerDroppedOffEvent;
+import org.matsim.contrib.dvrp.passenger.PassengerDroppedOffEventHandler;
+import org.matsim.contrib.sharing.service.events.SharingPickupEvent;
+import org.matsim.contrib.sharing.service.events.SharingPickupEventHandler;
+import org.matsim.contrib.sharing.service.events.SharingVehicleEvent;
+import org.matsim.contrib.sharing.service.events.SharingVehicleEventHandler;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.controler.Controler;
+import org.matsim.core.controler.events.IterationEndsEvent;
+import org.matsim.core.controler.listener.IterationEndsListener;
+import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RunReallabHH2030ScenarioIT {
+	@Rule
+	public MatsimTestUtils utils = new MatsimTestUtils() ;
 
 	String[] args = new String[]{
 			"test/input/test-hamburg.reallab2030HH.config.xml" ,
 			"--config:hamburgExperimental.fixedDailyMobilityBudget" , "2.5",
+			"--config:hamburgExperimental.carSharingServiceInputFile", "shared_car_vehicles_stations.xml",
+			"--config:hamburgExperimental.bikeSharingServiceInputFile", "shared_bike_vehicles_stations.xml",
 	};
 
 	@Test
-	public void testRunReallabHH2030Scenario(){
+	public void testAtLeastOneSharingAndOneDRTTransport(){
 		Exception exception = null;
 		try {
 			Config config = RunReallabHH2030Scenario.prepareConfig(args);
 
-			//TODO: avoid this configuration?!
-			SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
-			for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {
-				switch (service.getMode()){
-					case "sbike":
-						service.setServiceInputFile("shared_bike_vehicles_stations.xml");
-						break;
-					case "scar":
-						service.setServiceInputFile("shared_car_vehicles_stations.xml");
-						break;
-					default:
-						throw new IllegalArgumentException();
+			config.controler().setOutputDirectory(utils.getOutputDirectory());
+
+			Scenario scenario = (RunReallabHH2030Scenario.prepareScenario(config));
+
+			TestHandler handler = new TestHandler();
+
+			Controler controler = RunReallabHH2030Scenario.prepareControler(scenario);
+			controler.addOverridingModule(new AbstractModule() {
+				@Override
+				public void install() {
+					addEventHandlerBinding().toInstance(handler);
+					addControlerListenerBinding().toInstance(handler);
 				}
-			}
-			RunReallabHH2030Scenario.prepareControler(RunReallabHH2030Scenario.prepareScenario(config)).run();
+			});
+
 		} catch (IOException e) {
 			exception = e;
 		}
 
 		Assert.assertNull("An exception occured! Look into the log file!", exception);
 	}
+
+	private class TestHandler implements SharingVehicleEventHandler, PassengerDroppedOffEventHandler, SharingPickupEventHandler, IterationEndsListener {
+
+		Map<Class<? extends Event>,Integer> eventLog = new HashMap();
+
+		@Override
+		public void handleEvent(PassengerDroppedOffEvent event) {
+			handleEvent(event);
+		}
+
+		@Override
+		public void handleEvent(SharingVehicleEvent event) {
+			handleEvent(event);
+		}
+
+		@Override
+		public void handleEvent(SharingPickupEvent event) {
+			handleEvent(event);
+		}
+
+		private void handleEvent(Event event){
+			this.eventLog.compute(event.getClass(), (k,v) -> v+1);
+		}
+
+		@Override
+		public void reset(int iteration) {
+			SharingVehicleEventHandler.super.reset(iteration);
+		}
+
+		private void init(){
+			eventLog.clear();
+			eventLog.put(SharingVehicleEvent.class, 0);
+			eventLog.put(PassengerDroppedOffEvent.class, 0);
+			eventLog.put(SharingPickupEvent.class, 0);
+		}
+
+		@Override
+		public void notifyIterationEnds(IterationEndsEvent event) {
+			this.eventLog.forEach( (k,v) ->
+					Assert.assertTrue("there should be at least 1 event of type " + k, v.intValue() > 0));
+		}
+	}
+
+
 }
