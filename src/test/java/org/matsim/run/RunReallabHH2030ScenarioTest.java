@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunReallabHH2030ScenarioIT {
+public class RunReallabHH2030ScenarioTest {
 	@Rule
 	public MatsimTestUtils utils = new MatsimTestUtils() ;
 
@@ -73,6 +73,8 @@ public class RunReallabHH2030ScenarioIT {
 					addControlerListenerBinding().toInstance(handler);
 				}
 			});
+
+			controler.run();
 
 		} catch (IOException e) {
 			exception = e;
@@ -107,6 +109,7 @@ public class RunReallabHH2030ScenarioIT {
 		@Override
 		public void reset(int iteration) {
 			SharingVehicleEventHandler.super.reset(iteration);
+			init();
 		}
 
 		private void init(){
