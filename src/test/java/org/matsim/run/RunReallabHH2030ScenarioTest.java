@@ -89,20 +89,20 @@ public class RunReallabHH2030ScenarioTest {
 
 		@Override
 		public void handleEvent(PassengerDroppedOffEvent event) {
-			handleEvent(event);
+			this.log(event);
 		}
 
 		@Override
 		public void handleEvent(SharingVehicleEvent event) {
-			handleEvent(event);
+			this.log(event);
 		}
 
 		@Override
 		public void handleEvent(SharingPickupEvent event) {
-			handleEvent(event);
+			this.log(event);
 		}
 
-		private void handleEvent(Event event){
+		private void log(Event event){
 			this.eventLog.compute(event.getClass(), (k,v) -> v+1);
 		}
 

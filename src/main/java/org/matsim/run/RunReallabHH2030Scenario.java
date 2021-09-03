@@ -26,6 +26,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.sharing.service.SharingService;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
@@ -111,7 +112,7 @@ public class RunReallabHH2030Scenario {
 		Controler controler = RunSharingScenario.prepareControler(scenario);
 
 		//Load all drt-related modules and configure the drt qsim components. We need to additionally register the sharing services
-		RunDRTHamburgScenario.prepareControler(controler, RunSharingScenario.SHARING_SERVICE_ID_BIKE, RunSharingScenario.SHARING_SERVICE_ID_CAR);
+		RunDRTHamburgScenario.prepareControler(controler, getServiceMode(RunSharingScenario.SHARING_SERVICE_ID_BIKE), getServiceMode(RunSharingScenario.SHARING_SERVICE_ID_CAR));
 
 		//add mobility budget (monetary incentive to abandon car) in €/day. this is available for persons that had used car in the input plans, only.
 		Double mobilityBudget = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getfixedDailyMobilityBudget();
@@ -122,4 +123,8 @@ public class RunReallabHH2030Scenario {
 		return controler;
 	}
 
+	//this is more or less copied from SharingUtils.class
+	private	static String getServiceMode(String sharingServiceIdStr) {
+		return "sharing:" + sharingServiceIdStr;
+	}
 }
