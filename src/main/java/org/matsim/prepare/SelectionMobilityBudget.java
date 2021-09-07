@@ -8,7 +8,6 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.utils.gis.ShapeFileReader;
-import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.BoundingBox;
 
@@ -53,7 +52,7 @@ public class SelectionMobilityBudget {
 
         for (Id<Person> personId: toRemove) {
             personsEligibleForMobilityBudget.remove(personId);
-            log.info("Removed: " + personId + "because he is not in the Shape File");
+            log.info("Removed: " + personId + " because he is not in the Shape File");
         }
 
     }

@@ -44,16 +44,17 @@ public class TestMobBudgetSelection {
         String shapeFile = "D:\\Arbeit\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
         Scenario scenario = prepareScenario(config);
         int originalSize = personsEligibleForMobilityBudget.size();
+        System.out.println(originalSize);
         for (Person p: scenario.getPopulation().getPersons().values()) {
             Plan plan = p.getSelectedPlan();
             List <Activity>  activitiesList = TripStructureUtils.getActivities(plan.getPlanElements(),TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
             for (Activity activity: activitiesList) {
                 if (activity.getType().contains("home")) {
-                    Coord coordOfHomeActivity = new Coord(565277.394206, 5933737,159015);
+                    Coord coordOfHomeActivity = new Coord(565277.394206, 5933737,0);
                     activity.setCoord(coordOfHomeActivity);
                     // Agent used to get the mobilityBudget but not now
                     if (p.getId().toString().contains("113ecc")) {
-                        Coord coordOfHomeActivityOutOfShapeFile = new Coord(6065277.394206, 60933737,159015);
+                        Coord coordOfHomeActivityOutOfShapeFile = new Coord(6065277.394206, 60933737,0);
                         activity.setCoord(coordOfHomeActivityOutOfShapeFile);
                     }
                 }
