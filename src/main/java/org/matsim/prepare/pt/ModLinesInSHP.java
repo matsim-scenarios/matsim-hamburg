@@ -21,17 +21,6 @@ public class ModLinesInSHP {
     static List<TransitLine> tlToDelete = new ArrayList<>();
     private static final Logger log = Logger.getLogger(ModLinesInSHP.class);
 
-//    Old version with constructor
-//    ModLinesInSHP(){
-//        System.out.println("No inputs found. Using presets ...");
-//    }
-//
-//    ModLinesInSHP(TransitSchedule transitScheduleInput, String shpPathInput, String transitScheduleOutputPath){
-//        tsInput = transitScheduleInput;
-//        shpPath = shpPathInput;
-//        tsOutputPath = transitScheduleOutputPath;
-//    }
-
     public static void main(String[] args) {
 
         for (String arg : args) {
@@ -64,11 +53,7 @@ public class ModLinesInSHP {
 
 
     private void modify(TransitSchedule tsInput, String tsOutputPath, String shpPath){
-//        presets
         TransitSchedule tsOutput = tsInput;
-//        String shpPath = "scenarios/berlin-v5.4-1pct/input/SHP.shp";
-//        String tsInputPath = "./transitScheduleName.xml.gz";
-//        String tsOutputPath = "./transitScheduleName_cut.xml.gz";
 
         List<PreparedGeometry> polygons = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(shpPath));
         int inShpCtr, tlDelCtr = 0, trDelCtr = 0;
@@ -84,9 +69,6 @@ public class ModLinesInSHP {
                 }
                 if (inShpCtr == 0) {
                     trToDelete.add(tr);
-//                    System.out.println("Removing Route " + tr.getId().toString() + " ...");
-//                    tl.removeRoute(tr);
-//                    trDelCtr++;
                 }
             }
             for(TransitRoute trDel : trToDelete){
@@ -96,23 +78,11 @@ public class ModLinesInSHP {
                     trDelCtr++;
                 }
             }
-//            trToDelete = null;
+
             if (tl.getRoutes().size() == 0) {
                 tlToDelete.add(tl);
-//                System.out.println("Removing Line " + tl.getId().toString() + " ...");
-//                tsOutput.removeTransitLine(tl);
-//                tlDelCtr++;
             }
         }
-//        for (TransitLine tl : tsOutput.getTransitLines().values()) {
-//            Set<Id<TransitRoute>> allRoutes = tl.getRoutes().keySet();
-//            for(TransitRoute trDel : trToDelete){
-//                if(allRoutes.contains(trDel.getId())) {
-//                    System.out.println("Removing Route " + trDel.getId().toString() + " ...");
-//                    tl.removeRoute(trDel);
-//                }
-//            }
-//        }
 
         for(TransitLine tlDel : tlToDelete){
             System.out.println("Removing Line " + tlDel.getId().toString() + " ...");
