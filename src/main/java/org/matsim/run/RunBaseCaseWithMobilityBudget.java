@@ -97,7 +97,7 @@ public class RunBaseCaseWithMobilityBudget {
         for (Map.Entry<Id<Person>, Double> entry : getPersonsEligibleForMobilityBudget2FixedValue(scenario, dailyMobilityBudget).entrySet()) {
             Id<Person> person = entry.getKey();
             Double budget = entry.getValue();
-            System.out.println(budget);
+//            System.out.println(budget);
             personsEligibleForMobilityBudget.put(person, budget);
         }
 
@@ -217,16 +217,16 @@ public class RunBaseCaseWithMobilityBudget {
             shareOfIncome =Double.parseDouble(args[test+4]);
         }
         catch (NumberFormatException numberFormatException) {
-            log.warn("Using default share of income for the MobilityBudget");
+            log.warn("Using default share of income for the MobilityBudget = 0.1");
             shareOfIncome = 0.10;
         }
         catch (NullPointerException nullPointerException) {
-            log.warn("Using default share of income for the MobilityBudget");
+            log.warn("Using default share of income for the MobilityBudget = 0.1");
             shareOfIncome = 0.10;
         }
         catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
             log.warn(arrayIndexOutOfBoundsException);
-            log.warn("Using default share of income for the MobilityBudget");
+            log.warn("Using default share of income for the MobilityBudget = 0.1");
             shareOfIncome = 0.10;
         }
         log.info(shareOfIncome);
@@ -247,14 +247,12 @@ public class RunBaseCaseWithMobilityBudget {
         }
 
         catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read Shape File");
-            shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+            log.warn("Not able to read Shape File!!! Will lead to failure");
         }
-        log.info(shapeFile);
 
         try {
             incomeBasedSelection = Boolean.parseBoolean(args[test+10]);
-            log.info("Using income based selection");
+            log.info("Using income based selection = " + incomeBasedSelection);
         }
 
         catch (IllegalArgumentException illegalArgumentException) {
@@ -267,7 +265,7 @@ public class RunBaseCaseWithMobilityBudget {
         }
 
         catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read  the share of Agents using default value");
+            log.warn("Not able to read  the share of Agents. Using default value of 0.1 !!!!");
             shareOfAgents = 0.1;
         }
     }

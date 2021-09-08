@@ -6,8 +6,11 @@ import pandas as pd
 from shapely.geometry import Point
 
 # give the folder path:
-runId = "hamburg-v2.0-10pct"
+runId = "hamburg-v2.0-10pct-reallab2030"
 trips_info_folder = 'D:/ReallabHH/output-' + runId + '/'
+trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
+runId = "h-v2-10pct-sharing-c4-highAcc"
+trips_info_folder = 'D:/ReallabHH/runs/testSharing/output-' + runId + '/'
 
 
 #version = 'v1.1'

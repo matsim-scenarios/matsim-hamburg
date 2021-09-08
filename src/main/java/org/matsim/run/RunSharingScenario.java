@@ -1,7 +1,7 @@
 package org.matsim.run;
 
 import org.apache.log4j.Logger;
-import org.matsim.analysis.SharingIdleVehiclesXYWriter;
+import org.matsim.analysis.sharing.SharingIdleVehiclesXYWriter;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -31,8 +31,8 @@ public class RunSharingScenario {
 
     private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
-    private static final String SHARING_SERVICE_ID_CAR = "car";
-    private static final String SHARING_SERVICE_ID_BIKE = "bike";
+    public static final String SHARING_SERVICE_ID_CAR = "car";
+    public static final String SHARING_SERVICE_ID_BIKE = "bike";
 
     public static final String SHARING_CAR_MODE = "scar";
     public static final String SHARING_BIKE_MODE = "sbike";
@@ -196,10 +196,10 @@ public class RunSharingScenario {
 
         //configure sharing fares
         {
-            //these values are set according to shareNow fares ass of July 2021
+            //these values are set according to shareNow fares as of July 2021
             carSharingConfig.setBaseFare(0.);
             carSharingConfig.setMinimumFare(0.);
-            carSharingConfig.setTimeFare( (0.29 / 60.) ); //per second. maybe is some kind of special tariff and we should rather use 0.28€/min
+            carSharingConfig.setTimeFare( (0.29 / 60.) ); //0.29 €/ min => per second
             carSharingConfig.setDistanceFare(0.);
 
             //these values are set according to stadtrad fares ass of July 2021
