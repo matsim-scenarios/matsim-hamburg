@@ -29,6 +29,7 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.run.HamburgAnalysisMainModeIdentifier;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AnalysePlansForSubtourModeChoice {
 
@@ -51,12 +52,18 @@ public class AnalysePlansForSubtourModeChoice {
 		Map<Integer, Integer> nrOfSubtours2NrOfAgents = new HashMap<>();
 		Map<Integer, Integer> nrOfProblematicSubtours2NrOfAgents = new HashMap<>();
 
+		int nrOfCarAgents = 0;
+		int nrOfCarAgentsNotResponsiveToMobilityBudget = 0;
+
 		int nrOfAgentsWithFixedPlans = 0;
 		int nrOfAgentsWith0Trips = 0;
+
+		HashSet<TripStructureUtils.Subtour> allSubtours = new HashSet<>();
 
 		for(Person person :population.getPersons().values()){
 
 			Collection<TripStructureUtils.Subtour> subtours = TripStructureUtils.getSubtours(person.getSelectedPlan());
+			allSubtours.addAll(subtours);
 
 			if(TripStructureUtils.getTrips(person.getSelectedPlan()).size() == 0) nrOfAgentsWith0Trips++;
 
@@ -65,6 +72,19 @@ public class AnalysePlansForSubtourModeChoice {
 			int nrOfProblematicSubTours = (int) subtours.stream()
 					.filter(AnalysePlansForSubtourModeChoice::isProblematic)
 					.count();
+
+			List<TripStructureUtils.Subtour> carSubtours = subtours.stream()
+					.filter(AnalysePlansForSubtourModeChoice::hasCarLeg)
+					.collect(Collectors.toList());
+
+			if(carSubtours.size() > 0){
+				nrOfCarAgents++;
+				if(carSubtours.stream()
+						.filter(AnalysePlansForSubtourModeChoice::isProblematic)
+						.findAny()
+						.isPresent()) nrOfCarAgentsNotResponsiveToMobilityBudget ++;
+			}
+
 
 			if (nrOfProblematicSubTours == subtours.size()){
 				nrOfAgentsWithFixedPlans ++;
@@ -87,8 +107,31 @@ public class AnalysePlansForSubtourModeChoice {
 		int mobileButFixed = nrOfAgentsWithFixedPlans - nrOfAgentsWith0Trips;
 		System.out.println("### number of MOBILE agents with completely problematic plans: "
 				+ mobileButFixed + " = " + ((double) mobileButFixed / ((double) population.getPersons().size() - nrOfAgentsWith0Trips) + "%"));
+		System.out.println("###################");
+		System.out.println("### number car agents that " + nrOfCarAgents);
+		System.out.println("### number car agents that are not responsive to mobility budget: " + nrOfCarAgentsNotResponsiveToMobilityBudget + " = "
+				+ ((double) nrOfCarAgentsNotResponsiveToMobilityBudget / ((double) nrOfCarAgents) + "%"));
+		System.out.println("###################");
+		List<TripStructureUtils.Subtour> subToursWithAtLeastOneCarLeg = allSubtours.stream()
+				.filter(AnalysePlansForSubtourModeChoice::hasCarLeg)
+				.collect(Collectors.toList());
+
+		List<TripStructureUtils.Subtour> problematicCarSubTours = subToursWithAtLeastOneCarLeg.stream()
+				.filter(AnalysePlansForSubtourModeChoice::isProblematic)
+				.collect(Collectors.toList());
+		System.out.println("### number subtours with at least one car leg: " + subToursWithAtLeastOneCarLeg.size());
+		System.out.println("### number subtours with at least one car leg that are problematic: " + problematicCarSubTours.size()
+				+ " = " + ((double) subToursWithAtLeastOneCarLeg.size() / (double) problematicCarSubTours.size()) + "%");
 
 		System.out.println("######FINISHED#####");
+	}
+
+	private static boolean hasCarLeg(TripStructureUtils.Subtour subtour) {
+		return subtour.getTrips().stream()
+				.flatMap(trip -> trip.getLegsOnly().stream())
+				.filter(leg -> leg.getMode().equals(TransportMode.car))
+				.findAny()
+				.isPresent();
 	}
 
 	private static boolean isUser(Person person, String mode) {
