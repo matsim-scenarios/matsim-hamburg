@@ -1,6 +1,7 @@
 package org.matsim.prepare.freight;
 
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -55,13 +56,14 @@ public class AdjustScenarioForFreight {
             config.planCalcScore().addModeParams(new PlanCalcScoreConfigGroup.ModeParams(mode).setMonetaryDistanceRate(-0.0004));
         }
 
-        log.info("will delete routes and coords from commercial activities!! This requires that the input plans were routed at least once, beforehand!");
+        log.info("will delete routes from commercial legs and set coords of commercial activities to coord of their link!! This requires that the input plans were routed at least once, beforehand!");
         scenario.getPopulation().getPersons().values().stream()
                 .filter(person -> PopulationUtils.getSubpopulation(person).equals(COMMERCIAL))
                 .flatMap(person -> person.getSelectedPlan().getPlanElements().stream())
                 .forEach(planElement -> {
                     if(planElement instanceof Activity){
-                        ((Activity) planElement).setCoord(null);
+                        Id<Link> linkId = ((Activity) planElement).getLinkId();
+                        ((Activity) planElement).setCoord(network.getLinks().get(linkId).getCoord());
                     } else {
                         ((Leg) planElement).setRoute(null);
                     }
