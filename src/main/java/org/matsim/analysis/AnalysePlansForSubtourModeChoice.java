@@ -108,7 +108,7 @@ public class AnalysePlansForSubtourModeChoice {
 		System.out.println("### number of MOBILE agents with completely problematic plans: "
 				+ mobileButFixed + " = " + ((double) mobileButFixed / ((double) population.getPersons().size() - nrOfAgentsWith0Trips) + "%"));
 		System.out.println("###################");
-		System.out.println("### number car agents that " + nrOfCarAgents);
+		System.out.println("### number car agents " + nrOfCarAgents);
 		System.out.println("### number car agents that are not responsive to mobility budget: " + nrOfCarAgentsNotResponsiveToMobilityBudget + " = "
 				+ ((double) nrOfCarAgentsNotResponsiveToMobilityBudget / ((double) nrOfCarAgents) + "%"));
 		System.out.println("###################");
