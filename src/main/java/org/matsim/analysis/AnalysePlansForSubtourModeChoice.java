@@ -108,8 +108,8 @@ public class AnalysePlansForSubtourModeChoice {
 		System.out.println("### number of MOBILE agents with completely problematic plans: "
 				+ mobileButFixed + " = " + ((double) mobileButFixed / ((double) population.getPersons().size() - nrOfAgentsWith0Trips) + "%"));
 		System.out.println("###################");
-		System.out.println("### number car agents " + nrOfCarAgents);
-		System.out.println("### number car agents that are not responsive to mobility budget: " + nrOfCarAgentsNotResponsiveToMobilityBudget + " = "
+		System.out.println("### number of car agents " + nrOfCarAgents);
+		System.out.println("### number of car agents that are not responsive to mobility budget: " + nrOfCarAgentsNotResponsiveToMobilityBudget + " = "
 				+ ((double) nrOfCarAgentsNotResponsiveToMobilityBudget / ((double) nrOfCarAgents) + "%"));
 		System.out.println("###################");
 		List<TripStructureUtils.Subtour> subToursWithAtLeastOneCarLeg = allSubtours.stream()
@@ -119,9 +119,9 @@ public class AnalysePlansForSubtourModeChoice {
 		List<TripStructureUtils.Subtour> problematicCarSubTours = subToursWithAtLeastOneCarLeg.stream()
 				.filter(AnalysePlansForSubtourModeChoice::isProblematic)
 				.collect(Collectors.toList());
-		System.out.println("### number subtours with at least one car leg: " + subToursWithAtLeastOneCarLeg.size());
-		System.out.println("### number subtours with at least one car leg that are problematic: " + problematicCarSubTours.size()
-				+ " = " + ((double) subToursWithAtLeastOneCarLeg.size() / (double) problematicCarSubTours.size()) + "%");
+		System.out.println("### number of subtours with at least one car leg: " + subToursWithAtLeastOneCarLeg.size());
+		System.out.println("### number of subtours with at least one car leg that are problematic: " + problematicCarSubTours.size()
+				+ " = " + ((double) problematicCarSubTours.size() / (double) subToursWithAtLeastOneCarLeg.size() 	) + "%");
 
 		System.out.println("######FINISHED#####");
 	}
