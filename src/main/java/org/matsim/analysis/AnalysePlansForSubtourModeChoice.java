@@ -20,7 +20,6 @@
 
 package org.matsim.analysis;
 
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
@@ -30,7 +29,6 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.run.HamburgAnalysisMainModeIdentifier;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AnalysePlansForSubtourModeChoice {
 
@@ -43,12 +41,12 @@ public class AnalysePlansForSubtourModeChoice {
 
 		Population population = PopulationUtils.readPopulation("../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-10pct.plans.xml.gz");
 
-		List<Id<Person>> nonCarUsers = population.getPersons().values().stream()
-				.filter(person -> !isUser(person, TransportMode.car))
-				.map(person -> person.getId())
-				.collect(Collectors.toList());
-
-		nonCarUsers.forEach(nonUser -> population.removePerson(nonUser));
+//		List<Id<Person>> nonCarUsers = population.getPersons().values().stream()
+//				.filter(person -> !isUser(person, TransportMode.car))
+//				.map(person -> person.getId())
+//				.collect(Collectors.toList());
+//
+//		nonCarUsers.forEach(nonUser -> population.removePerson(nonUser));
 
 		Map<Integer, Integer> nrOfSubtours2NrOfAgents = new HashMap<>();
 		Map<Integer, Integer> nrOfProblematicSubtours2NrOfAgents = new HashMap<>();
@@ -86,6 +84,10 @@ public class AnalysePlansForSubtourModeChoice {
 		System.out.println("###################");
 		System.out.println("### number of agents with completely problematic plans: " + nrOfAgentsWithFixedPlans + " = " + ((double) nrOfAgentsWithFixedPlans / ((double) population.getPersons().size()) + "%"));
 		System.out.println("###################");
+		int mobileButFixed = nrOfAgentsWithFixedPlans - nrOfAgentsWith0Trips;
+		System.out.println("### number of MOBILE agents with completely problematic plans: "
+				+ mobileButFixed + " = " + ((double) mobileButFixed / ((double) population.getPersons().size() - nrOfAgentsWith0Trips) + "%"));
+
 		System.out.println("######FINISHED#####");
 	}
 
