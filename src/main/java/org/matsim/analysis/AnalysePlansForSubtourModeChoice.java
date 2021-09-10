@@ -49,6 +49,13 @@ public class AnalysePlansForSubtourModeChoice {
 //
 //		nonCarUsers.forEach(nonUser -> population.removePerson(nonUser));
 
+
+//		List<Id<Person>> stayHome = population.getPersons().values().stream()
+//				.filter(person -> TripStructureUtils.getTrips(person.getSelectedPlan()).size() == 0)
+//				.map(person -> person.getId())
+//				.collect(Collectors.toList());
+//		stayHome.forEach(p -> population.removePerson(p));
+
 		Map<Integer, Integer> nrOfSubtours2NrOfAgents = new HashMap<>();
 		Map<Integer, Integer> nrOfProblematicSubtours2NrOfAgents = new HashMap<>();
 
@@ -56,6 +63,7 @@ public class AnalysePlansForSubtourModeChoice {
 		int nrOfCarAgentsNotResponsiveToMobilityBudget = 0;
 
 		int nrOfAgentsWithFixedPlans = 0;
+		int nrOfAgentsWithPartialProblematicPlan = 0;
 		int nrOfAgentsWith0Trips = 0;
 
 		HashSet<TripStructureUtils.Subtour> allSubtours = new HashSet<>();
@@ -88,6 +96,8 @@ public class AnalysePlansForSubtourModeChoice {
 
 			if (nrOfProblematicSubTours == subtours.size()){
 				nrOfAgentsWithFixedPlans ++;
+			} else if( nrOfProblematicSubTours > 0 && nrOfProblematicSubTours < subtours.size()){
+				nrOfAgentsWithPartialProblematicPlan ++;
 			}
 			nrOfProblematicSubtours2NrOfAgents.compute(nrOfProblematicSubTours, (k,v) -> v == null ? 1 : v + 1);
 
@@ -103,6 +113,7 @@ public class AnalysePlansForSubtourModeChoice {
 		nrOfProblematicSubtours2NrOfAgents.forEach( (k,v) -> System.out.println("### " + k + " problematic subtours:\t" + v + " agents"));
 		System.out.println("###################");
 		System.out.println("### number of agents with completely problematic plans: " + nrOfAgentsWithFixedPlans + " = " + ((double) nrOfAgentsWithFixedPlans / ((double) population.getPersons().size()) + "%"));
+		System.out.println("### number of agents with partially problematic plans: " + nrOfAgentsWithPartialProblematicPlan + " = " + ((double) nrOfAgentsWithPartialProblematicPlan / ((double) population.getPersons().size()) + "%"));
 		System.out.println("###################");
 		int mobileButFixed = nrOfAgentsWithFixedPlans - nrOfAgentsWith0Trips;
 		System.out.println("### number of MOBILE agents with completely problematic plans: "
