@@ -196,10 +196,10 @@ public class RunSharingScenario {
 
         //configure sharing fares
         {
-            //these values are set according to shareNow fares ass of July 2021
+            //these values are set according to shareNow fares as of July 2021
             carSharingConfig.setBaseFare(0.);
             carSharingConfig.setMinimumFare(0.);
-            carSharingConfig.setTimeFare( (0.29 / 60.) ); //per second. maybe is some kind of special tariff and we should rather use 0.28€/min
+            carSharingConfig.setTimeFare( (0.29 / 60.) ); //0.29 €/ min => per second
             carSharingConfig.setDistanceFare(0.);
 
             //these values are set according to stadtrad fares ass of July 2021

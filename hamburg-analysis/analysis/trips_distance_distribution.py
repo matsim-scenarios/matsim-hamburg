@@ -8,9 +8,9 @@ from shapely.geometry import Point
 # give the folder path:
 
 # give the folder path:
-runId = "hamburg-v2.0-10pct-sumo-200"
+runId = "hamburg-v2.0-10pct-reallab2030"
 trips_info_folder = 'D:/ReallabHH/output-' + runId + '/'
-trips_info_folder = 'D:/ReallabHH/runs/baseCase/sumo/output/'
+trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
 
 #version = 'v1.1'
 #scenario_scale = '10'
