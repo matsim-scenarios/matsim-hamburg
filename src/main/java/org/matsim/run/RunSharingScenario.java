@@ -1,7 +1,7 @@
 package org.matsim.run;
 
 import org.apache.log4j.Logger;
-import org.matsim.analysis.SharingIdleVehiclesXYWriter;
+import org.matsim.analysis.sharing.SharingIdleVehiclesXYWriter;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -31,8 +31,8 @@ public class RunSharingScenario {
 
     private static final Logger log = Logger.getLogger(RunSharingScenario.class);
 
-    private static final String SHARING_SERVICE_ID_CAR = "car";
-    private static final String SHARING_SERVICE_ID_BIKE = "bike";
+    public static final String SHARING_SERVICE_ID_CAR = "car";
+    public static final String SHARING_SERVICE_ID_BIKE = "bike";
 
     public static final String SHARING_CAR_MODE = "scar";
     public static final String SHARING_BIKE_MODE = "sbike";

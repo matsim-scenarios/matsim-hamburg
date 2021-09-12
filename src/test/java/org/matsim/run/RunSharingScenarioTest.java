@@ -59,7 +59,6 @@ public class RunSharingScenarioTest {
         config.controler().setWritePlansInterval(1);
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
-        config.plansCalcRoute().setAccessEgressType(PlansCalcRouteConfigGroup.AccessEgressType.accessEgressModeToLink);
 
 //        SharingConfigGroup sharingConfigGroup = ConfigUtils.addOrGetModule(config,SharingConfigGroup.class);
 //        for (SharingServiceConfigGroup service : sharingConfigGroup.getServices()) {

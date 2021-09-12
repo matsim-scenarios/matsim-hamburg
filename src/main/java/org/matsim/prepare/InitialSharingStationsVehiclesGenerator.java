@@ -35,10 +35,10 @@ public class InitialSharingStationsVehiclesGenerator {
 
     private static final Logger log = Logger.getLogger(InitialSharingStationsVehiclesGenerator.class);
 
-    private static final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
+    private static final String NETWORK_PATH = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
 
     private static final String SERVICE_AREA = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
-    private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/input/sharing/hvv-switch-points-2030.csv";
+    private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/hvv-switch-points-2030.csv";
 
     private final String COORDINATION_SYSTEM = "EPSG:25832";
 
@@ -55,33 +55,40 @@ public class InitialSharingStationsVehiclesGenerator {
 
 
     public static void main(String[] args) throws IOException {
-        String coordinationSystem = TransformationFactory.WGS84;
+        String csvCoordinationSystem = TransformationFactory.WGS84;
+        String outputDirectory = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/";
 
         Network network = prepareNetwork();
-        InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", "scenarios/input/", network);
+        InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", outputDirectory, network);
 
         //300 hvv switch points. current fleet size for shareNow is 1100 vehicles. weShare has 800 vehicles (July '21)
         //so we model the existing fleet and the hvv switch points on top
-        int vehiclesPerStation = 50;
-        carSharingService.addStationsFromCSV(SWITCH_POINTS_CSV,coordinationSystem,vehiclesPerStation);
-        carSharingService.addStationsRandomlyInNetwork(2000,1);
-        carSharingService.write2xmlFile();
+
+        //2000 vehicles -> 1000 vehicles are put to the stations at midnight -> 1000 are randomly distributed
+        int vehiclesPerStation = 1;
+        int vehiclesRandom = 0;
+        carSharingService.addStationsFromCSV(SWITCH_POINTS_CSV,csvCoordinationSystem,vehiclesPerStation);
+        carSharingService.addStationsRandomlyInNetwork(vehiclesRandom,1);
+        carSharingService.write2xmlFile("stations" + vehiclesPerStation + "v_random" + vehiclesRandom + "v");
+
+        InitialSharingStationsVehiclesGenerator bikeSharingService = new InitialSharingStationsVehiclesGenerator("sbike", outputDirectory, network);
 
 //        stadtrad currently (July '21') has 3200 vehicles
-        InitialSharingStationsVehiclesGenerator bikeSharingService = new InitialSharingStationsVehiclesGenerator("sbike", "scenarios/input/", network);
-        int bikesPerStation = 50;
-        bikeSharingService.addStationsFromCSV(SWITCH_POINTS_CSV, coordinationSystem, bikesPerStation);
-        bikeSharingService.addStationsRandomlyInNetwork(3200, 1);
-        bikeSharingService.write2xmlFile();
+        //3200 vehicles -> 1500 vehicles are put to the stations at midnight -> 1700 are randomly distributed
+        int bikesPerStation = 1;
+        int bikesRandom = 0;
+        bikeSharingService.addStationsFromCSV(SWITCH_POINTS_CSV, csvCoordinationSystem, bikesPerStation);
+        bikeSharingService.addStationsRandomlyInNetwork(bikesRandom, 1);
+        bikeSharingService.write2xmlFile("stations" + bikesPerStation + "v_random" + bikesRandom + "v");
 
         System.out.println("done!!");
     }
 
-    private void write2xmlFile() throws IOException {
+    private void write2xmlFile(String suffix) throws IOException {
         SharingServiceSpecification service = new DefaultSharingServiceSpecification();
         int stationId = 1;
 
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.outputPath + String.format("sharingStationsAndSharingVehicles_%s.csv", this.mode)));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.outputPath + String.format("%s_serviceInput_%s.csv", this.mode, suffix)));
         bufferedWriter.write("link;x;y;capacity");
 
 
@@ -113,7 +120,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
         bufferedWriter.close();
 
-        new SharingServiceWriter(service).write(this.outputPath + String.format("sharingStationsAndSharingVehicles_%s.xml", this.mode));
+        new SharingServiceWriter(service).write(this.outputPath + String.format("%s_serviceInput_%s.xml", this.mode, suffix));
     }
 
 
