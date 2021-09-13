@@ -23,6 +23,9 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
     private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
     private static final String SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE = "smcProbaForSingleTripChange";
+    private static final String SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION = "scorePenaltyForMassConservationViolation";
+
+
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
     }
@@ -164,10 +167,12 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
         this.smcProbaForSingleTripChange = val;
     }
 
+    @StringGetter(SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION)
     public double getScorePenaltyForMassConservationViolation() {
         return this.scorePenaltyForMassConservationViolation;
     }
 
+    @StringSetter(SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION)
     public void setScorePenaltyForMassConservationViolation(double penaltyPerViolation) {
         this.scorePenaltyForMassConservationViolation = penaltyPerViolation;
     }
