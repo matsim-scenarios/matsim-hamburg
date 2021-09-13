@@ -13,6 +13,11 @@ runId = "h-v2-10pct-sharing-c4-highAcc"
 trips_info_folder = 'D:/ReallabHH/runs/testSharing/output-' + runId + '/'
 
 
+runId = "bC-singleMC"
+trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibration/aaa_singleMC/output-' + runId + '/'
+
+
+
 #version = 'v1.1'
 #scenario_scale = '10'
 #scenario_id = '13-3'

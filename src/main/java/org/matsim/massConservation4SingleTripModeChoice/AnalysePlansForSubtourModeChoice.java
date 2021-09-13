@@ -18,7 +18,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.analysis;
+package org.matsim.massConservation4SingleTripModeChoice;
 
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Activity;
@@ -31,11 +31,11 @@ import org.matsim.run.HamburgAnalysisMainModeIdentifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AnalysePlansForSubtourModeChoice {
+class AnalysePlansForSubtourModeChoice {
 
 	private static final HamburgAnalysisMainModeIdentifier mainModeIdentifier = new HamburgAnalysisMainModeIdentifier();
-	private static final Set<String> chainBasedModes = Set.of(TransportMode.bike, TransportMode.car);
-	private static final Set<String> modes = Set.of("car","pt","bike","walk");
+	static final Set<String> HH_CHAIN_BASED_MODES = Set.of(TransportMode.bike, TransportMode.car);
+	private static final Set<String> MODES = Set.of("car","pt","bike","walk");
 
 
 	public static void main(String[] args) {
@@ -167,15 +167,15 @@ public class AnalysePlansForSubtourModeChoice {
 
 	private static boolean containsUnknownMode(final TripStructureUtils.Subtour subtour) {
 		for (TripStructureUtils.Trip trip : subtour.getTrips()) {
-			if (!modes.contains( mainModeIdentifier.identifyMainMode( trip.getTripElements() ))) {
+			if (!MODES.contains( mainModeIdentifier.identifyMainMode( trip.getTripElements() ))) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private static boolean isMassConserving(final TripStructureUtils.Subtour subtour) {
-		for (String mode : chainBasedModes) {
+	static boolean isMassConserving(final TripStructureUtils.Subtour subtour) {
+		for (String mode : HH_CHAIN_BASED_MODES) {
 			if (!isMassConserving(subtour, mode)) {
 				return false;
 			}
