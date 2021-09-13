@@ -140,6 +140,12 @@ public class RunSharingScenario {
         modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
         config.subtourModeChoice().setModes(modes.toArray(new String[modes.size()]));
 
+        List<String> changeModes = new ArrayList<>(Arrays.asList(config.changeMode().getModes()));
+        changeModes.add(SharingUtils.getServiceMode(carSharingConfig));
+        changeModes.add(SharingUtils.getServiceMode(bikeSharingConfig));
+        config.changeMode().setModes(changeModes.toArray(new String[modes.size()]));
+
+        //configure activities
         PlanCalcScoreConfigGroup.ActivityParams pickupParams = new PlanCalcScoreConfigGroup.ActivityParams(SharingUtils.PICKUP_ACTIVITY);
         pickupParams.setScoringThisActivityAtAll(false);
         config.planCalcScore().addActivityParams(pickupParams);
