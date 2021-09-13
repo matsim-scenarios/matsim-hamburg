@@ -25,20 +25,14 @@ import com.opencsv.CSVWriter;
 import com.opencsv.ICSVWriter;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
-import org.apache.logging.log4j.ThreadContext;
 import org.matsim.api.core.v01.events.PersonScoreEvent;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.controler.events.AfterMobsimEvent;
 import org.matsim.core.controler.events.BeforeMobsimEvent;
-import org.matsim.core.controler.events.IterationEndsEvent;
 import org.matsim.core.controler.listener.BeforeMobsimListener;
-import org.matsim.core.controler.listener.IterationEndsListener;
-import org.matsim.core.mobsim.framework.events.MobsimInitializedEvent;
-import org.matsim.core.mobsim.framework.listeners.MobsimInitializedListener;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.run.HamburgExperimentalConfigGroup;
 
@@ -52,8 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-//TODO: move this to a more central place (probably to ChangeSingleTripModeModule - after tests). Check whether MobsimInitialized event is really the right/best time to do the scoring.
-//we can not use BeforeMobsimEvent because it might be that plans were not routed, yet (and thus activities might have no link AND no facility id - which is needed for determining subtours)
+//TODO: move this to a more central place (probably to ChangeSingleTripModeModule - after tests).
 class ScoreMassConservationControlerListener implements BeforeMobsimListener {
 
 	private final Population population;
@@ -69,7 +62,6 @@ class ScoreMassConservationControlerListener implements BeforeMobsimListener {
 		this.eventsManager = eventsManager;
 		this.hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 	}
-
 
 	@Override
 	public void notifyBeforeMobsim(BeforeMobsimEvent e) {
@@ -120,23 +112,18 @@ class ScoreMassConservationControlerListener implements BeforeMobsimListener {
 					ICSVWriter.DEFAULT_ESCAPE_CHARACTER,
 					ICSVWriter.DEFAULT_LINE_END);
 			writer.writeNext(header);
-			for (String[] statistic : this.statistics) {
-				writer.writeNext(statistic);
-			}
+			writer.writeAll(statistics);
 			writer.flush();
 			writer.close();
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
-
 	}
-
 
 	private int getNumberOfMassConservationViolations(Collection<TripStructureUtils.Subtour> subtours) {
 		return (int) subtours.stream()
 				.filter(subTour -> !AnalysePlansForSubtourModeChoice.isMassConserving(subTour))
 				.count();
 	}
-
 
 }

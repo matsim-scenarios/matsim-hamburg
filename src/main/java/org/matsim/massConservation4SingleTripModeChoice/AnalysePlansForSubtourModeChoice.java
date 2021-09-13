@@ -40,7 +40,10 @@ class AnalysePlansForSubtourModeChoice {
 
 	public static void main(String[] args) {
 
-		Population population = PopulationUtils.readPopulation("../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-10pct.plans.xml.gz");
+//		Population population = PopulationUtils.readPopulation("../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-10pct.plans.xml.gz");
+		Population population = PopulationUtils.readPopulation("D:/ReallabHH/runs/baseCase/calibration/aaa_singleMC/output-bC-singleMC/bC-singleMC.output_plans.xml.gz");
+
+
 
 //		List<Id<Person>> nonCarUsers = population.getPersons().values().stream()
 //				.filter(person -> !isUser(person, TransportMode.car))
@@ -61,6 +64,10 @@ class AnalysePlansForSubtourModeChoice {
 
 		int nrOfCarAgents = 0;
 		int nrOfCarAgentsNotResponsiveToMobilityBudget = 0;
+		int totalNrOfSubtours = 0;
+		int totalNrOfProblematicSubtours = 0;
+		int totalNrOfSubtoursViolatingMassConservation = 0;
+
 
 		int nrOfAgentsWithFixedPlans = 0;
 		int nrOfAgentsWithPartialProblematicPlan = 0;
@@ -76,9 +83,15 @@ class AnalysePlansForSubtourModeChoice {
 			if(TripStructureUtils.getTrips(person.getSelectedPlan()).size() == 0) nrOfAgentsWith0Trips++;
 
 			nrOfSubtours2NrOfAgents.compute(subtours.size(), (k,v) -> v == null ? 1 : v + 1);
+			totalNrOfSubtours += (subtours.size());
 
 			int nrOfProblematicSubTours = (int) subtours.stream()
 					.filter(AnalysePlansForSubtourModeChoice::isProblematic)
+					.count();
+			totalNrOfProblematicSubtours += nrOfProblematicSubTours;
+
+			totalNrOfSubtoursViolatingMassConservation += subtours.stream()
+					.filter(subtour -> !isMassConserving(subtour))
 					.count();
 
 			List<TripStructureUtils.Subtour> carSubtours = subtours.stream()
@@ -107,6 +120,12 @@ class AnalysePlansForSubtourModeChoice {
 		System.out.println("### total number of agents: " + population.getPersons().size());
 		System.out.println("###################");
 		System.out.println("### number of agents with 0 trips: " + nrOfAgentsWith0Trips);
+		System.out.println("###################");
+		System.out.println("### total number of subtours: " + totalNrOfSubtours);
+		System.out.println("### number of problematic subtours: " + totalNrOfProblematicSubtours + " = " + ((double) totalNrOfProblematicSubtours / ((double) totalNrOfSubtours) + "%"));
+		System.out.println("### number of subtours violating mass conservation: " + totalNrOfSubtoursViolatingMassConservation + " = "
+				+ ((double) totalNrOfSubtoursViolatingMassConservation / ((double) totalNrOfSubtours) + "%"));
+		System.out.println("###################");
 		System.out.println("###################");
 		nrOfSubtours2NrOfAgents.forEach( (k,v) -> System.out.println("### " + k + " subtours:\t" + v + " agents"));
 		System.out.println("###################");
@@ -144,14 +163,6 @@ class AnalysePlansForSubtourModeChoice {
 				.findAny()
 				.isPresent();
 	}
-
-	private static boolean isUser(Person person, String mode) {
-		return TripStructureUtils.getLegs(person.getSelectedPlan()).stream()
-				.filter(leg -> leg.getMode().equals(mode))
-				.findAny()
-				.isPresent();
-	}
-
 
 	/**
 	 * in other words: will not be mutated by ChoosRandomeLegModeForSubtour
