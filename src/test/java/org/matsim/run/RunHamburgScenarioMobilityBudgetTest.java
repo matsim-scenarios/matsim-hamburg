@@ -80,14 +80,13 @@ public class RunHamburgScenarioMobilityBudgetTest {
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f02"),117.49532306296163);
         //Agent with commercial activiets are excluded from the MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"),121.90659700031605);
+        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_820440"),113.84199583743978);
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 47.73522118258644);
 
         for (Person p: persons.values()) {
             Assert.assertEquals(scoreStatsFromBaseCase.get(p.getId()), p.getSelectedPlan().getScore(), 0);
         }
-
     }
 
 }
