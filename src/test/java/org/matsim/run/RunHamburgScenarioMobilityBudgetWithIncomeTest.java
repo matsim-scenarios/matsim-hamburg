@@ -70,13 +70,13 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         scoreStatsFromBaseCase.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"), 46.88012044666017);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00"), 46.33243742580156);
         //Agent didn´t use car in Base Case
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f02"), 117.86871825413606);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f02"), 117.49532306296163);
         //Agent with commercial activity are excluded from the MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"), 121.90659700031605);
+        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_820440"), 113.84199583743978);
         //Agent didn´t use car in Base Case
-        scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 48.067622301140034);
+        scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 47.73522118258644);
 
         for (Person p : persons.values()) {
             System.out.println(p.getId());
