@@ -40,15 +40,15 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 public class CreateTransitSchedule implements Callable<Integer> {
 
     // Todo: Modify file path to 2030 gtfs: Spaces in folder names "HVB-VEP_Szenario-1_20210720 GTFS_210826" may lead to errors
-    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/ReallabHH2030_PT_2030/v2_groesserer_Ausschnitt/HVB-VEP_Szenario-1_20210720%20GTFS_210826/Ready4matsim_HVB-VEP_Szenario-1_20210720%20GTFS_210826.zip")
-//@CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/gtfs_2019/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip")
+    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/ReallabHH2030_PT_2030/v2_groesserer_Ausschnitt/Ready4matsim_HVB-VEP_Szenario-1_20210720_GTFS_210826.zip")
+//    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/gtfs_2019/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip")
     private List<Path> gtfsFiles;
 
 //    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
-    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-v1.0-network.xml.gz")
+    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network.xml.gz")
     private Path networkFile;
 
-    @CommandLine.Option(names = "--output", description = "Output folder", defaultValue = "scenarios/input")
+    @CommandLine.Option(names = "--output", description = "Output folder", defaultValue = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input")
     private File output;
 
     @CommandLine.Option(names = "--input-cs", description = "Input coordinate system of the data", defaultValue = TransformationFactory.WGS84)
@@ -71,9 +71,9 @@ public class CreateTransitSchedule implements Callable<Integer> {
         CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(inputCS, targetCS);
 
         // Output files
-        File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule.xml.gz");
-        File networkPTFile = new File(output, networkFile.getFileName().toString().replace(".xml", "-with-2030pt.xml"));
-        File transitVehiclesFile = new File(output, "hamburg-" + VERSION + "-transitVehicles.xml.gz");
+        File scheduleFile = new File(output+"/pt", "hamburg-" + VERSION + "-transitSchedule.xml.gz");
+        File networkPTFile = new File(output+"/network", networkFile.toString().replace(".xml", "-with-pt.xml"));
+        File transitVehiclesFile = new File(output+"/pt", "hamburg-" + VERSION + "-transitVehicles.xml.gz");
 
         Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
 
