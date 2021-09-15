@@ -18,7 +18,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.prepare;
+package org.matsim.prepare.network;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.ICSVWriter;
