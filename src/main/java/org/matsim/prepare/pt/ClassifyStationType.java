@@ -22,8 +22,13 @@ public class ClassifyStationType {
 
 
 
-        String configFile = "scenarios/input/hamburg-v1.1-1pct.config.xml";
+        String configFile = "scenarios/input/hamburg-v2.0-10pct.config.xml";
         Config config = ConfigUtils.loadConfig(configFile);
+
+        config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt-and-parkingPressure.xml.gz");
+        config.transit().setTransitScheduleFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitSchedule.xml.gz");
+        config.transit().setVehiclesFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitVehicles.xml.gz");
+
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
 
@@ -98,7 +103,7 @@ public class ClassifyStationType {
 
     private static void writeOutput(List<Stop2type> stops) throws IOException {
         //print out
-        FileWriter out = new FileWriter( new File( "transitStationTypes.csv" ) );
+        FileWriter out = new FileWriter("transitStationTypes_2030.csv");
         //out.write( "X;Y\n" );
         //out.write( xx + ";" + yy + ";\n" );
         out.write("id;x;y;name;stationType\n");
