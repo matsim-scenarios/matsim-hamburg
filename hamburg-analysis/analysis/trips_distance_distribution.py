@@ -8,8 +8,9 @@ from shapely.geometry import Point
 # give the folder path:
 
 # give the folder path:
-runId = "hamburg-v2.0-10pct"
+runId = "hamburg-v2.0-10pct-reallab2030"
 trips_info_folder = 'D:/ReallabHH/output-' + runId + '/'
+trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
 
 #version = 'v1.1'
 #scenario_scale = '10'
@@ -23,6 +24,8 @@ outputFile =  outputDir + runId + '.distance_distribution_per_mode.csv'
 print("reading output trips and person2homeCoord csv files")
 #trips_ending = 'pct.output_trips.csv.gz'
 trips_ending = '.output_trips.csv.gz'
+
+print("will read from " + trips_info_folder +  runId + trips_ending)
 trips = pd.read_csv(trips_info_folder +  runId + trips_ending, sep=';')
 
 

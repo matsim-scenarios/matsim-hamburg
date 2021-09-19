@@ -408,6 +408,169 @@
 
     <!-- ====================================================================== -->
 
+    <person id="113f00_scarCopy">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">36780.0;44760.0;50460.0;54000.0;71160.0;75780.0;79440.0;84840.0;-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;38940.0;47880.0;51540.0;54840.0;72360.0;76920.0;80160.0;85500.0</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;business;business;business;business;business</attribute>
+            <attribute name="age" class="java.lang.Integer">64</attribute>
+            <attribute name="carAvail" class="java.lang.String">always</attribute>
+            <attribute name="gender" class="java.lang.String">f</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">always</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">1500.0</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_36600.0" x="597169.6653616321" y="5984770.2399659185" end_time="10:13:00" >
+            </activity>
+            <leg mode="scar" dep_time="10:13:00" trav_time="00:19:36">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_6000.0" x="585128.1378518876" y="5980085.529591967" start_time="10:49:00" end_time="12:26:00" >
+            </activity>
+            <leg mode="scar" dep_time="12:26:00" trav_time="00:52:49">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="564710.8554359305" y="5948694.418322517" start_time="13:18:00" end_time="14:01:00" >
+            </activity>
+            <leg mode="scar" dep_time="14:01:00" trav_time="00:13:33">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="566209.6079807894" y="5941141.097231428" start_time="14:19:00" end_time="15:00:00" >
+            </activity>
+            <leg mode="pt" dep_time="15:00:00" trav_time="00:09:17">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_16200.0" x="570029.1056456286" y="5940884.8036479205" start_time="15:14:00" end_time="19:46:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:04:01">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570045.8413889371" y="5940693.886907823" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:58">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568362.5054160662" y="5940362.036061483" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:04:50">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568355.0391508695" y="5940178.886476169" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:13:09">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570592.6628066822" y="5943495.667805306" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:57">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_3600.0" x="570579.4389866259" y="5943588.04852079" start_time="20:06:00" end_time="21:03:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:57">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="570592.6628066822" y="5943495.667805306" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:07:02">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571586.0193159817" y="5944161.85319572" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:02:17">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571572.6524745874" y="5944101.673248294" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:42">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="575294.0751160298" y="5942592.351117955" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:02:46">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="575375.1131366512" y="5942616.682591716" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:11:13">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571132.7489873819" y="5938710.6130504245" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:01:00">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="571132.7489873819" y="5938710.6130504245" max_dur="00:00:00" >
+            </activity>
+            <leg mode="pt" trav_time="00:07:00">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="pt interaction" x="568911.6976764541" y="5937180.227601948" max_dur="00:00:00" >
+            </activity>
+            <leg mode="transit_walk" trav_time="00:05:22">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_2400.0" x="569045.309690704" y="5937398.605075519" start_time="21:22:00" end_time="22:04:00" >
+            </activity>
+            <leg mode="pt" dep_time="22:04:00" trav_time="00:06:13">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_4800.0" x="567809.9706555195" y="5939771.877341081" start_time="22:16:00" end_time="23:34:00" >
+            </activity>
+            <leg mode="pt" dep_time="23:34:00" trav_time="00:09:45">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">pt</attribute>
+                </attributes>
+            </leg>
+            <activity type="business_1200.0" x="571830.7378382357" y="5942672.291764536" start_time="23:45:00" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
     <person id="113f02">
         <attributes>
             <attribute name="IPD_actEndTimes" class="java.lang.String">19883.0;56491.0;58350.0;59495.0;69118.0;81850.0;-Infinity</attribute>
@@ -473,22 +636,16 @@
 
     <!-- ====================================================================== -->
 
-    <person id="commercial_820440">
+    <person id="commercial_1000074">
         <attributes>
-            <attribute name="marginalUtilityOfMoney" class="java.lang.Double">1.0</attribute>
             <attribute name="subpopulation" class="java.lang.String">commercial</attribute>
         </attributes>
-
-        <plan score="113.59033161043304" selected="yes">
-            <activity type="commercial" link="103081510020f" x="577626.291501815" y="5947744.0416985" end_time="11:03:09" >
+        <plan selected="yes">
+            <activity type="commercial" x="487749.0798673321" y="5891533.800535473" end_time="14:53:14" >
             </activity>
-            <leg mode="commercial_Trans" dep_time="11:03:09">
-                <attributes>
-                    <attribute name="routingMode" class="java.lang.String">commercial_Trans</attribute>
-                </attributes>
-                <route type="links" start_link="103081510020f" end_link="1296947330048f" trav_time="00:22:35" distance="12858.649264487376" vehicleRefId="commercial_820440_commercial_Trans">103081510020f 103081510020r 103081510015r 103081310009f 103081310013f 764353210000f 1059195150005r 1059195150003r 367889020004r 478600850011r 1839731110001f 235660860001r 235660730000r 197932670004r 81568070005f 310613030004r 346418710027f 346418700000f 80186640010f 80186640016f 81681760012f 81681760018f 81681760020f 81681760025f 81681760030f 81681760031f 81681760039f 81681760040f 81681760050f 81681760054f 81681760055f 81681760067f 80181150002f 360071760001f 360071760008f 5496261290000f 80181160001f 5306230270000f 5306230260000f 509268010001f 4641805600001f 5496261270000f 1164100660004f 4641754320000f 5496297750001f 4641754350001f 4641874090000f 4641805590000r 7244344460000r 7244344450000r 2523761390001r 2523761400005f 5496021170001f 5496021150000f 2523761380002f 1360872220004r 415683660004f 415683660007f 400178600002r 5772436970000r 6093304600000r 5772436980000r 5496021060005r 5496020970001f 5496020910000f 5496020890000f 5496021020004f 5496021000001r 4635313310001r 5496187410000r 415719980002r 5496187400001r 270645900004f 2127568470000f 470544200004f 310612990002f 2206447010001f 227940410002f 227940400003f 272756290001f 453957680001f 49743770000f 270645930006f 1308449830000f 1308449860003f 466528780001f 2428834820003f 5496187280001f 5496187270002f 235612730005r 6012926950001r 6012927050002r 6012927050001r 892502840006f 2206447000000f 6012927130000f 5364032620001f 1607719880000f 892502820003f 5364032670000f 270571350010r 270571350001r 270571340003f 6012927360001f 399992620000f 399992620001f 6012927220004f 269899820005r 269898670012f 399992590000f 5747520970001f 1333818760011f 1333818760014f 2206465550001f 2206465610007f 883799150000f 399992650010f 269668580002r 1506110580002f 1506110580004f 2507830650002f 2507830660006f 270510990002f 883799310003f 1860748960000f 6587685420002f 883799280004f 883799280005f 1932511670002f 845883970006f 1932511690005f 1470667160001f 6760058890006f 6760058870001f 1296947330048f</route>
+            <leg mode="commercial_Lkw-g">
             </leg>
-            <activity type="commercial" link="1296947330048f" x="568011.1608222057" y="5944687.601972287" >
+            <activity type="commercial" x="488837.81420164264" y="5904492.799498616" >
             </activity>
         </plan>
 

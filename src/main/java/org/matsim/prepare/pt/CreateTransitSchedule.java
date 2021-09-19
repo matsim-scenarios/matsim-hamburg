@@ -1,13 +1,10 @@
-package org.matsim.prepare;
+package org.matsim.prepare.pt;
 
-import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.contrib.gtfs.GtfsConverter;
-import org.matsim.contrib.gtfs.RunGTFS2MATSim;
 import org.matsim.contrib.gtfs.TransitSchedulePostProcessTools;
-import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -42,10 +39,13 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 )
 public class CreateTransitSchedule implements Callable<Integer> {
 
-    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "D:/Arbeit/shared-svn/projects/realLabHH/data/gtfs_prognose2030/Prognose2030-3_USAR_Bus angepasst_20200504 GTFS_201012.zip")
+    // Todo: Modify file path to 2030 gtfs: Spaces in folder names "HVB-VEP_Szenario-1_20210720 GTFS_210826" may lead to errors
+    @CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/ReallabHH2030_PT_2030/v2_groesserer_Ausschnitt/HVB-VEP_Szenario-1_20210720%20GTFS_210826/Ready4matsim_HVB-VEP_Szenario-1_20210720%20GTFS_210826.zip")
+//@CommandLine.Option(names = "--input-gtfs", description = "Input GTFS zip files",required = true,defaultValue = "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/gtfs_2019/Upload__HVV_Rohdaten_GTFS_Fpl_20200810.zip")
     private List<Path> gtfsFiles;
 
-    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
+//    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-" + VERSION + "-network.xml.gz")
+    @CommandLine.Option(names = "--network", description = "Base network that will be merged with pt network.", required = true, defaultValue = "scenarios/input/hamburg-v1.0-network.xml.gz")
     private Path networkFile;
 
     @CommandLine.Option(names = "--output", description = "Output folder", defaultValue = "scenarios/input")
@@ -57,11 +57,9 @@ public class CreateTransitSchedule implements Callable<Integer> {
     @CommandLine.Option(names = "--target-cs", description = "Target coordinate system of the network", defaultValue = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM)
     private String targetCS;
 
-    @CommandLine.Option(names = "--date", description = "The day for which the schedules will be extracted", defaultValue = "2020-09-09")
+//    @CommandLine.Option(names = "--date", description = "The day for which the schedules will be extracted", defaultValue = "2020-09-09")
+    @CommandLine.Option(names = "--date", description = "The day for which the schedules will be extracted", defaultValue = "2021-08-26")
     private LocalDate date;
-
-    public CreateTransitSchedule() {
-    }
 
     public static void main(String[] args) {
         System.exit(new CommandLine(new CreateTransitSchedule()).execute(args));
@@ -73,8 +71,8 @@ public class CreateTransitSchedule implements Callable<Integer> {
         CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(inputCS, targetCS);
 
         // Output files
-        File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule2030.xml.gz");
-        File networkPTFile = new File(output, networkFile.getFileName().toString().replace(".xml", "-with-pt.xml"));
+        File scheduleFile = new File(output, "hamburg-" + VERSION + "-transitSchedule.xml.gz");
+        File networkPTFile = new File(output, networkFile.getFileName().toString().replace(".xml", "-with-2030pt.xml"));
         File transitVehiclesFile = new File(output, "hamburg-" + VERSION + "-transitVehicles.xml.gz");
 
         Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
