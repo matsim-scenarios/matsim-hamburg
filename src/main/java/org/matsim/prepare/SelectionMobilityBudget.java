@@ -73,9 +73,7 @@ public class SelectionMobilityBudget {
         int numberOfAgents = (int) Math.ceil(sizeOfMap * percentage);
         Map<Id<Person>, Double> sortedIncomeBasedSelection = sortByValue(incomeBasedSelectedAgents);
 
-        /*sortedIncomeBasedSelection.entrySet().stream()
-                //.sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));*/
+
 
         int counter = 0;
         List<Id<Person>> agentsToKeep = new ArrayList();
