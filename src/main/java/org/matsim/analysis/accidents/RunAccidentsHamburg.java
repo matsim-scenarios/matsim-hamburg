@@ -1,24 +1,22 @@
 package org.matsim.analysis.accidents;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.accidents.AccidentsConfigGroup;
 import org.matsim.contrib.accidents.AccidentsModule;
-import org.matsim.contrib.accidents.AccidentsContext;
-import org.matsim.contrib.accidents.runExample.AccidentsNetworkModification;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
-import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.io.IOUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 /**
  * @author ikaddoura, mmayobre, grybczak
@@ -49,12 +47,12 @@ public class RunAccidentsHamburg {
         // Preprocess network
         HamburgAccidentsNetworkModification hamburgAccidentsNetworkModification = new HamburgAccidentsNetworkModification(scenario);
 
-        //String[] tunnelLinks = readCSVFile("tunnels.csv");
-        //String[] planfreeLinks = readCSVFile("planfreeLinks.csv");
+        String[] tunnelLinks = readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
+        String[] planfreeLinks = readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_planfree_2021.csv");
 
 
         //networkModification.setLinkAttributsBasedOnOSMFile("osmlandUseFile", "EPSG:31468" , tunnelLinks, planfreeLinks );
-        hamburgAccidentsNetworkModification.setLinkAttributsBasedOnOSMFile(null, null, null, null);
+        hamburgAccidentsNetworkModification.setLinkAttributsBasedOnOSMFile(null, null, tunnelLinks, planfreeLinks);
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
         controler.addOverridingModule(new AccidentsModule());
         controler.getConfig().controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
