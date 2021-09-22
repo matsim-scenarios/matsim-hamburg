@@ -7,7 +7,7 @@ library(plyr)
 library(dplyr)
 
 
-runDir = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/output/10pct/"
+runDir = "FILL-RUNDIRECTORY"
 runId = "hamburg-v2.0-10pct"
 inputTripsFile <- paste(runDir, runId, ".output_trips.csv.gz", sep = "")
 inputPersonsFile <- paste(runDir, runId, ".output_persons.csv.gz", sep = "")
