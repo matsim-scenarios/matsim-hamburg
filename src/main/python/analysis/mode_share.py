@@ -12,6 +12,9 @@ trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
 runId = "h-v2-10pct-sharing-c4-highAcc"
 trips_info_folder = 'D:/ReallabHH/runs/testSharing/output-' + runId + '/'
 
+runId = "bC-stc-p2-8"
+trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibrate-stc/aaa_withMassConservationPenalty/output-' + runId + '/'
+
 
 runId = "bC-singleMC"
 trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibration/aaa_singleMC/output-' + runId + '/'

@@ -1,6 +1,7 @@
 package org.matsim.run;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.matsim.analysis.ScoreStatsControlerListener;
@@ -18,6 +19,9 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 /**
  * @author zmeng
  */
+
+//ignoring this test, as income based scoring is default (since a while) and this test does not really test something meaningful! (or in a meaningful way)!
+@Ignore
 public class RunIncomeBasedTest {
     @Rule
     public MatsimTestUtils utils = new MatsimTestUtils() ;

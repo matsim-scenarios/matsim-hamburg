@@ -18,7 +18,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.prepare;
+package org.matsim.prepare.network;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.ICSVWriter;
@@ -33,14 +33,13 @@ import org.matsim.core.utils.gis.ShapeFileReader;
 import org.matsim.core.utils.io.IOUtils;
 import org.opengis.feature.simple.SimpleFeature;
 
-import static java.util.stream.Collectors.toMap;
-
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -51,15 +50,16 @@ import java.util.Objects;
 public class CreateLink2ParkPressureCSV {
 
 	/**
-	 * see shared-svn/projects/realLabHH/data/Parkdruckdaten*
+	 * TODO see shared-svn/projects/realLabHH/data/Parkdruckdaten*
 	 */
 	private static final String INPUT_SHAPE_FILE = "D:/svn/shared-svn/projects/realLabHH/data/Parkdruckdaten* ....";
 
 	/**
 	 *
 	 */
-	private static final String INPUT_NETWORK = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-network-with-pt.xml.gz";
-	private static final String OUTPUT_CSV = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/sumo/hamburg-v2.0-sumo-network-with-pt.link2ParkPressure.csv";
+	private static final String INPUT_NETWORK = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.xml.gz";
+	//TODO you need to change this to your local copy path, because the IDE is not allowed to write here
+	private static final String OUTPUT_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.link2ParkPressure.csv";
 
 	public static void main(String[] args) {
 

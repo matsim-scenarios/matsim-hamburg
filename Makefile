@@ -51,7 +51,7 @@ scenarios/input/hamburg-sumo.net.xml: scenarios/input/network.osm
 
 
 scenarios/input/hamburg-$V-network.xml.gz: scenarios/input/hamburg-sumo.net.xml
-	java -cp $(JAR) org.matsim.prepare.CreateNetwork $<\
+	java -cp $(JAR) org.matsim.prepare.network.CreateNetwork $<\
 	 --capacities ../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.2/RLHH_analyze_Q_at_LSA_all.csv\
 	 --output $@
 
