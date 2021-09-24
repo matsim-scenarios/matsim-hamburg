@@ -1,4 +1,4 @@
-package org.matsim.prepare;
+package org.matsim.prepare.network;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
