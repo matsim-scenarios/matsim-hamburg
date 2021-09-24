@@ -26,9 +26,11 @@ import org.matsim.core.config.groups.SubtourModeChoiceConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import org.matsim.massConservation4SingleTripModeChoice.PenalizeMassConservationViolationsModule;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
@@ -96,6 +98,14 @@ public class RunBaseCaseHamburgScenario {
 
                 //analyse PersonMoneyEvents
                 install(new PersonMoneyEventsAnalysisModule());
+
+                //if changeSingleTripMode strategy is used, install module for mass conservation scoring
+                if(getConfig().strategy().getStrategySettings().stream()
+                        .filter(settings -> settings.getStrategyName().equals(DefaultPlanStrategiesModule.DefaultStrategy.ChangeSingleTripMode))
+                        .findAny()
+                        .isPresent()){
+                    install(new PenalizeMassConservationViolationsModule());
+                }
             }
         });
         // use HereApiValidator if is needed

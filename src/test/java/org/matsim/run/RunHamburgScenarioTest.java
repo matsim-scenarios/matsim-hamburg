@@ -23,7 +23,7 @@ public class RunHamburgScenarioTest {
     public void runTest() throws IOException {
 
         String[] args = new String[]{
-                "test/input//test-hamburg.config.xml" ,
+                "test/input//test-hamburg.config.singleTripMC.xml" ,
                 "--config:controler.lastIteration" , "1",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
