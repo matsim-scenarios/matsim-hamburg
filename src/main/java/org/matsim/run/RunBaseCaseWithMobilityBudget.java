@@ -14,6 +14,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.prepare.SelectionMobilityBudget;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -34,17 +35,17 @@ public class RunBaseCaseWithMobilityBudget {
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
-    public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
-    public static double totalSumMobilityBudget = 0;
-    static double dailyMobilityBudget;
-    static boolean useIncomeForMobilityBudget;
-    static double shareOfIncome;
-    public static boolean useShapeFile;
-    static String shapeFile;
-    public static boolean incomeBasedSelection;
-    static double shareOfAgents;
+    public final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
+    private final double totalSumMobilityBudget = 0;
+    private double dailyMobilityBudget;
+    private final double shareOfIncome;
+    private final String shapeFile;
+    private final boolean incomeBasedSelection;
+    private final double shareOfAgents;
 
-
+    /*i decided to move from static methods to an object-oriented approach as a temporary solution to handle the program arguments and all the field variables. The latter should basically be moved
+     * into a config group (e.g. HamburgExperimentalConfigGroup
+     */
     public static void main(String[] args) throws ParseException, IOException {
 
         int ii=0;
@@ -54,25 +55,69 @@ public class RunBaseCaseWithMobilityBudget {
             ii++;
         }
 
-        if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
-        }
-        processArguments(args);
-        RunBaseCaseWithMobilityBudget.run(args);
-    }
 
-    private static void run(String[] args) throws IOException {
-        System.out.println(dailyMobilityBudget);
-        System.out.println(useIncomeForMobilityBudget);
-        System.out.println(shareOfIncome);
-        Config config = prepareConfig(args);
-        Scenario scenario = prepareScenario(config);
-        Controler controler = prepareControler(scenario);
+        double dailyMobilityBudget = 10;
+        Double shareOfIncome = null;
+        String shapeFile = null;
+        boolean incomeBasedSelection = false;
+        double shareOfAgents = 0.;
+
+        String[] configArguments;
+
+        if (args.length == 0) {
+            configArguments = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+        } else {
+            configArguments = new String[args.length - 5];
+            for (int i = 0; i < args.length - 6; i++) {
+                configArguments[i] = args[i];
+            }
+            dailyMobilityBudget = Double.parseDouble(args[args.length - 5]);
+            shareOfIncome = Double.parseDouble(args[args.length - 4]);
+            shapeFile = args[args.length - 3];
+            incomeBasedSelection = Boolean.parseBoolean(args[args.length - 2]);
+            shareOfAgents = Double.parseDouble(args[args.length - 1]);
+        }
+
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget,
+                shareOfIncome,
+                shapeFile,
+                incomeBasedSelection,
+                shareOfAgents);
+
+        Config config = runner.prepareConfig(configArguments);
+        Scenario scenario = runner.prepareScenario(config);
+        Controler controler = runner.prepareControler(scenario);
         controler.run();
         log.info("Done.");
     }
 
-    public static Controler prepareControler(Scenario scenario) {
+
+    //TODO move variables to config group or use a builder...
+    // kind of had to to this as a quick, intermediate fix.., tschlenther late sep, '21
+
+    /**
+     *
+     * @param dailyMobilityBudget
+     * @param shareOfIncome set to 0.0 or negative in order to disable incomeBasedMobilityBudget
+     * @param shapeFile
+     * @param incomeBasedSelection
+     * @param shareOfAgents
+     */
+    /*package*/ RunBaseCaseWithMobilityBudget (Double dailyMobilityBudget,
+                                               double shareOfIncome,
+                                               @Nullable String shapeFile,
+                                               boolean incomeBasedSelection,
+                                               double shareOfAgents
+                                               ) {
+        this.dailyMobilityBudget = dailyMobilityBudget;
+        this.shareOfIncome = shareOfIncome;
+        this.shapeFile = shapeFile;
+        this.incomeBasedSelection = incomeBasedSelection;
+        this.shareOfAgents = shareOfAgents;
+    }
+
+
+    Controler prepareControler(Scenario scenario) {
         log.info("Preparing controler");
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
         MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler(personsEligibleForMobilityBudget);
@@ -90,7 +135,7 @@ public class RunBaseCaseWithMobilityBudget {
         });
     }
 
-    public static Scenario prepareScenario(Config config) throws IOException {
+    Scenario prepareScenario(Config config) throws IOException {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
@@ -101,9 +146,9 @@ public class RunBaseCaseWithMobilityBudget {
             personsEligibleForMobilityBudget.put(person, budget);
         }
 
-        log.info("using income "+ useIncomeForMobilityBudget);
+        log.info("using income " + (shareOfIncome > 0.0));
         log.info("share of income "+ shareOfIncome);
-        if (useIncomeForMobilityBudget == true) {
+        if (shareOfIncome > 0.) {
             log.info("using the income for the MobilityBudget");
             for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
                 double monthlyIncomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/12;
@@ -114,8 +159,8 @@ public class RunBaseCaseWithMobilityBudget {
             }
         }
 
-        if (useShapeFile == true) {
-            log.info("Filtering for Region" + useShapeFile);
+        if (shapeFile != null) {
+            log.info("Filtering for Region " + shapeFile);
             SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
         }
 
@@ -127,7 +172,7 @@ public class RunBaseCaseWithMobilityBudget {
         return scenario;
     }
 
-    public static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
+    static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
 
         Map<Id<Person>, Double> persons2Budget = new HashMap<>();
 
@@ -154,120 +199,12 @@ public class RunBaseCaseWithMobilityBudget {
         return persons2Budget;
     }
 
-    public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
+     Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
-
-        log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
-        log.info("share of income: "+ shareOfIncome);
-        log.info("use ShapeFile "+ useShapeFile);
-
-        processArguments(args);
-
 
         return config;
     }
 
-    private static void processArguments(String[] args) {
-
-        log.info("Processing arguments for MobBudget");
-
-        int test = (args.length)-13;
-        System.out.println(test);
-        System.out.println(args[test]);
-
-        try {
-            dailyMobilityBudget = Double.parseDouble(args[test]);
-        } /*catch (NumberFormatException numberFormatException) {
-            log.warn(numberFormatException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 300.0;
-        } catch (NullPointerException nullPointerException) {
-            log.warn(nullPointerException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 200.0;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn(arrayIndexOutOfBoundsException);
-            log.warn("Setting dailyMobilityBudget to default of 100.0");
-            dailyMobilityBudget = 1000.0;
-        }*/ finally {
-
-        }
-        log.info(dailyMobilityBudget);
-
-        try {
-            useIncomeForMobilityBudget = Boolean.parseBoolean(args[test+2]);
-        }
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using income for the MobilityBudget");
-            useIncomeForMobilityBudget = false;
-        }
-        catch (NullPointerException nullPointerException) {
-            log.warn("Not using income for the MobilityBudget");
-            useIncomeForMobilityBudget = false;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn("Not using income for the MobilityBudget");
-            useIncomeForMobilityBudget = false;
-        }
-        log.info(useIncomeForMobilityBudget);
-
-        try {
-            shareOfIncome =Double.parseDouble(args[test+4]);
-        }
-        catch (NumberFormatException numberFormatException) {
-            log.warn("Using default share of income for the MobilityBudget = 0.1");
-            shareOfIncome = 0.10;
-        }
-        catch (NullPointerException nullPointerException) {
-            log.warn("Using default share of income for the MobilityBudget = 0.1");
-            shareOfIncome = 0.10;
-        }
-        catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            log.warn(arrayIndexOutOfBoundsException);
-            log.warn("Using default share of income for the MobilityBudget = 0.1");
-            shareOfIncome = 0.10;
-        }
-        log.info(shareOfIncome);
-
-        try {
-            useShapeFile = Boolean.parseBoolean(args[test+6]);
-            log.info("Using shape File");
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using shape File");
-            useShapeFile = false;
-        }
-        log.info(useShapeFile);
-
-        try {
-            shapeFile = args[test+8];
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read Shape File!!! Will lead to failure");
-        }
-
-        try {
-            incomeBasedSelection = Boolean.parseBoolean(args[test+10]);
-            log.info("Using income based selection = " + incomeBasedSelection);
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not using income based selection");
-            incomeBasedSelection = false;
-        }
-
-        try {
-            shareOfAgents = Double.parseDouble(args[test+12]);
-        }
-
-        catch (IllegalArgumentException illegalArgumentException) {
-            log.warn("Not able to read  the share of Agents. Using default value of 0.1 !!!!");
-            shareOfAgents = 0.1;
-        }
-    }
 }
 

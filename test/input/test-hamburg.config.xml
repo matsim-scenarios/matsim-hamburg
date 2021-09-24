@@ -6,12 +6,12 @@
     </module>
 
     <module name="controler">
-        <param name="lastIteration" value="20"/>
+        <param name="lastIteration" value="4"/>
         <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
         <param name="runId" value="hamburg-1pct"/>
         <param name="outputDirectory" value="./output/output-hamburg-test/"/>
-        <param name="writeEventsInterval" value="1"/>
-        <param name="writePlansInterval" value="1"/>
+        <param name="writeEventsInterval" value="10"/>
+        <param name="writePlansInterval" value="10"/>
         <param name="enableLinkToLinkRouting" value="false" />
     </module>
 
@@ -96,6 +96,7 @@
         </parameterset>
     </module>
 
+    <!-- TODO: the test still uses subtourModeChoice. change to singleTripChange! -->
     <module name="subtourModeChoice">
         <param name="chainBasedModes" value="car,bike"/>
         <param name="modes" value="car,pt,bike,walk"/>
