@@ -176,7 +176,7 @@ public class RunSharingScenario {
             sbikeParams.setDailyUtilityConstant(bikeParams.getDailyUtilityConstant());
             sbikeParams.setMarginalUtilityOfDistance(bikeParams.getMarginalUtilityOfDistance());
             //TODO this comes from the stadtrad fares. the service costs 5 euros per year
-            sbikeParams.setDailyMonetaryConstant( (5. / 365.) );
+            sbikeParams.setDailyMonetaryConstant( (5. / 230.) ); // circa 230 working days per week (which is what we model)
 
             config.planCalcScore().addModeParams(sbikeParams);
             config.planCalcScore().addModeParams(scarParams);
@@ -213,7 +213,7 @@ public class RunSharingScenario {
             //and we model the yearly subscription fee in the mode params, see above.
             bikeSharingConfig.setBaseFare(0.);
             bikeSharingConfig.setMinimumFare(0.);
-            bikeSharingConfig.setTimeFare(0.); //per second. costs actually 0.10/min after the 30th minute...
+            bikeSharingConfig.setTimeFare(0.1 / 60.); //per second. costs actually 0.10/min after the 30th minute. as we model large infrastructure changes in the scenario, the intake from the first 30 mins could be taken for financing
             bikeSharingConfig.setDistanceFare(0.); //per meter
         }
 
