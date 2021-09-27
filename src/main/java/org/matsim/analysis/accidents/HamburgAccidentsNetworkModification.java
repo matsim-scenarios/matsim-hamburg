@@ -51,11 +51,14 @@ public class HamburgAccidentsNetworkModification {
         AccidentsConfigGroup accidentsSettings = new AccidentsConfigGroup();
         Network network = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz");
 
+        Network networkWithRealisticNumberOfLanes = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network-with-pt.xml.gz");
+
         Set<Id<Link>> tunnelLinks = readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
         Set<Id<Link>> planfreeLinks = readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_planfree_2021.csv");
 
         HamburgAccidentsNetworkModification.setLinkAttributesBasedOnInTownShapeFile(accidentsSettings,
                 network,
+                networkWithRealisticNumberOfLanes,
                 "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp",
                 tunnelLinks,
                 planfreeLinks);
@@ -64,7 +67,7 @@ public class HamburgAccidentsNetworkModification {
 
     }
 
-    static void setLinkAttributesBasedOnInTownShapeFile(AccidentsConfigGroup accidentsConfigGroup, Network network, String pathToInTownShapeFile, Set<Id<Link>> tunnelLinkIds, Set<Id<Link>> planfreeLinkIds){
+    static void setLinkAttributesBasedOnInTownShapeFile(AccidentsConfigGroup accidentsConfigGroup, Network network, Network networkToLookupLanes, String pathToInTownShapeFile, Set<Id<Link>> tunnelLinkIds, Set<Id<Link>> planfreeLinkIds){
         log.info("Initializing all link-specific information...");
 
         List<PreparedGeometry> inTownShapes = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(pathToInTownShapeFile));
@@ -112,15 +115,23 @@ public class HamburgAccidentsNetworkModification {
                     areaAndRoadType += 2;
                 }
 
-                if (link.getNumberOfLanes() > 4.0){
+                Link lanesLink;
+                if(!networkToLookupLanes.getLinks().containsKey(link.getId())){
+                    log.warn("could not find link " + link.getId() + " in the lane-lookup network. will use the original link");
+                    lanesLink = link;
+                } else {
+                    lanesLink = networkToLookupLanes.getLinks().get(link.getId());
+                }
+
+                if (lanesLink.getNumberOfLanes() > 4.0){
                     log.warn("Set number of lanes to 4");
                     lanes = 4;
                 }
-                else if(link.getNumberOfLanes()<1.0) {
+                else if(lanesLink.getNumberOfLanes()<1.0) {
                     lanes = 1;
                 }
                 else {
-                    lanes = (int) link.getNumberOfLanes();
+                    lanes = (int) lanesLink.getNumberOfLanes();
                 }
             }
             link.getAttributes().putAttribute( AccidentsConfigGroup.BVWP_ROAD_TYPE_ATTRIBUTE_NAME, junctionType + "," + areaAndRoadType + "," + lanes);
