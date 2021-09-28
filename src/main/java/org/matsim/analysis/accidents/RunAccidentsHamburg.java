@@ -27,9 +27,8 @@ import java.util.Set;
 public class RunAccidentsHamburg {
     private static final Logger log = Logger.getLogger(RunAccidentsHamburg.class);
 
-    private static final boolean PREPROCESS_NETWORK_DEFAULT = true;
+    private static final boolean PREPROCESS_NETWORK_DEFAULT = false;
     private static final boolean BASE_CASE_DEFAULT = true;
-
 
     public static void main(String[] args) throws IOException {
         boolean preProcessNetwork;
@@ -76,10 +75,10 @@ public class RunAccidentsHamburg {
             Set<Id<Link>> tunnelLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
             Set<Id<Link>> planfreeLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_planfree_2021.csv");
             HamburgAccidentsNetworkModification.setLinkAttributesBasedOnInTownShapeFile(accidentsSettings, scenario.getNetwork(),
-                    networkWithRealisticNumberOfLanes, "", tunnelLinks, planfreeLinks);
+                    networkWithRealisticNumberOfLanes, "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp", tunnelLinks, planfreeLinks);
         } else {
             //plan free links as of 2021
-            config.network().setInputFile("D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz");
+            config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz");
             if(baseCase){
                 scenario =  RunBaseCaseHamburgScenario.prepareScenario(config);
             } else {
