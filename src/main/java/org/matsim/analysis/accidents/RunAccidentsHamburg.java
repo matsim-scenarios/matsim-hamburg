@@ -54,7 +54,7 @@ public class RunAccidentsHamburg {
             config = RunReallabHH2030Scenario.prepareConfig(configArgs);
         }
         config.plans().setInputFile(config.controler().getRunId() + ".output_plans.xml.gz");
-        config.controler().setOutputDirectory("accidentsAnalysis/");
+        config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "accidentsAnalysis/");
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.failIfDirectoryExists);
         config.controler().setLastIteration(0);
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
