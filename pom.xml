@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>2.x-SNAPSHOT</version>
+    <version>hhAnalysis-SNAPSHOT</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <matsim.version>14.0-PR1568</matsim.version>
-
+        <!--<matsim.version>14.0-PR1568</matsim.version>--> <!-- currently used on 2.x branch -->
+        <matsim.version>14.0-PR1683</matsim.version>
         <!--        <matsim.version>13.0</matsim.version>-->
 <!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
 

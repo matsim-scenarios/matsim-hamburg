@@ -175,7 +175,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		eConfig.setDetailedWarmEmissionFactorsFile(hbefaWarmFile);
 		eConfig.setHbefaRoadTypeSource(HbefaRoadTypeSource.fromLinkAttributes);
 		eConfig.setNonScenarioVehicles(NonScenarioVehicles.ignore);
-		eConfig.setWritingEmissionsEvents(true);
+		eConfig.setWritingEmissionsEvents(true); //in the end, the EventXMLWriter is currently out commented (see below)
 
 		//TODO ?????
 		eConfig.setHbefaTableConsistencyCheckingLevel(EmissionsConfigGroup.HbefaTableConsistencyCheckingLevel.none);
