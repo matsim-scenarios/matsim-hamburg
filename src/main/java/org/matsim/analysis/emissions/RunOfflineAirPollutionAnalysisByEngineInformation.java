@@ -113,8 +113,8 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 				runId,
 				hbefaFileWarm,
 				hbefaFileCold,
-//				"../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/" + "emission-analysis-hbefa-v4.1-2020", //TS path
-				"../../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/" + "emission-analysis-hbefa-v4.1-2020", //KMT path
+				runDirectory + "emission-analysis-hbefa-v4.1-2020", //TS path
+//				"../../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/" + "emission-analysis-hbefa-v4.1-2020", //KMT path
 				HBEFAEmissionConceptShares.HBEFA_PSNGCAR_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_HGV_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_LCV_SHARE_2020);
