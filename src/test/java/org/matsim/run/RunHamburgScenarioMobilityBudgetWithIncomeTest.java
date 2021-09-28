@@ -71,17 +71,17 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         HashMap<Id<Person>, Double> expectedScores = new HashMap<>();
         //Agents used car in BaseCase now switched and got the MobilityBudget (amount = ((4500*10.5)/30)/12=131.25). Score in base case = 115.10447635274537
 //        expectedScores.put(Id.createPersonId("113ecc"), 160.3362114409121);
-        expectedScores.put(Id.createPersonId("113ecc"), 115.10447635274537 + 131.25);
+        expectedScores.put(Id.createPersonId("113ecc"), 160.3362114409121);
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         expectedScores.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
-        expectedScores.put(Id.createPersonId("113f00"), 46.33243742580156);
+        expectedScores.put(Id.createPersonId("113f00"), 46.27816254680561);
         //Agent didn´t use car in Base Case
         expectedScores.put(Id.createPersonId("113f02"), 117.49532306296163);
         //Agent didn´t use car in Base Case
         expectedScores.put(Id.createPersonId("113f02_2violatingSubtours"),109.85392359704746);
         //Agent with commercial activity are excluded from the MobilityBudget
-        expectedScores.put(Id.createPersonId("commercial_820440"), 113.84199583743978);
+        expectedScores.put(Id.createPersonId("commercial_820440"), 113.91685874278578);
         //Agent didn´t use car in Base Case
         expectedScores.put(Id.createPersonId("113f00_ptCopy"), 47.73522118258644);
 

@@ -46,7 +46,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
         };
 
 
-        double dailyMobilityBudget = 10.0;
+        double dailyMobilityBudget = 100.0;
 
         RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget, -1., null, false, 1.0);
         Config config = runner.prepareConfig(args);
@@ -86,17 +86,17 @@ public class RunHamburgScenarioMobilityBudgetTest {
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
         HashMap<Id<Person>, Double> expectedScores = new HashMap<>();
         //Agents used car in BaseCase now switched and got the MobilityBudget. But is slower now. Score in base case = 115.10447635274537
-        expectedScores.put(Id.createPersonId("113ecc"),70.69960318476515);
+        expectedScores.put(Id.createPersonId("113ecc"),129.086211440912123);
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         expectedScores.put(Id.createPersonId("113efb"), 0.0);
         //Agent used car in BaseCase and is still using it --> no MobilityBudget
-        expectedScores.put(Id.createPersonId("113f00"),46.33243742580156);
+        expectedScores.put(Id.createPersonId("113f00"),46.27816254680561);
         //Agent didn´t use car in Base Case
         expectedScores.put(Id.createPersonId("113f02"),117.49532306296163);
 //        //Agent didn´t use car in Base Case
 //        expectedScores.put(Id.createPersonId("113f02_2violatingSubtours"),109.85392359704746);
         //Agent with commercial activities are excluded from the MobilityBudget
-        expectedScores.put(Id.createPersonId("commercial_820440"),113.84199583743978);
+        expectedScores.put(Id.createPersonId("commercial_820440"),113.91685874278578);
         //Agent didn´t use car in Base Case
         expectedScores.put(Id.createPersonId("113f00_ptCopy"), 47.73522118258644);
 
