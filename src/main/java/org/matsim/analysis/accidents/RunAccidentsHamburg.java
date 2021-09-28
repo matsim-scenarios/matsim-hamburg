@@ -58,7 +58,9 @@ public class RunAccidentsHamburg {
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.failIfDirectoryExists);
         config.controler().setLastIteration(0);
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
+        config.travelTimeCalculator().setTraveltimeBinSize(2*3600);
         AccidentsConfigGroup accidentsSettings = ConfigUtils.addOrGetModule(config, AccidentsConfigGroup.class);
+        accidentsSettings.setScaleFactor(10.);
         accidentsSettings.setEnableAccidentsModule(true);
 
         log.info("Loading scenario...");
