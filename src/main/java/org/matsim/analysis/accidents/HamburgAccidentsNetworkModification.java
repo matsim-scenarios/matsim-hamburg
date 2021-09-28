@@ -33,7 +33,9 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * @author mmayobre, ikaddoura
+ * @author mmayobre, ikaddoura, tschlenther
+ *
+ *  copied from accidents contrib
  */
 
 public class HamburgAccidentsNetworkModification {
