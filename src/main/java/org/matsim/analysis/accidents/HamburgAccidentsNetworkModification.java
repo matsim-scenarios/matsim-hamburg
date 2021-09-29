@@ -112,8 +112,8 @@ public class HamburgAccidentsNetworkModification {
                     areaAndRoadType += 1;
                 }
 
-                //if more than 16 m/s then we model it as kraftfahrstrasse
-                if(link.getFreespeed() > 16.){
+                //if more than 16 m/s then we model it as kraftfahrstrasse, which have indices 0 and 1 (2 and 3 are for not kraftfahrstrasse)
+                if(link.getFreespeed() < 16.){
                     areaAndRoadType += 2;
                 }
 
