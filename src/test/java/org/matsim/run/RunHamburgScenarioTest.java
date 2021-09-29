@@ -14,6 +14,8 @@ import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 /**
  * @author zmeng
  */
+
+//TODO: the tests still use subtourModeChoice. change to singleTripChange! (see test-hamburg.config.xml)
 public class RunHamburgScenarioTest {
 
     @Rule
