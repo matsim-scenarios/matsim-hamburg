@@ -7,8 +7,8 @@ library(plyr)
 library(dplyr)
 
 
-runDir = "FILL-RUNDIRECTORY"
-runId = "hamburg-v2.0-10pct"
+runDir = "D:/ReallabHH/v2.2/basierendAufP2-3-5/output-speeded-sharing10pct-hamburg-v2.2-reallabHH2030/"
+runId = "hamburg-v2.0-10pct-reallab2030"
 inputTripsFile <- paste(runDir, runId, ".output_trips.csv.gz", sep = "")
 inputPersonsFile <- paste(runDir, runId, ".output_persons.csv.gz", sep = "")
 outputTripsFile =  paste(runDir, runId, ".output_trips_modified.csv", sep = "")
