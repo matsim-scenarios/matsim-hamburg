@@ -106,15 +106,14 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
-		final String runId = "hamburg-v1.1-10pct" ;
+		final String runId = "hamburg-v2.0-10pct-reallab2030" ;
 		String runDirectory = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
 				hbefaFileWarm,
 				hbefaFileCold,
-				runDirectory + "emission-analysis-hbefa-v4.1-2020", //TS path
-//				"../../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/" + "emission-analysis-hbefa-v4.1-2020", //KMT path
+				runDirectory + "emission-analysis-hbefa-v4.1-2020",
 				HBEFAEmissionConceptShares.HBEFA_PSNGCAR_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_HGV_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_LCV_SHARE_2020);
@@ -469,9 +468,10 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 					continue;
 				}
 
-			} else if (vehicle.getId().toString().contains("drt") || vehicle.getId().toString().contains("taxi")) {
+			} else if (vehicle.getId().toString().contains("drt") || vehicle.getId().toString().contains("taxi") || vehicle.getId().toString().contains("scar")) {
 				//drt vehicles are considered to be electric in any case
-				VehicleType newVehicleType = passengerVehicleTypes.get("electricty"); //TODO could also be a light commercial vehicle ?!
+				//car sharing vehicles as well
+				VehicleType newVehicleType = passengerVehicleTypes.get("electricity"); //TODO could also be a light commercial vehicle ?!
 				Gbl.assertNotNull(newVehicleType);
 				veh2NewType.put(vehicle.getId(),newVehicleType);
 				continue;
