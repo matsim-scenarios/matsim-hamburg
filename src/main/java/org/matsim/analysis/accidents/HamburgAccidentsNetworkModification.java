@@ -69,7 +69,18 @@ public class HamburgAccidentsNetworkModification {
 
     }
 
-    static void setLinkAttributesBasedOnInTownShapeFile(AccidentsConfigGroup accidentsConfigGroup, Network network, Network networkToLookupLanes, String pathToInTownShapeFile, Set<Id<Link>> tunnelLinkIds, Set<Id<Link>> planfreeLinkIds){
+    /**
+     *
+     * @param accidentsConfigGroup
+     * @param network
+     * @param networkToLookupLanes
+     * @param pathToInTownShapeFile
+     * @param tunnelLinkIds
+     * @param planfreeLinkIds
+     */
+    static void setLinkAttributesBasedOnInTownShapeFile(AccidentsConfigGroup accidentsConfigGroup, Network network,
+                                                        Network networkToLookupLanes, String pathToInTownShapeFile,
+                                                        Set<Id<Link>> tunnelLinkIds, Set<Id<Link>> planfreeLinkIds){
         log.info("Initializing all link-specific information...");
 
         List<PreparedGeometry> inTownShapes = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(pathToInTownShapeFile));
@@ -88,7 +99,7 @@ public class HamburgAccidentsNetworkModification {
             int lanes;
 
             Set<String> modes = link.getAllowedModes();
-            if(modes.contains(TransportMode.pt) && !modes.contains(TransportMode.car)){
+            if(  modes.contains(TransportMode.pt) && !modes.contains(TransportMode.car) ){
                 //IMPORTANT: we ignore accident costs of pure pt links. So far, it is unclear whether the link is a street or a railway, for which the cost rates differ by a factor of 10!
                 //so far, pt links have not been handled separately at all! As we have varying pt schedules with varying model areas in between the scenarios, i chose to ignore pt incidents cost for the first approach!
                 //for a more sophisticated version, one could look up the line type from the pt schedule and distinguish railway pt lines and bus lines.

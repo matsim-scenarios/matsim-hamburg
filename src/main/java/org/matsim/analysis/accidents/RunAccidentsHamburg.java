@@ -30,6 +30,8 @@ public class RunAccidentsHamburg {
     private static final boolean PREPROCESS_NETWORK_DEFAULT = false;
     private static final boolean BASE_CASE_DEFAULT = true;
 
+    private static final String CONFIG = "scenarios/input/hamburg-v2.0-10pct.config.xml";
+
     public static void main(String[] args) throws IOException {
         boolean preProcessNetwork;
         boolean baseCase;
@@ -37,7 +39,7 @@ public class RunAccidentsHamburg {
         if (args.length==0) {
             baseCase = BASE_CASE_DEFAULT;
             preProcessNetwork = PREPROCESS_NETWORK_DEFAULT;
-            configArgs = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.xml"};
+            configArgs = new String[] {CONFIG};
         } else {
             baseCase = Boolean.parseBoolean(args[0]);
             preProcessNetwork = Boolean.parseBoolean(args[1]);
@@ -53,7 +55,11 @@ public class RunAccidentsHamburg {
             config = RunReallabHH2030Scenario.prepareConfig(configArgs);
         }
         config.plans().setInputFile(config.controler().getRunId() + ".output_plans.xml.gz");
-        config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "accidentsAnalysis/");
+//        config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "/accidentsAnalysis/");
+
+        String outputDir = CONFIG.substring(0, CONFIG.lastIndexOf( '/') + 1) + "accidentsAnalysis/";
+        config.controler().setOutputDirectory(outputDir);
+
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.failIfDirectoryExists);
         config.controler().setLastIteration(0);
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
@@ -74,8 +80,10 @@ public class RunAccidentsHamburg {
             Network networkWithRealisticNumberOfLanes = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network-with-pt.xml.gz");
             Set<Id<Link>> tunnelLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
             Set<Id<Link>> planfreeLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_planfree_2021.csv");
-            HamburgAccidentsNetworkModification.setLinkAttributesBasedOnInTownShapeFile(accidentsSettings, scenario.getNetwork(),
-                    networkWithRealisticNumberOfLanes, "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp", tunnelLinks, planfreeLinks);
+            HamburgAccidentsNetworkModification.setLinkAttributesBasedOnInTownShapeFile(accidentsSettings,
+                    scenario.getNetwork(),
+                    networkWithRealisticNumberOfLanes,
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp", tunnelLinks, planfreeLinks);
         } else {
             //plan free links as of 2021
             config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz");
