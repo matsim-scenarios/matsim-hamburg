@@ -20,7 +20,12 @@
 
 package org.matsim.analysis;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.ICSVParser;
+import com.opencsv.validators.LineValidatorAggregator;
+import com.opencsv.validators.RowValidatorAggregator;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -29,12 +34,14 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.io.IOUtils;
 import org.matsim.utils.gis.shp2matsim.ShpGeometryUtils;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.opencsv.CSVReader.*;
 import static com.opencsv.ICSVWriter.*;
 
 public class LinksInShp {
@@ -70,6 +77,32 @@ public class LinksInShp {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * wpuld do this with CSVReader but we did not use default settings when writing this...
+	 * @param filePath
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	static Set<String> readLinkIdStrings(String filePath) throws FileNotFoundException {
+		BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+		Set<String> linkIds = new HashSet<>();
+
+		try {
+			reader.readLine();
+			String line = reader.readLine();
+			while(line != null){
+				linkIds.add(line);
+				line = reader.readLine();
+			}
+			reader.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return linkIds;
 	}
 
 }
