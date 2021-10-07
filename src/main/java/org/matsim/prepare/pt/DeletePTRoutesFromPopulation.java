@@ -31,9 +31,9 @@ import org.matsim.run.HamburgIntermodalAnalysisModeIdentifier;
 public class DeletePTRoutesFromPopulation {
 
 	public static void main(String[] args) {
-		Population population = PopulationUtils.readPopulation("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-10pct.plans.xml.gz");
+		Population population = PopulationUtils.readPopulation("D:/ReallabHH/v2.2/p20x/output-p208/hamburg-v2.2-baseCase.output_plans.xml.gz");
 		deletePTRoutesFromPopulation(population);
-		PopulationUtils.writePopulation(population, "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-10pct.plans.wOptRoutes.xml.gz");
+		PopulationUtils.writePopulation(population, "D:/ReallabHH/v2.2/p20x/output-p208/hamburg-v2.2-baseCase.output_plans_wOptRoutes.xml.gz");
 	}
 
 	public static void deletePTRoutesFromPopulation(Population population){

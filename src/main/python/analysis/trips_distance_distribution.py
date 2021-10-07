@@ -15,6 +15,12 @@ trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
 runId = "bC-stc-p2-6"
 trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibrate-stc/aaa_withMassConservationPenalty/output-' + runId + '/'
 
+runId = "hamburg-v2.2-baseCase-cnt"
+trips_info_folder = 'D:/ReallabHH/v2.2/basierendAufP2-3-5/output-' + runId + '/'
+
+runId = "hamburg-v2.2-10pct-reallab2030plus"
+trips_info_folder = 'D:/ReallabHH/v2.2/p20x/output-p208-reallab2030plus/'
+
 #version = 'v1.1'
 #scenario_scale = '10'
 #scenario_id = ''

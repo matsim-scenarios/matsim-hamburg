@@ -7,8 +7,8 @@ library(plyr)
 library(dplyr)
 
 
-runDir = "D:/ReallabHH/v2.2/basierendAufP2-3-5/output-speeded-sharing10pct-hamburg-v2.2-reallabHH2030/"
-runId = "hamburg-v2.0-10pct-reallab2030"
+runDir = "D:/ReallabHH/v2.2/p20x/output-p208-reallab2030plus/"
+runId = "hamburg-v2.2-10pct-reallab2030plus"
 inputTripsFile <- paste(runDir, runId, ".output_trips.csv.gz", sep = "")
 inputPersonsFile <- paste(runDir, runId, ".output_persons.csv.gz", sep = "")
 outputTripsFile =  paste(runDir, runId, ".output_trips_modified.csv", sep = "")
@@ -36,6 +36,6 @@ gzip(filename = outputTripsFile, destname = paste(outputTripsFile, ".gz", sep = 
 
 ##persons
 #first dump out
-write.csv2(persons_modified, file = outputPersonsFile, sep = ";", quote = FALSE)
+write.csv2(persons_modified, file = outputPersonsFile, sep = ";", quote = c(8,10,11))
 #then gzip
 gzip(filename = outputPersonsFile, destname = paste(outputPersonsFile, ".gz", sep = ""), overwrite = TRUE, remove = TRUE)

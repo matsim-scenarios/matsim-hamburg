@@ -20,6 +20,12 @@ runId = "bC-singleMC"
 trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibration/aaa_singleMC/output-' + runId + '/'
 
 
+runId = "hamburg-v2.2-baseCase-cnt"
+trips_info_folder = 'D:/ReallabHH/v2.2/basierendAufP2-3-5/output-' + runId + '/'
+
+runId = "hamburg-v2.2-10pct-reallab2030plus"
+trips_info_folder = 'D:/ReallabHH/v2.2/p20x/output-p208-reallab2030plus/'
+
 
 #version = 'v1.1'
 #scenario_scale = '10'

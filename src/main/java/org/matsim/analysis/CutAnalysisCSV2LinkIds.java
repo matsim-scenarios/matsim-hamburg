@@ -20,10 +20,6 @@
 
 package org.matsim.analysis;
 
-
-import com.opencsv.CSVReader;
-import org.w3c.dom.css.Counter;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,13 +31,17 @@ public class CutAnalysisCSV2LinkIds {
 
 	public static void main(String[] args) {
 
-		String runBaseDir = "D:/ReallabHH/v2.2/basierendAufP2-3-5/output-speeded-sharing10pct-hamburg-v2.2-reallabHH2030/";
-		String runId = "hamburg-v2.0-10pct-reallab2030";
+		String runBaseDir = "D:/ReallabHH/v2.2/p20x/output-p208-reallab2030/";
+		String runId = "hamburg-v2.2-10pct-reallab2030";
 		String area = "hvvArea"; //set to either 'hvvArea' or 'hhCity'
+
 		String linkId_path = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" +  area + ".tsv";
+//		String linkId_path = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-links-in-" +  area + ".tsv";
 
 		Set<String> csvFiles2Cut = Set.of(runBaseDir + "emission-analysis-hbefa-v4.1-2020/" + runId + ".emissionsPerLink.csv",
 				runBaseDir + "emission-analysis-hbefa-v4.1-2020/" + runId + ".emissionsPerLinkPerM.csv",
+				runBaseDir + "emission-analysis-hbefa-v4.1-2030/" + runId + ".emissionsPerLinkPerM.csv",
+				runBaseDir + "emission-analysis-hbefa-v4.1-2030/" + runId + ".emissionsPerLink.csv",
 				runBaseDir + "accidentsAnalysis/ITERS/it.0/" + runId + ".0.accidentCosts_BVWP.csv",
 				runBaseDir + "accidentsAnalysis/ITERS/it.0/" + runId + ".0.linkInfo.csv"
 		);

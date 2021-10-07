@@ -48,16 +48,15 @@ public class LinksInShp {
 
 	public static void main(String[] args) {
 
-//		String hamburgHVVShape = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_hvv/hamburg_hvv.shp";
-		String hamburgCityShape = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
+		String hamburgHVVShape = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_hvv/hamburg_hvv.shp";
+//		String hamburgCityShape = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
 
 
-		List<PreparedGeometry> hamburgHVVGeoms = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(hamburgCityShape));
-		Network hamburgNetwork = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz");
+		List<PreparedGeometry> hamburgHVVGeoms = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(hamburgHVVShape));
+		Network hamburgNetwork = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.xml.gz");
 
-		writeLinksInShpCSV(hamburgNetwork, hamburgHVVGeoms, "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-hhCity.tsv");
+		writeLinksInShpCSV(hamburgNetwork, hamburgHVVGeoms, "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-links-in-hvvArea.tsv");
 	}
-
 
 	static void writeLinksInShpCSV(Network network, List<PreparedGeometry> preparedGeometryList, String outputFilePath){
 		if(! outputFilePath.endsWith(".tsv")) throw new IllegalArgumentException("output file path should end with .tsv");
