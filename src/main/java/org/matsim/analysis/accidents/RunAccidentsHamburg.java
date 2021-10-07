@@ -21,16 +21,15 @@ import java.util.Set;
 /**
  * @author ikaddoura, mmayobre, grybczak, tschlenther
  *
- * copied from accidents contrib
+ * taken from accidents contrib and adjusted
  */
 
 public class RunAccidentsHamburg {
     private static final Logger log = Logger.getLogger(RunAccidentsHamburg.class);
 
-    private static final boolean PREPROCESS_NETWORK_DEFAULT = false;
+    private static final boolean PREPROCESS_NETWORK_DEFAULT = true;
     private static final boolean BASE_CASE_DEFAULT = true;
-
-    private static final String CONFIG = "scenarios/input/hamburg-v2.0-10pct.config.xml";
+    private static final String CONFIG = "provide config";
 
     public static void main(String[] args) throws IOException {
         boolean preProcessNetwork;
@@ -60,7 +59,7 @@ public class RunAccidentsHamburg {
         String outputDir = CONFIG.substring(0, CONFIG.lastIndexOf( '/') + 1) + "accidentsAnalysis/";
         config.controler().setOutputDirectory(outputDir);
 
-        config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.failIfDirectoryExists);
+        config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.overwriteExistingFiles);
         config.controler().setLastIteration(0);
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
         config.travelTimeCalculator().setTraveltimeBinSize(2*3600);
@@ -78,14 +77,23 @@ public class RunAccidentsHamburg {
                 scenario =  RunReallabHH2030Scenario.prepareScenario(config);
             }
             Network networkWithRealisticNumberOfLanes = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network-with-pt.xml.gz");
-            Set<Id<Link>> tunnelLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
+            Set<Id<Link>> tunnelLinks;
+            if(baseCase){
+                //2021
+                tunnelLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2021.csv");
+            } else {
+                //2030
+                tunnelLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_tunnel_2030.csv");
+            }
             Set<Id<Link>> planfreeLinks = HamburgAccidentsNetworkModification.readCSVFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg_hvv_planfree_2021.csv");
             HamburgAccidentsNetworkModification.setLinkAttributesBasedOnInTownShapeFile(accidentsSettings,
                     scenario.getNetwork(),
                     networkWithRealisticNumberOfLanes,
-                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp", tunnelLinks, planfreeLinks);
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/shp/innerorts-ausserorts/hamburg_hvv_innerorts_inkl_HH_city_reduced.shp",
+                    tunnelLinks,
+                    planfreeLinks);
         } else {
-            //plan free links as of 2021
+            //plan free and tunnel links as of 2021
             config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz");
             if(baseCase){
                 scenario =  RunBaseCaseHamburgScenario.prepareScenario(config);
