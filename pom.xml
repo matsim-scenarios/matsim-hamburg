@@ -11,7 +11,7 @@
 
     <properties>
         <!--<matsim.version>14.0-PR1568</matsim.version>--> <!-- currently used on 2.x branch -->
-        <matsim.version>14.0-PR1687</matsim.version>
+        <matsim.version>14.0-PR1723</matsim.version>
         <!--        <matsim.version>13.0</matsim.version>-->
 <!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
 
@@ -163,6 +163,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.matsim.contrib</groupId>
+            <artifactId>sharing</artifactId>
+            <version>${matsim.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.matsim-org</groupId>
             <artifactId>gtfs2matsim</artifactId>
             <version>12.2</version>
@@ -244,18 +250,6 @@
 
             </exclusions>
 
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.eqasim-org</groupId>
-            <artifactId>matsim-sharing</artifactId>
-            <version>792a5147ef</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.matsim.contrib</groupId>
-                    <artifactId>dvrp</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>
