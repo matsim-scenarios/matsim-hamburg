@@ -156,11 +156,11 @@
             <version>${matsim.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.matsim.contrib</groupId>
-            <artifactId>analysis</artifactId>
-            <version>${matsim.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.matsim.contrib</groupId>-->
+<!--            <artifactId>analysis</artifactId>-->
+<!--            <version>${matsim.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.matsim.contrib</groupId>
@@ -187,22 +187,22 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.matsim-vsp</groupId>
-            <artifactId>matsim-analysis</artifactId>
-            <version>master-933a6dd4ce-1</version>
-            <exclusions>
-                <!-- Will pull old drt version -->
-                <exclusion>
-                    <groupId>org.matsim.contrib</groupId>
-                    <artifactId>drt</artifactId>
-                </exclusion>
-                    <exclusion>
-                        <groupId>org.matsim.contrib</groupId>
-                        <artifactId>dvrp</artifactId>
-                    </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.matsim-vsp</groupId>-->
+<!--            <artifactId>matsim-analysis</artifactId>-->
+<!--            <version>master-933a6dd4ce-1</version>-->
+<!--            <exclusions>-->
+<!--                &lt;!&ndash; Will pull old drt version &ndash;&gt;-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.matsim.contrib</groupId>-->
+<!--                    <artifactId>drt</artifactId>-->
+<!--                </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.matsim.contrib</groupId>-->
+<!--                        <artifactId>dvrp</artifactId>-->
+<!--                    </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.matsim-vsp</groupId>
