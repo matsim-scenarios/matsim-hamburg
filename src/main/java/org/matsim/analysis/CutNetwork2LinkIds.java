@@ -42,7 +42,7 @@ public class CutNetwork2LinkIds {
 		try {
 			linksInside = LinksInShp.readLinkIdStrings(linkId_path);
 
-			Network network = NetworkUtils.readNetwork(inputNetwork_path);
+			Network network = NetworkUtils.readTimeInvariantNetwork(inputNetwork_path);
 
 			Set<Id<Link>> toDelete = network.getLinks().keySet().stream()
 					.filter(linkId -> !linksInside.contains(linkId.toString()))

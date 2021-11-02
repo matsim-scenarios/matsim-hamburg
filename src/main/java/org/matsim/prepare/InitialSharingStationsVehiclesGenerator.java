@@ -125,7 +125,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
 
     private static Network prepareNetwork() {
-        Network network = NetworkUtils.readNetwork(NETWORK_PATH);
+        Network network = NetworkUtils.readTimeInvariantNetwork(NETWORK_PATH);
 
         // remove pt_links and pt_nodes
         var ptLinks = network.getLinks().keySet().stream().filter(linkId -> linkId.toString().contains("pt")).collect(Collectors.toList());

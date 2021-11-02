@@ -94,7 +94,7 @@ public class CreateTransitSchedule implements Callable<Integer> {
         TransitSchedulePostProcessTools.copyLateDeparturesToStartOfDay(scenario.getTransitSchedule(), 86400.0D, "copied", false);
         TransitSchedulePostProcessTools.copyEarlyDeparturesToFollowingNight(scenario.getTransitSchedule(), 21600.0D, "copied");
 
-        Network network = Files.exists(networkFile) ? NetworkUtils.readNetwork(networkFile.toString()) : scenario.getNetwork();
+        Network network = Files.exists(networkFile) ? NetworkUtils.readTimeInvariantNetwork(networkFile.toString()) : scenario.getNetwork();
 
         // Create a network around the schedule
         new CreatePseudoNetwork(scenario.getTransitSchedule(), network, "pt_").createNetwork();

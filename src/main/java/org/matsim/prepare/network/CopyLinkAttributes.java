@@ -33,11 +33,11 @@ public class CopyLinkAttributes {
 	public static void main(String[] args) {
 
 //		Network netV1_0 = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network-with-pt.xml.gz");
-		Network netV2_0 = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz");
+		Network netV2_0 = NetworkUtils.readTimeInvariantNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz");
 
 		String reallabHH2030Net = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt-and-parkingPressure.xml.gz";
 
-		Network netV2_0_reallabHH2030plus = NetworkUtils.readNetwork(reallabHH2030Net);
+		Network netV2_0_reallabHH2030plus = NetworkUtils.readTimeInvariantNetwork(reallabHH2030Net);
 
 //		for (Link link : netV2_0.getLinks().values()) {
 //			if(link.getAllowedModes().contains(TransportMode.car)){
