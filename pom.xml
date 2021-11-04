@@ -4,15 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>hhAnalysis-SNAPSHOT</version>
+    <version>2.2</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <!--<matsim.version>14.0-PR1568</matsim.version>--> <!-- currently used on 2.x branch -->
         <matsim.version>14.0-PR1723</matsim.version>
-        <!--        <matsim.version>13.0</matsim.version>-->
 <!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
 
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
@@ -155,12 +153,6 @@
             <artifactId>common</artifactId>
             <version>${matsim.version}</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.matsim.contrib</groupId>-->
-<!--            <artifactId>analysis</artifactId>-->
-<!--            <version>${matsim.version}</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.matsim.contrib</groupId>
