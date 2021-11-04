@@ -26,14 +26,29 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.contrib.sharing.service.SharingService;
+import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
+import org.matsim.contrib.dvrp.run.DvrpModes;
+import org.matsim.contrib.dvrp.run.Modal;
+import org.matsim.contrib.dvrp.run.MultiModal;
+import org.matsim.contrib.dvrp.run.MultiModals;
+import org.matsim.contrib.dynagent.run.DynActivityEngine;
+import org.matsim.contrib.sharing.run.SharingConfigGroup;
+import org.matsim.contrib.sharing.run.SharingModes;
+import org.matsim.contrib.sharing.run.SharingServiceConfigGroup;
+import org.matsim.contrib.sharing.service.SharingUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.mobsim.qsim.PreplanningEngineQSimModule;
+import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 //TODO provide some information on the scenario
 public class RunReallabHH2030Scenario {
@@ -111,8 +126,13 @@ public class RunReallabHH2030Scenario {
 		//instantiate controler. add sharing modules and configure the qsim components (we have to reconfigure the latter later again, see below. otherwise they get overwritten by drt)
 		Controler controler = RunSharingScenario.prepareControler(scenario);
 
-		//Load all drt-related modules and configure the drt qsim components. We need to additionally register the sharing services
-		RunDRTHamburgScenario.prepareControler(controler, getServiceMode(RunSharingScenario.SHARING_SERVICE_ID_BIKE), getServiceMode(RunSharingScenario.SHARING_SERVICE_ID_CAR));
+		//Load all drt-related modules and configure the drt qsim components.
+		RunDRTHamburgScenario.prepareControler(controler);
+
+		//the qsim components of sharing and drt overwrote each other. so we have to reconfigure everything jointly.
+		MultiModeDrtConfigGroup drtfg = MultiModeDrtConfigGroup.get(controler.getConfig());
+		SharingConfigGroup sharingConfig = ConfigUtils.addOrGetModule(controler.getConfig(), SharingConfigGroup.class);
+		controler.configureQSimComponents(QSimComponentConfigurator(sharingConfig, drtfg.getModalElements().stream().map(Modal::getMode).collect(toList())));
 
 		//add mobility budget (monetary incentive to abandon car) in €/day. this is available for persons that had used car in the input plans, only.
 		Double mobilityBudget = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getfixedDailyMobilityBudget();
@@ -123,8 +143,21 @@ public class RunReallabHH2030Scenario {
 		return controler;
 	}
 
-	//this is more or less copied from SharingUtils.class
-	private	static String getServiceMode(String sharingServiceIdStr) {
-		return "sharing:" + sharingServiceIdStr;
+	private static QSimComponentsConfigurator QSimComponentConfigurator(SharingConfigGroup sharingConfig, List<String> dvrpModes){
+		return components -> {
+			for (SharingServiceConfigGroup serviceConfig : sharingConfig.getServices()) {
+				components.addComponent(SharingModes.mode(SharingUtils.getServiceMode(serviceConfig)));
+			}
+
+			components.addNamedComponent(DynActivityEngine.COMPONENT_NAME);
+			components.addNamedComponent(PreplanningEngineQSimModule.COMPONENT_NAME);
+
+			//activate all DvrpMode components
+			MultiModals.requireAllModesUnique(dvrpModes);
+			for (String m : dvrpModes) {
+				components.addComponent(DvrpModes.mode(m));
+			}
+		};
 	}
+
 }

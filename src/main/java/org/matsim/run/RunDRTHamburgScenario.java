@@ -15,12 +15,15 @@ import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.contrib.dvrp.run.MultiModal;
+import org.matsim.contrib.sharing.run.SharingConfigGroup;
+import org.matsim.contrib.sharing.service.SharingUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
 import org.matsim.core.network.algorithms.MultimodalNetworkCleaner;
 import org.matsim.core.utils.misc.Counter;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
@@ -83,19 +86,18 @@ public class RunDRTHamburgScenario {
 
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
-        return prepareControler(controler);
+        prepareControler(controler);
+        return controler;
     }
 
-    static Controler prepareControler(Controler controler, String... additionalDvrpModes) {
+    static void prepareControler(Controler controler) {
         //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
 
         //configureQSim: activate all dvrp modes
         MultiModeDrtConfigGroup mmCfg = MultiModeDrtConfigGroup.get(controler.getConfig());
-        List<String> drtModes = Arrays.stream(new MultiModeDrtConfigGroup[]{mmCfg}).flatMap(MultiModal::modes).collect(toList());
-        drtModes.addAll(List.of(additionalDvrpModes));
-        controler.configureQSimComponents(DvrpQSimComponents.activateModes(List.of(),drtModes));
+        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(mmCfg));
 
         controler.addOverridingModule(new AbstractModule() {
 
@@ -108,8 +110,6 @@ public class RunDRTHamburgScenario {
 
         controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
-
-        return controler;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
