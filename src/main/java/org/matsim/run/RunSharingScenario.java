@@ -46,7 +46,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();
@@ -116,7 +116,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(carSharingConfig);
         carSharingConfig.setId(SHARING_SERVICE_ID_CAR);
-        carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
+        carSharingConfig.setMaximumAccessEgressDistance(10_000); //high acceptance for lower probability to stuck
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
 //        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
@@ -127,7 +127,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup bikeSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(bikeSharingConfig);
         bikeSharingConfig.setId(SHARING_SERVICE_ID_BIKE);
-        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
+        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //high acceptance for lower probability to stuck
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
 //        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
@@ -175,8 +175,8 @@ public class RunSharingScenario {
             sbikeParams.setMarginalUtilityOfTraveling(bikeParams.getMarginalUtilityOfTraveling());
             sbikeParams.setDailyUtilityConstant(bikeParams.getDailyUtilityConstant());
             sbikeParams.setMarginalUtilityOfDistance(bikeParams.getMarginalUtilityOfDistance());
-            //TODO this comes from the stadtrad fares. the service costs 5 euros per year
-            sbikeParams.setDailyMonetaryConstant( (5. / 230.) ); // circa 230 working days per week (which is what we model)
+            //this comes from the stadtrad fares. the service costs 5 euros per year
+            sbikeParams.setDailyMonetaryConstant( (5. / 230.) ); // circa 230 working days per year (disregarding saturdays) (which is what we model)
 
             config.planCalcScore().addModeParams(sbikeParams);
             config.planCalcScore().addModeParams(scarParams);

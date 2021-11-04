@@ -22,12 +22,8 @@ public class ClassifyStationType {
 
 
 
-        String configFile = "scenarios/input/hamburg-v2.0-10pct.config.xml";
+        String configFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml";
         Config config = ConfigUtils.loadConfig(configFile);
-
-        config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt-and-parkingPressure.xml.gz");
-        config.transit().setTransitScheduleFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitSchedule.xml.gz");
-        config.transit().setVehiclesFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitVehicles.xml.gz");
 
         Scenario scenario = ScenarioUtils.loadScenario(config);
 

@@ -37,7 +37,7 @@ public class ScenarioReducer {
         if(args.length > 0 ){
             configFile = args[0];
         } else
-            configFile = "scenarios/input/hamburg-v1.1-10pct.config.xml";
+            configFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/hamburg-v1.1-10pct.config.xml";
 
         ScenarioReducer scenarioReducer = new ScenarioReducer(configFile);
 

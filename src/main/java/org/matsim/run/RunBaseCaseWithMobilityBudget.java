@@ -30,13 +30,8 @@ public class RunBaseCaseWithMobilityBudget {
 
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
-    public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v1.1";
-    public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
-    public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
     public final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
-    private final double totalSumMobilityBudget = 0;
     private double dailyMobilityBudget;
     private final double shareOfIncome;
     private final String shapeFile;
@@ -65,7 +60,7 @@ public class RunBaseCaseWithMobilityBudget {
         String[] configArguments;
 
         if (args.length == 0) {
-            configArguments = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            configArguments = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         } else {
             configArguments = new String[args.length - 5];
             for (int i = 0; i < args.length - 6; i++) {

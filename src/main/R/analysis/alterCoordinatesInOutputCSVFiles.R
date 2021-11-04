@@ -1,5 +1,3 @@
-# Title     : TODO
-# Objective : TODO
 # Created by: tschlenther
 # Created on: 22.09.2021
 library(tidyverse)

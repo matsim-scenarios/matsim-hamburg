@@ -62,21 +62,10 @@ public class RunReallabHH2030Scenario {
 		}
 
 		if (args.length == 0) {
-			//TODO change ?!
-			args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHH.xml"};
+			args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030/hamburg-v2.2-10pct.config.reallabHH2030.xml"};
 		}
 
 		Config config = prepareConfig(args);
-
-		{//TODO bfre release: delete!!
-			//set runId and output directory
-			config.controler().setRunId("hamburg-v2.0-10pct-reallab2030");
-//			config.controler().setOutputDirectory("scenarios/output/output-hamburg-v2.0-1pct-reallabHH2030");
-
-			//set real (1pct) input plans
-//			config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
-		}
-
 		Scenario scenario = prepareScenario(config);
 
 		Controler controler = prepareControler(scenario);

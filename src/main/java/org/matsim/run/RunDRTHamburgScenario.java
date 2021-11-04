@@ -72,10 +72,6 @@ public class RunDRTHamburgScenario {
 
         Config config = prepareConfig(args);
 
-        //TODO bfre release: delete!!
-        //set real (1pct) input plans
-//        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
-
         Scenario scenario = prepareScenario(config);
 
         Controler controler = prepareControler(scenario);
@@ -155,10 +151,7 @@ public class RunDRTHamburgScenario {
     static Scenario prepareNetwork(Scenario scenario) {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
-            //TODO: this is not the best solution
-
-            // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
-            // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
+            //TODO: this is not the best solution as it requires the use to set an additional config pointer to an additional shape file that must contain all drt service areas...
             if(hamburgExperimentalConfigGroup.getDrtNetworkOperationArea() != null){
                 addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtNetworkOperationArea(), 0.);
             }
