@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>2.2</version>
+    <version>v2.2</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
@@ -292,8 +292,14 @@
                         <configuration>
                             <outputFile>${project.basedir}/${project.build.finalName}.jar</outputFile>
                             <transformers>
+                                <!-- The following sets the main class for the executable jar as you otherwise would with the assembly plugin -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${mainClass}</mainClass>
+                                    <manifestEntries>
+                                        <Main-Class>org.matsim.gui.MATSimGUI</Main-Class>
+                                        <Specification-Vendor>org.matsim</Specification-Vendor>
+                                        <Implementation-Vendor>org.matsim</Implementation-Vendor>
+                                        <Implementation-Version>${project.version}</Implementation-Version>
+                                    </manifestEntries>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
@@ -350,36 +356,6 @@
                     <version>2.3.0.1</version>
                 </dependency>
             </dependencies>
-        </profile>
-
-        <profile>
-            <id>release</id>
-            <build>
-                <defaultGoal>assembly:assembly</defaultGoal>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-assembly-plugin</artifactId>
-                            <configuration>
-                                <descriptors>
-                                    <descriptor>src/main/assembly/assembly-release.xml</descriptor>
-                                </descriptors>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-jar-plugin</artifactId>
-                            <configuration>
-                                <archive>
-                                    <manifest>
-                                        <addClasspath>true</addClasspath>
-                                        <classpathPrefix>libs/</classpathPrefix>
-                                    </manifest>
-                                </archive>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
     </profiles>
 
