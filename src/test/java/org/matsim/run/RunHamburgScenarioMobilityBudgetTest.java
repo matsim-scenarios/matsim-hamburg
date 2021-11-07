@@ -1,6 +1,5 @@
 package org.matsim.run;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,34 +30,32 @@ public class RunHamburgScenarioMobilityBudgetTest {
     public void runTest() throws IOException, ParseException {
 
         String[] args = new String[]{
-                "test/input//test-hamburg.config.xml" ,
-                "--config:controler.lastIteration" , "4",
-                "--config:controler.runId" , "RunBaseCaseHamburgScenarioIT",
-                "--config:hamburgExperimental.freeSpeedFactor", "1.2",
-                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
-                "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
-                "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
-        };
-
-        String[] mobBudgetArgs = new String[]{
-                "--dailyMobilityBudget" , "100.0",
-                "--useIncomeForMobilityBudget" , "false",
+                "test/input//test-hamburg.config.xml",
+                "--config:controler.lastIteration", "4",
+                "--config:controler.runId", "RunBaseCaseHamburgScenarioIT",
+                "--dailyMobilityBudget", "100.0",
+                "--useIncomeForMobilityBudget", "false",
                 "--shareOfIncome", "0.0",
                 "--useShapeFile", "false",
-                "--shapeFile","",
-                "--incomeBasedSelection","false",
-                "--shareOfAgents","1.0",
+                "--shapeFile", "",
+                "--incomeBasedSelection", "false",
+                "--shareOfAgents", "1.0",
+                "--config:hamburgExperimental.freeSpeedFactor", "1.2",
+                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
+                "--config:HereAPITravelTimeValidation.useHereAPI", "false",
+                "--config:hamburgExperimental.useLinkBasedParkPressure", "true",
+                "--config:hamburgExperimental.parkPressureScoreConstant", "-2.",
+                "--config:plans.inputPlansFile", "plans/test-hamburg.plans.xml",
         };
 
-        String[] both = (String[]) ArrayUtils.addAll(args, mobBudgetArgs);
+
+        //String[] both = (String[]) ArrayUtils.addAll(args, mobBudgetArgs);
         //need to call main method
-        main(both);
-        Config config = prepareConfig(both);
+        main(args);
+        Config config = prepareConfig(args);
 
         //adjusting strategy setting of config so agents try out different modes
-        for (StrategyConfigGroup.StrategySettings setting:    config.strategy().getStrategySettings()) {
+        for (StrategyConfigGroup.StrategySettings setting : config.strategy().getStrategySettings()) {
             if (setting.getStrategyName().equals("SubtourModeChoice")) {
                 setting.setWeight(1.0);
             }
@@ -80,7 +77,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f02"),117.49532306296163);
         //Agent with commercial activiets are excluded from the MobilityBudget
-        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_1000074"),121.90659700031605);
+        scoreStatsFromBaseCase.put(Id.createPersonId("commercial_820440"), 113.84199583743978);
         //Agent didn´t use car in Base Case
         scoreStatsFromBaseCase.put(Id.createPersonId("113f00_ptCopy"), 47.73522118258644);
 
