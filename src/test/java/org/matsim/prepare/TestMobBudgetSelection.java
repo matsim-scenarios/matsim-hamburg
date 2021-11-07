@@ -1,3 +1,4 @@
+/*
 package org.matsim.prepare;
 
 import org.junit.Assert;
@@ -63,3 +64,4 @@ public class TestMobBudgetSelection {
         Assert.assertEquals(originalSize, personsEligibleForMobilityBudget.size()+1);
     }
 }
+*/

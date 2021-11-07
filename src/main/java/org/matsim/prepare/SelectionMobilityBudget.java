@@ -1,4 +1,3 @@
-/*
 package org.matsim.prepare;
 
 import org.apache.log4j.Logger;
@@ -128,4 +127,3 @@ public class SelectionMobilityBudget {
         return result;
     }
 }
-*/
