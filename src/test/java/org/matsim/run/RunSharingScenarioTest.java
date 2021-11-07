@@ -1,3 +1,4 @@
+/*
 package org.matsim.run;
 
 import org.junit.Assert;
@@ -25,9 +26,15 @@ import java.util.List;
 
 import static org.matsim.run.RunSharingScenario.*;
 
+*/
 /**
  * @author zmeng
- */
+ * <p>
+ * test that the car-sharing users also perceive parking pressure
+ * <p>
+ * test that the car-sharing users also perceive parking pressure
+ *//*
+
 public class RunSharingScenarioTest {
     @Rule
     public MatsimTestUtils utils = new MatsimTestUtils() ;
@@ -93,25 +100,29 @@ public class RunSharingScenarioTest {
         });
         controler.run();
 
-        /*
-         * Person scarUser_1a will drop the vehicle at 9:07:00 and scarUser_1b want to pick it up 1 seconds later at 9:07:01.
-         * Person scarUser_2a will drop the vehicle at 9:25:50 and scarUser_2b want to pick it up at the very same moment 9:25:50.
-         *
-         * In the former case, both agent should be able to use sharing car. In the latter case, person scarUser_2b can not find
-         * an idle car because the one in the near is still in use with person scarUser_2a.
-         *
-         * This test verified:
-         *      agent using car-sharing can "take" the corresponding vehicle to the destination
-         *      the vehicle cannot be found by other users when it is in use, at least 1 second is needed for placing it to an "idle" status
-         */
+        */
+/*
+ * Person scarUser_1a will drop the vehicle at 9:07:00 and scarUser_1b want to pick it up 1 seconds later at 9:07:01.
+ * Person scarUser_2a will drop the vehicle at 9:25:50 and scarUser_2b want to pick it up at the very same moment 9:25:50.
+ *
+ * In the former case, both agent should be able to use sharing car. In the latter case, person scarUser_2b can not find
+ * an idle car because the one in the near is still in use with person scarUser_2a.
+ *
+ * This test verified:
+ *      agent using car-sharing can "take" the corresponding vehicle to the destination
+ *      the vehicle cannot be found by other users when it is in use, at least 1 second is needed for placing it to an "idle" status
+ *//*
+
 
         Assert.assertEquals(1, stuckPersonHandler.getStuckPersons().size());
         Assert.assertEquals("scarUser_2b", stuckPersonHandler.getStuckPersons().get(0).toString());
 
 
-        /**
-         * test that the car-sharing users also perceive parking pressure
-         */
+        */
+/**
+ * test that the car-sharing users also perceive parking pressure
+ *//*
+
         Assert.assertEquals(1, parkingPressureHandler.parkPressureScoreEvents.size());
         Assert.assertEquals(1., parkingPressureHandler.parkPressureScoreEvents.get(0).getAmount(), 0.);
 
@@ -143,3 +154,4 @@ public class RunSharingScenarioTest {
     }
 
 }
+*/

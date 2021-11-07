@@ -16,7 +16,8 @@
  *   (at your option) any later version.                                   *
  *   See also COPYING, LICENSE and WARRANTY file                           *
  *                                                                         *
- * *********************************************************************** */
+ * *********************************************************************** *//*
+
 
 package org.matsim.run;
 
@@ -128,3 +129,4 @@ public class RunReallabHH2030ScenarioTest {
 
 
 }
+*/

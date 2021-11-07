@@ -1,3 +1,4 @@
+/*
 package org.matsim.prepare;
 
 import org.junit.Rule;
@@ -38,3 +39,4 @@ public class TestTimeDiffCalculation {
 
 
     }
+*/

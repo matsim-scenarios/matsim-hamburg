@@ -40,8 +40,7 @@ public class TestMobBudgetSelection {
         Config config = prepareConfig(args);
         config.controler().setRunId("runTest");
         config.controler().setOutputDirectory(utils.getOutputDirectory());
-
-        String shapeFile = "D:\\Arbeit\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
+        String shapeFile = "C:\\Users\\Gregor\\Documents\\shared-svn\\projects\\realLabHH\\data\\hamburg_shapeFile\\hamburg_metropo\\hamburg_metropo.shp";
         Scenario scenario = prepareScenario(config);
         int originalSize = personsEligibleForMobilityBudget.size();
         System.out.println(originalSize);
