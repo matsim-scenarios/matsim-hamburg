@@ -2,6 +2,9 @@ package org.matsim.prepare;
 
 import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
@@ -31,8 +34,10 @@ public class SelectionMobilityBudget {
 
         List<Geometry> gg = ShpGeometryUtils.loadGeometries(IOUtils.resolveFileOrResource(""));
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
+        //BoundingBox box = null;
+        MultiPolygon geometry =null;
+
         BoundingBox box = null;
-        MultiPolygon geometry = null;
         Boundary boundary = null;
         //BoundingBox box;
         for (SimpleFeature feature: features) {
