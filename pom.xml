@@ -10,8 +10,8 @@
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <!--<matsim.version>14.0-PR1568</matsim.version>--> <!-- currently used on 2.x branch -->
-        <matsim.version>14.0-PR1687</matsim.version>
+        <matsim.version>14.0-PR1568</matsim.version> <!-- currently used on 2.x branch -->
+        <!--<matsim.version>14.0-PR1687</matsim.version>-->
         <!--<matsim.version>14.0-PR1568</matsim.version>-->
 
         <!--        <matsim.version>13.0</matsim.version>-->
