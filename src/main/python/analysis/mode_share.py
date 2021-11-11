@@ -6,32 +6,8 @@ import pandas as pd
 from shapely.geometry import Point
 
 # give the folder path:
-runId = "hamburg-v2.0-10pct-reallab2030"
-trips_info_folder = 'D:/ReallabHH/output-' + runId + '/'
-trips_info_folder = 'D:/ReallabHH/runs/reallabHH2030/r11/'
-runId = "h-v2-10pct-sharing-c4-highAcc"
-trips_info_folder = 'D:/ReallabHH/runs/testSharing/output-' + runId + '/'
-
-runId = "bC-stc-p2-8"
-trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibrate-stc/aaa_withMassConservationPenalty/output-' + runId + '/'
-
-
-runId = "bC-singleMC"
-trips_info_folder = 'D:/ReallabHH/runs/baseCase/calibration/aaa_singleMC/output-' + runId + '/'
-
-
-runId = "hamburg-v2.2-baseCase-cnt"
-trips_info_folder = 'D:/ReallabHH/v2.2/basierendAufP2-3-5/output-' + runId + '/'
-
-runId = "hamburg-v2.2-10pct-reallab2030plus"
-trips_info_folder = 'D:/ReallabHH/v2.2/p20x/output-p208-reallab2030plus/'
-
-
-#version = 'v1.1'
-#scenario_scale = '10'
-#scenario_id = '13-3'
-#runId = 'hamburg-' + version + "-" + scenario_scale + 'pct'
-
+runId = "hamburg-v2.2-10pct-reallabHH2030-plus"
+trips_info_folder = 'D:/ReallabHH/v2.2/2021-11-pre-Release/reallab2030plus/'
 
 #output location
 outputDir = trips_info_folder + 'analysis/'
