@@ -74,7 +74,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 	private final EnumeratedDistribution lightCommercialVehicleTypeDistribution;
 	private final EnumeratedDistribution passengerVehicleTypeDistribution;
 
-	static List<Pollutant> pollutants2Output = Arrays.asList(CO2_TOTAL, NOx, PM);
+	static List<Pollutant> pollutants2Output = Arrays.asList(CO2_TOTAL, NOx, PM, PM_non_exhaust);
 
 	//TODO maybe use a builder
 	RunOfflineAirPollutionAnalysisByEngineInformation(String runDirectory, String runId, String hbefaFileWarm, String hbefaFileCold, String analysisOutputDirectory, List<Pair<String, Double>> passengerCarEmissionConceptShares, List<Pair<String, Double>> heavyGoodsVehiclesEmissionConceptShares, List<Pair<String, Double>> lightCommercialVehiclesEmissionConceptShares) {
