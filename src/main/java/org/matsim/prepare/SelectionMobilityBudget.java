@@ -1,6 +1,9 @@
 package org.matsim.prepare;
 
 import org.apache.log4j.Logger;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.MultiPolygon;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
@@ -9,6 +12,7 @@ import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.utils.gis.ShapeFileReader;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.geometry.Boundary;
 import org.opengis.geometry.BoundingBox;
 
 import java.util.*;
@@ -21,22 +25,33 @@ public class SelectionMobilityBudget {
 
     public static void filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
+
+        //List<Geometry> gg = ShpGeometryUtils.loadGeometries(IOUtils.resolveFileOrResource(""));
         Collection<SimpleFeature> features = ShapeFileReader.getAllFeatures(shapeFile);
+        //BoundingBox box = null;
+        MultiPolygon geometry =null;
+
         BoundingBox box = null;
+        Boundary boundary = null;
+        //BoundingBox box;
         for (SimpleFeature feature: features) {
             if (feature.getAttribute("name").equals( "Hamburg_city")) {
-                box = feature.getBounds();
+                geometry = (MultiPolygon) feature.getDefaultGeometry();
+                //box = feature.getBounds();
             }
         }
 
         List<Id<Person>> selectedAgents = new ArrayList();
         for (Person p: population.getPersons().values()) {
             if (personsEligibleForMobilityBudget.containsKey(p.getId())) {
+
                 TripStructureUtils.StageActivityHandling stageActivityHandling = TripStructureUtils.StageActivityHandling.ExcludeStageActivities;
                 List<Activity> activities = PopulationUtils.getActivities(p.getSelectedPlan(), stageActivityHandling);
                 for (Activity activty: activities) {
-                    if (activty.getType().contains("home") && box.contains(activty.getCoord().getX(), activty.getCoord().getY()) ) {
-                        log.info("Agent: " + p.getId()+" is in ShapeFile");
+                    GeometryFactory geometryFactory = new GeometryFactory();
+                    //if (activty.getType().contains("home") && box.contains(activty.getCoord().getX(), activty.getCoord().getY()) ) {
+                    if (activty.getType().contains("home") && geometry.contains(geometryFactory.createPoint(new Coordinate(activty.getCoord().getX(),activty.getCoord().getY())))) {
+                        log.info("Agent: " + p.getId()+"with activity"+ activty.getType() +" is in ShapeFile");
                         selectedAgents.add(p.getId());
                     }
                 }
@@ -52,7 +67,7 @@ public class SelectionMobilityBudget {
 
         for (Id<Person> personId: toRemove) {
             personsEligibleForMobilityBudget.remove(personId);
-            log.info("Removed: " + personId + "because he is not in the Shape File");
+            log.info("Removed: " + personId + " because he is not in the Shape File");
         }
 
     }
@@ -73,9 +88,7 @@ public class SelectionMobilityBudget {
         int numberOfAgents = (int) Math.ceil(sizeOfMap * percentage);
         Map<Id<Person>, Double> sortedIncomeBasedSelection = sortByValue(incomeBasedSelectedAgents);
 
-        /*sortedIncomeBasedSelection.entrySet().stream()
-                //.sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));*/
+
 
         int counter = 0;
         List<Id<Person>> agentsToKeep = new ArrayList();
