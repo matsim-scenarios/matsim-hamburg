@@ -56,8 +56,8 @@ public class RunProKlima2030Scenario {
 
 		if (args.length == 0) {
 			args = new String[] {RunReallabHH2030Scenario.CFG_REALLABHH2030_PLUS_SCENARIO,
-					"--config:controler.outputDirectory scenarios/output/output-hamburg-v2.0-10pct-proKlima2030",
-					"--config:controler.runId hamburg-v2.2-proKlima2030"};
+					"--config:controler.outputDirectory", "scenarios/output/output-hamburg-v2.0-10pct-proKlima2030",
+					"--config:controler.runId", "hamburg-v2.2-proKlima2030"};
 		}
 
 		Config config = prepareConfig(args);
