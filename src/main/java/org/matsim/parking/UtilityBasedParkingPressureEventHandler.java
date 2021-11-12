@@ -24,7 +24,7 @@ public class UtilityBasedParkingPressureEventHandler implements PersonArrivalEve
     Scenario scenario;
 
 	private final Set<String> parkingRelevantTransportModes = Set.of(TransportMode.car, RunSharingScenario.SHARING_CAR_MODE);
-	static final String parkPressureAttributeName = "parkPressure";
+	public static final String PARK_PRESSURE_ATTRIBUTE_NAME = "parkPressure";
 
     @Override
     public void reset(int iteration) {
@@ -36,10 +36,10 @@ public class UtilityBasedParkingPressureEventHandler implements PersonArrivalEve
 
 		if (scenario.getPopulation().getPersons().containsKey(event.getPersonId()) && parkingRelevantTransportModes.contains(event.getLegMode())) {
 
-			if(!scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAsMap().containsKey(parkPressureAttributeName)){
-				throw new RuntimeException(parkPressureAttributeName + " is not found as an attribute in link: " + event.getLinkId());
+			if(!scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAsMap().containsKey(PARK_PRESSURE_ATTRIBUTE_NAME)){
+				throw new RuntimeException(PARK_PRESSURE_ATTRIBUTE_NAME + " is not found as an attribute in link: " + event.getLinkId());
 			}
-			double parkPressureScore = (double) scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAttribute(parkPressureAttributeName);
+			double parkPressureScore = (double) scenario.getNetwork().getLinks().get(event.getLinkId()).getAttributes().getAttribute(PARK_PRESSURE_ATTRIBUTE_NAME);
 
 			if (parkPressureScore != 0){
 

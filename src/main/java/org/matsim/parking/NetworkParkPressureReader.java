@@ -16,7 +16,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.matsim.parking.UtilityBasedParkingPressureEventHandler.parkPressureAttributeName;
+import static org.matsim.parking.UtilityBasedParkingPressureEventHandler.PARK_PRESSURE_ATTRIBUTE_NAME;
 
 /**
  * @author zmeng
@@ -61,7 +61,7 @@ public class NetworkParkPressureReader {
         this.readLink2ParkPressure();
         for (Link link :
                 this.network.getLinks().values()) {
-            String attribute = parkPressureAttributeName;
+            String attribute = PARK_PRESSURE_ATTRIBUTE_NAME;
             if (!this.link2ParkPressure.containsKey(link.getId().toString())) {
                 link.getAttributes().putAttribute(attribute, Double.parseDouble(parkPressureScoreParams[2]) * parkPressureScoreConstant);
             } else {
