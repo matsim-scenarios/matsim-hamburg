@@ -144,7 +144,7 @@ public class RunDRTHamburgScenario {
     static Scenario prepareNetwork(Scenario scenario) {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
-            //TODO: this is not the best solution as it requires the use to set an additional config pointer to an additional shape file that must contain all drt service areas...
+            //TODO: this is not the best solution as it requires the user to set an additional config pointer to an additional shape file that must contain all drt service areas...
             if(hamburgExperimentalConfigGroup.getDrtNetworkOperationArea() != null){
                 addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtNetworkOperationArea(), 0.);
             }

@@ -140,16 +140,13 @@ public class RunBaseCaseHamburgScenario {
         });
 
         // use link-based park pressure
-        if(ConfigUtils.addOrGetModule(controler.getConfig(),HamburgExperimentalConfigGroup.class).isUseLinkBasedParkPressure()){
+        controler.addOverridingModule(new AbstractModule() {
 
-            controler.addOverridingModule(new AbstractModule() {
-
-                @Override
-                public void install() {
-                    this.addEventHandlerBinding().to(UtilityBasedParkingPressureEventHandler.class);
-                }
-            });
-        }
+            @Override
+            public void install() {
+                this.addEventHandlerBinding().to(UtilityBasedParkingPressureEventHandler.class);
+            }
+        });
 
         // add Freight
         AdjustScenarioForFreight.adjustControlerForFreight(controler, AdjustScenarioForFreight.getFreightModes());
@@ -192,13 +189,11 @@ public class RunBaseCaseHamburgScenario {
         }
 
         // add parkPressureAttribute
-        if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
-        		log.info("Adding missing park pressure link attributes based on provided files...");
-        		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
-                networkParkPressureReader.addLinkParkTimeAsAttribute();
-        		log.info("Adding missing park pressure link attributes based on provided files... Done.");
-        	}
+        if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
+            log.info("Adding missing park pressure link attributes based on provided files...");
+            NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
+            networkParkPressureReader.addLinkParkTimeAsAttribute();
+            log.info("Adding missing park pressure link attributes based on provided files... Done.");
         }
 
 
