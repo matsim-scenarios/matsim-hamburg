@@ -40,7 +40,6 @@ public class RunHamburgScenarioMobilityBudgetTest {
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
                 "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
         };

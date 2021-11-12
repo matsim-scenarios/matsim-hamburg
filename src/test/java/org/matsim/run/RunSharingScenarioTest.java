@@ -45,7 +45,6 @@ public class RunSharingScenarioTest {
                 "--config:hamburgExperimental.carSharingServiceInputFile", "shared_car_vehicles_stations.xml",
                 "--config:hamburgExperimental.bikeSharingServiceInputFile", "shared_bike_vehicles_stations.xml",
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
-                "--config:hamburgExperimental.useLinkBasedParkPressure","true",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:network.inputNetworkFile" , "test-hamburg-with-pt-network.xml.gz",
                 "--config:plans.inputPlansFile" , "./plans/test-scar-sharing-user.plans.xml"
