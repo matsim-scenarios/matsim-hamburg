@@ -55,10 +55,13 @@ public class RunProKlima2030Scenario {
 		}
 
 		if (args.length == 0) {
-			args = new String[] {RunReallabHH2030Scenario.CFG_REALLABHH2030_PLUS_SCENARIO};
+			args = new String[] {RunReallabHH2030Scenario.CFG_REALLABHH2030_PLUS_SCENARIO,
+					"--config:controler.outputDirectory scenarios/output/output-hamburg-v2.0-10pct-proKlima2030",
+					"--config:controler.runId hamburg-v2.2-proKlima2030"};
 		}
 
 		Config config = prepareConfig(args);
+		config.controler().setLastIteration(0);
 		Scenario scenario = prepareScenario(config);
 
 		Controler controler = prepareControler(scenario);
@@ -106,8 +109,10 @@ public class RunProKlima2030Scenario {
 			if(link.getAttributes().getAttribute("type").equals("primary")){
 				double oldCapacity = link.getCapacity();
 				double oldLanes = link.getNumberOfLanes();
-				link.setNumberOfLanes(oldLanes - 1); //reduce lanes
-				link.setCapacity(link.getNumberOfLanes() * (oldCapacity / oldLanes)); //reduce capacity accordingly
+				if(oldLanes >= 2.0){
+					link.setNumberOfLanes(oldLanes - 1); //reduce lanes
+					link.setCapacity(link.getNumberOfLanes() * (oldCapacity / oldLanes)); //reduce capacity accordingly
+				}
 			} else {
 				//apply 'tempo 30' to all roads but primary and motorways
 				link.setFreespeed(7.5); //27 km/h is used in the net for 30 km/h streets
