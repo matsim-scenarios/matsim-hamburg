@@ -61,7 +61,6 @@ public class RunProKlima2030Scenario {
 		}
 
 		Config config = prepareConfig(args);
-		config.controler().setLastIteration(0);
 		Scenario scenario = prepareScenario(config);
 
 		Controler controler = prepareControler(scenario);
