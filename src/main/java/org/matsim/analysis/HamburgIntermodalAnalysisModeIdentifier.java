@@ -1,13 +1,13 @@
-package org.matsim.run;
+package org.matsim.analysis;
 
 import com.google.inject.Inject;
 import org.apache.log4j.Logger;
-import org.matsim.analysis.TransportPlanningMainModeIdentifier;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
+import org.matsim.run.RunDRTHamburgScenario;
 
 import java.util.ArrayList;
 import java.util.Arrays;

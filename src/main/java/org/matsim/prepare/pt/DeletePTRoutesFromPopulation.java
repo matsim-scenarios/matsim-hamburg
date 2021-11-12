@@ -20,13 +20,10 @@
 
 package org.matsim.prepare.pt;
 
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorRoutingModule;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
-import org.matsim.run.HamburgAnalysisMainModeIdentifier;
-import org.matsim.run.HamburgIntermodalAnalysisModeIdentifier;
+import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 
 public class DeletePTRoutesFromPopulation {
 

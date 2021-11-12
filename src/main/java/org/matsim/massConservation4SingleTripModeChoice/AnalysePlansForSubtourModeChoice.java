@@ -20,20 +20,20 @@
 
 package org.matsim.massConservation4SingleTripModeChoice;
 
+import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
-import org.matsim.run.HamburgAnalysisMainModeIdentifier;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 class AnalysePlansForSubtourModeChoice {
 
-	private static final HamburgAnalysisMainModeIdentifier mainModeIdentifier = new HamburgAnalysisMainModeIdentifier();
+	private static final HamburgIntermodalAnalysisModeIdentifier mainModeIdentifier = new HamburgIntermodalAnalysisModeIdentifier();
 	static final Set<String> HH_CHAIN_BASED_MODES = Set.of(TransportMode.bike, TransportMode.car);
 	private static final Set<String> MODES = Set.of("car","pt","bike","walk");
 

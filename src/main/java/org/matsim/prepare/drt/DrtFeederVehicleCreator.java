@@ -50,7 +50,6 @@ import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.facilities.MatsimFacilitiesReader;
-import org.matsim.run.HamburgShpUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.matsim.run.RunDRTHamburgScenario;
 

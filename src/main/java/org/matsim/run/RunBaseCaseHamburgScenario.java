@@ -3,6 +3,7 @@ package org.matsim.run;
 
 import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
+import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
@@ -92,7 +93,6 @@ public class RunBaseCaseHamburgScenario {
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
                //use custom AnalysisMainModeIdentifier
-//                bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
                 bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgIntermodalAnalysisModeIdentifier());
 
 
