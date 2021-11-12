@@ -97,7 +97,7 @@ public class RunProKlima2030Scenario {
 		Set<? extends Link> carLinksInArea = network.getLinks().values().stream()
 				.filter(link -> link.getAllowedModes().contains(TransportMode.car)) //filter car links
 				.filter(link -> ShpGeometryUtils.isCoordInPreparedGeometries(link.getCoord(), geometries)) //spatial filter
-				.filter(link -> ! link.getAttributes().getAttribute("type").equals("motorway") ) //we won't change motorways
+				.filter(link -> ! ((String)link.getAttributes().getAttribute("type")).contains("motorway") ) //we won't change motorways and motorway_links
 				.collect(Collectors.toSet());
 
 
@@ -115,7 +115,7 @@ public class RunProKlima2030Scenario {
 				}
 			} else {
 				//apply 'tempo 30' to all roads but primary and motorways
-				link.setFreespeed(7.5); //27 km/h is used in the net for 30 km/h streets
+				if(link.getFreespeed() > 7.5) link.setFreespeed(7.5); //27 km/h is used in the net for 30 km/h streets
 			}
 		});
 
