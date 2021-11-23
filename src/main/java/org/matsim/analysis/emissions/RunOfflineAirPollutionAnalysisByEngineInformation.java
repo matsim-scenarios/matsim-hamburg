@@ -95,7 +95,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 	public static void main(String[] args) throws IOException {
 
-		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as envrionment variable to decrypt the files.
+		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as environment variable to decrypt the files.
 
 		final String hbefaPath = "https://svn.vsp.tu-berlin.de/repos/public-svn/3507bb3997e5657ab9da76dbedbb13c9b5991d3e/";
 		//actually the hbefa files need to be set relative to the config or by absolute path...
@@ -106,8 +106,8 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
-		final String runId = "hamburg-v2.0-10pct-reallab2030" ;
-		String runDirectory = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/";
+		final String runId = "hamburg-v2.0-10pct-base" ;
+		String runDirectory = "D:/ReallabHH/v2.2/2021-11-12/base-ff/";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
@@ -122,32 +122,6 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-//		processPolicyCases(hbefaFileCold, hbefaFileWarm);
-	}
-
-	private static void processPolicyCases(String hbefaFileCold, String hbefaFileWarm, String runRootDirectory) {
-		Set<String> runIds = new HashSet<>();
-//		runIds.add("p-baseSingleTrip");
-		Set<String> errors = new HashSet<>();
-		runIds.forEach(runId -> {
-			String runDirectory = runRootDirectory + "output-" + runId + "/";
-			RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
-					runDirectory,
-					runId,
-					hbefaFileWarm,
-					hbefaFileCold,
-					runDirectory + "emission-analysis-hbefa-v4.1-2020",
-					HBEFAEmissionConceptShares.HBEFA_PSNGCAR_SHARE_2020, //also use 2020 shares for policy cases...
-					HBEFAEmissionConceptShares.HBEFA_HGV_SHARE_2020,
-					HBEFAEmissionConceptShares.HBEFA_LCV_SHARE_2020);
-			try {
-				analysis.run();
-			} catch (IOException e) {
-				errors.add(runDirectory);
-			}
-		});
-		errors.forEach(run -> System.out.println("could not process " + run));
 	}
 
 	void run() throws IOException {
