@@ -105,7 +105,7 @@ public class CopyPlanAttributesAndActivityCoordinates {
 			if(PersonUtils.getAge(fromPerson) != PersonUtils.getAge(toPerson)){
 				log.warn("age attribute does not match for " + fromPerson.getId() + " and " + toPerson.getId());
 			}
-			if(PopulationUtils.getPersonAttribute(fromPerson, "gender") != PopulationUtils.getPersonAttribute(toPerson, "gender")){
+			if(! PopulationUtils.getPersonAttribute(fromPerson, "gender").equals(PopulationUtils.getPersonAttribute(toPerson, "gender"))){
 				log.warn("gender attribute does not match for " + fromPerson.getId() + " and " + toPerson.getId());
 			}
 
