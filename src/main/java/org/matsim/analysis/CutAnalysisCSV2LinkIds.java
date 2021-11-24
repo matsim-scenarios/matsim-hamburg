@@ -31,8 +31,8 @@ public class CutAnalysisCSV2LinkIds {
 
 	public static void main(String[] args) {
 
-		String runBaseDir = "D:/ReallabHH/v2.2/2021-11-12/reallab2030plus/";
-		String runId = "hamburg-v2.2-10pct-reallabHH2030-plus";
+		String runBaseDir = "D:/ReallabHH/v2.2/2021-11-12/base-ff/";
+		final String runId = "hamburg-v2.0-10pct-base" ;
 		String area = "hvvArea"; //set to either 'hvvArea' or 'hhCity'
 
 		String linkId_path = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" +  area + ".tsv";
