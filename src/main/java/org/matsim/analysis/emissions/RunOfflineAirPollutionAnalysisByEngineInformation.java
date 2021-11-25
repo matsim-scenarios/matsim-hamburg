@@ -107,7 +107,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
 		final String runId = "hamburg-v2.2-proKlima2030" ;
-		String runDirectory = "D:/ReallabHH/v2.2/2021-11-12/proKlima2030-ff/";
+		String runDirectory = "provide run output directory";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,

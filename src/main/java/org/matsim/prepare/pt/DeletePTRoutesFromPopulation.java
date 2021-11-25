@@ -28,9 +28,9 @@ import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 public class DeletePTRoutesFromPopulation {
 
 	public static void main(String[] args) {
-		Population population = PopulationUtils.readPopulation("D:/ReallabHH/v2.2/p20x/output-p208/hamburg-v2.2-baseCase.output_plans.xml.gz");
+		Population population = PopulationUtils.readPopulation("provide input plans");
 		deletePTRoutesFromPopulation(population);
-		PopulationUtils.writePopulation(population, "D:/ReallabHH/v2.2/p20x/output-p208/hamburg-v2.2-baseCase.output_plans_wOptRoutes.xml.gz");
+		PopulationUtils.writePopulation(population, "provide output path");
 	}
 
 	public static void deletePTRoutesFromPopulation(Population population){

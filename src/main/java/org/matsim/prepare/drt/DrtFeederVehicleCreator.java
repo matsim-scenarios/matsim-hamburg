@@ -98,7 +98,8 @@ public class DrtFeederVehicleCreator {
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-		String vehiclesFilePrefix = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/drt2030/drt/vehicles/hamburg-v2.2-drt-by-rndLocations-";
+		//TODO you need to adjust this to your local copy because you can not write from your IDE.
+		String vehiclesFilePrefix = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/drt2030/drt/vehicles/hamburg-v2.2-drt-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
 		numbersOfVehicles.add(500);

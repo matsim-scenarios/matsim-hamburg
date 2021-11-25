@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  *
- * i actually was looking for this class but could not find, so had to reimplement it. :(
+ * i actually was looking for this class but could not find it, so had to reimplement it. :(
  * maybe because of data confidentiality. but here, no data is published....
  * tschlenther, 30.08.2021
  */
@@ -52,7 +52,7 @@ public class CreateLink2ParkPressureCSV {
 	/**
 	 * TODO see shared-svn/projects/realLabHH/data/Parkdruckdaten*
 	 */
-	private static final String INPUT_SHAPE_FILE = "D:/svn/shared-svn/projects/realLabHH/data/Parkdruckdaten* ....";
+	private static final String INPUT_SHAPE_FILE = "../shared-svn/projects/realLabHH/data/Parkdruckdaten* ....";
 
 	/**
 	 *

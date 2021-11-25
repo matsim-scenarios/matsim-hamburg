@@ -53,8 +53,8 @@ public class CreatFreightAgents {
 
     public static void main(String[] args) throws IOException {
 
-        final String sourceData = "/Users/meng/shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018_convert/all.csv";
-        final String shapeFile = "/Users/meng/shared-svn/projects/realLabHH/data/BVM_Modelldaten/Verkehrszellen/Verkehrszellen_zone.SHP";
+        final String sourceData = "../shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018_convert/all.csv";
+        final String shapeFile = "../shared-svn/projects/realLabHH/data/BVM_Modelldaten/Verkehrszellen/Verkehrszellen_zone.SHP";
         final String outputPopulation = "output/";
 
         CreatFreightAgents creatFreightAgents = new CreatFreightAgents(sourceData,shapeFile,outputPopulation);

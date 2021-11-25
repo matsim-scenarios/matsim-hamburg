@@ -29,7 +29,7 @@ public class RunAccidentsHamburg {
 
     private static final boolean PREPROCESS_NETWORK_DEFAULT = true;
     private static final boolean BASE_CASE_DEFAULT = true;
-    private static final String CONFIG = "provide config";
+    private static final String CONFIG = "provide output config (copy w/o sharing module cause it can not be read)";
     private static final double SCALE_FACTOR = 10.0; //set according to sample size
 
     public static void main(String[] args) throws IOException {

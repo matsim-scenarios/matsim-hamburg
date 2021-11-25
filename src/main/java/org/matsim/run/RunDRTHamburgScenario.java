@@ -54,7 +54,7 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHHwOSpeedUp.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030/hamburg-v2.2-10pct.config.reallabHH2030.xml"};
         }
 
         RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();

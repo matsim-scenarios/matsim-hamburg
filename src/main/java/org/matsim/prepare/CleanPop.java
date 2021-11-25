@@ -19,7 +19,7 @@ public class CleanPop {
         String planFile;
         String version;
         if(args.length == 0){
-            folder = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.2/input/";
+            folder = "../shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.2/input/";
             planFile = "hamburg-v2.2-10pct.input-plans.xml.gz";
             version = "v2.2";
         } else {
