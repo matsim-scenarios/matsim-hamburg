@@ -26,6 +26,10 @@ import java.util.*;
 
 /**
  * @author zmeng, tschlenther
+ *
+ * uses infrastructure from the sharing contrib and incorporates a bike sharing and a car sharing service that operate in freeflow mode.
+ * user costs are based on real data from 2021.
+ * scoring mode parameters are copied from bike and car.
  */
 public class RunSharingScenario {
 

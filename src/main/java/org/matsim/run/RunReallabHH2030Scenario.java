@@ -50,7 +50,16 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-//TODO provide some information on the scenario
+/** this class is used to simulate 2 policy scenarios for the year 2030: <br> <ul>
+ * <li>ReallabHH2030 scenario which consists of the following measurements</i> <br> <ul>
+ * <li>DRT-Feeder to public transport - only allowed for intermodal trips - no point2point service <br>
+ * <li>Sharing car and sharing bike are introduced and operate with freeflowing AND are stationed at HVV switch points <br>
+ * <li>heavy and wide bike infrastructure improvement. this is modeled via ASC, based on stated preference data by DLR <br>
+ * <li>mobility budget: 2.5 €/day as incentive to abandon private cars <br>
+ * </ul>
+ * <li> Reallab2030HH plus scenario which adds a modified transit schedule to the above described scenario. This can be incorporated by the config. This is why, we use the same run class.
+ * </ul>
+ */
 public class RunReallabHH2030Scenario {
 
 	private static final Logger log = Logger.getLogger(RunReallabHH2030Scenario.class);
