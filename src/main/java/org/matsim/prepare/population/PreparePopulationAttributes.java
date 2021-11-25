@@ -1,6 +1,5 @@
 package org.matsim.prepare.population;
 
-import org.locationtech.jts.geom.Geometry;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.*;
@@ -11,7 +10,6 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PersonUtils;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.utils.geometry.geotools.MGC;
 import picocli.CommandLine;
 
 import java.nio.file.Files;
@@ -48,11 +46,6 @@ public class PreparePopulationAttributes implements MATSimAppCommand {
         Config config = ConfigUtils.createConfig();
         config.global().setCoordinateSystem(crs.getInputCRS());
 
-        Geometry studyArea = null;
-        if (shp.getShapeFile() != null) {
-            studyArea = shp.getGeometry();
-        }
-
         if (attributesFile != null) {
             config.plans().setInputPersonAttributeFile(attributesFile.toString());  //TODO how to do this properly???
             config.plans().setInsistingOnUsingDeprecatedPersonAttributeFile(true);
@@ -64,6 +57,8 @@ public class PreparePopulationAttributes implements MATSimAppCommand {
         if (!Files.exists(outputPath.getParent())) {
             Files.createDirectories(outputPath.getParent());
         }
+
+        ShpOptions.Index index = shp.getShapeFile() != null ? shp.createIndex(crs.getInputCRS(), "_") : null;
 
         // Standardize person attribute (age, sex, car availability, income...)
         for (Person person : population.getPersons().values()) {
@@ -136,8 +131,8 @@ public class PreparePopulationAttributes implements MATSimAppCommand {
 
 
             // Add an attribute for person home location (i.e. inside or outside the study area
-            if (studyArea != null) {
-                if (checkIfPersonLivesInArea(person, studyArea)) {
+            if (index != null) {
+                if (checkIfPersonLivesInArea(person, index)) {
                     person.getAttributes().putAttribute("homeLocation", "inside"); // TODO there is a enum in the MATSim Kelheim scenario. That one will be moved to the matsim-lib. After that this one can be updated also
                 } else {
                     person.getAttributes().putAttribute("homeLocation", "outside");
@@ -152,15 +147,13 @@ public class PreparePopulationAttributes implements MATSimAppCommand {
         return 0;
     }
 
-    public static boolean checkIfPersonLivesInArea(Person person, Geometry analyzedArea) {
+    public static boolean checkIfPersonLivesInArea(Person person, ShpOptions.Index index) {
         for (PlanElement planElement : person.getSelectedPlan().getPlanElements()) {
             if (planElement instanceof Activity) {
                 String actType = ((Activity) planElement).getType();
                 if (actType.startsWith("home")) {
                     Coord homeCoord = ((Activity) planElement).getCoord();
-                    if (analyzedArea == null) {
-                        throw new RuntimeException("The analyzed area is null! ");
-                    } else return analyzedArea.contains(MGC.coord2Point(homeCoord));
+                    return index.contains(homeCoord);
                 }
             }
         }
