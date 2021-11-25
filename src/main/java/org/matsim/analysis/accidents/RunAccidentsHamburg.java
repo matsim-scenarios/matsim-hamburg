@@ -30,6 +30,7 @@ public class RunAccidentsHamburg {
     private static final boolean PREPROCESS_NETWORK_DEFAULT = true;
     private static final boolean BASE_CASE_DEFAULT = true;
     private static final String CONFIG = "provide config";
+    private static final double SCALE_FACTOR = 10.0; //set according to sample size
 
     public static void main(String[] args) throws IOException {
         boolean preProcessNetwork;
@@ -54,8 +55,6 @@ public class RunAccidentsHamburg {
             config = RunReallabHH2030Scenario.prepareConfig(configArgs);
         }
         config.plans().setInputFile(config.controler().getRunId() + ".output_plans.xml.gz");
-//        config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "/accidentsAnalysis/");
-
         String outputDir = CONFIG.substring(0, CONFIG.lastIndexOf( '/') + 1) + "accidentsAnalysis/";
         config.controler().setOutputDirectory(outputDir);
 
@@ -64,7 +63,7 @@ public class RunAccidentsHamburg {
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
         config.travelTimeCalculator().setTraveltimeBinSize(2*3600);
         AccidentsConfigGroup accidentsSettings = ConfigUtils.addOrGetModule(config, AccidentsConfigGroup.class);
-        accidentsSettings.setScaleFactor(10.);
+        accidentsSettings.setScaleFactor(SCALE_FACTOR);
         accidentsSettings.setEnableAccidentsModule(true);
 
         log.info("Loading scenario...");
