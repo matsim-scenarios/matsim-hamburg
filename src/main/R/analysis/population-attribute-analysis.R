@@ -1,6 +1,6 @@
 library(tidyverse)
 
-population_attributes <- read.csv(file = '/Users/luchengqi/Documents/MATSimScenarios/Hamburg/new-scenario/population-analysis/new-open-population-attributes.tsv', sep = "\t")
+population_attributes <- read.csv(file = '/output/from/populationAnalysis.java/file.tsv', sep = "\t")
 
 population_attributes <- population_attributes %>%
   mutate(household_total_income = household_size * estimated_personal_allowance) %>%
