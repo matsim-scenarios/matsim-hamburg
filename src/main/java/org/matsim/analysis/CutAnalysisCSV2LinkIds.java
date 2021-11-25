@@ -31,11 +31,11 @@ public class CutAnalysisCSV2LinkIds {
 
 	public static void main(String[] args) {
 
-		String runBaseDir = "provide run output directory";
-		final String runId = "hamburg-v2.0-10pct-base" ;
+		String runBaseDir = "D:/ReallabHH/v2.2/2021-11-12/proKlima2030-ff/";
+		final String runId = "hamburg-v2.2-proKlima2030" ;
 		String area = "hvvArea"; //set to either 'hvvArea' or 'hhCity'
 
-		String linkId_path = "../../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" +  area + ".tsv";
+		String linkId_path = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" +  area + ".tsv";
 //		String linkId_path = "../../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-links-in-" +  area + ".tsv";
 
 		Set<String> csvFiles2Cut = Set.of(runBaseDir + "emission-analysis-hbefa-v4.1-2020/" + runId + ".emissionsPerLink.csv",
