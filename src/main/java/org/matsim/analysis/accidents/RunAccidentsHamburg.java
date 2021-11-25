@@ -55,7 +55,7 @@ public class RunAccidentsHamburg {
             config = RunReallabHH2030Scenario.prepareConfig(configArgs);
         }
         config.plans().setInputFile(config.controler().getRunId() + ".output_plans.xml.gz");
-        String outputDir = CONFIG.substring(0, CONFIG.lastIndexOf( '/') + 1) + "accidentsAnalysis/";
+        String outputDir = config.controler().getOutputDirectory().substring(0, config.controler().getOutputDirectory().lastIndexOf( '/') + 1) + "accidentsAnalysis/";
         config.controler().setOutputDirectory(outputDir);
 
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.overwriteExistingFiles);
