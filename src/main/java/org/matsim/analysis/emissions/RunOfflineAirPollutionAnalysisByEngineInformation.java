@@ -57,7 +57,7 @@ import static org.matsim.contrib.emissions.Pollutant.*;
 
 /**
  *
- * Computes the emissions using the 'allVehicles' output file which should be written out as a default in more recent MATSim runs
+ * Computes the emissions using the 'allVehicles' output file
  *
  * @author tschlenther
  */
@@ -95,7 +95,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 	public static void main(String[] args) throws IOException {
 
-		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as environment variable to decrypt the files.
+		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as environment variable to decrypt the files. ask VSP for access.
 
 		final String hbefaPath = "https://svn.vsp.tu-berlin.de/repos/public-svn/3507bb3997e5657ab9da76dbedbb13c9b5991d3e/";
 		//actually the hbefa files need to be set relative to the config or by absolute path...
@@ -106,8 +106,8 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
-		final String runId = "hamburg-v2.0-10pct-base" ;
-		String runDirectory = "D:/ReallabHH/v2.2/2021-11-12/base-ff/";
+		final String runId = "hamburg-v2.2-10pct-reallabHH2030" ;
+		String runDirectory = "D:/ReallabHH/v2.2/2021-11-12/reallab2030-ff/";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
@@ -168,7 +168,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		prepareNetwork(hamburgCfg, scenario);
 
-		//create add vehicle types and add them to the scenario and store them in maps
+		//create vehicle types and add them to the scenario and store them in maps
 
 		//passenger car vehicle types
 		Map<String, VehicleType> passengerVehicleTypes = createAndAddVehicleTypesForAllEmissionConcepts(scenario, HbefaVehicleCategory.PASSENGER_CAR);
@@ -317,7 +317,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		return vehicleType;
 	}
 
-	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFile, Scenario scenario, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
+	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFileStr, Scenario scenario, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
 
 		log.info("Emission analysis completed.");
 
@@ -328,80 +328,63 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		nf.setGroupingUsed(false);
 
 		{
-			File file1 = new File(linkEmissionAnalysisFile);
+			File absolutFile = new File(linkEmissionAnalysisFile);
+			File perMeterFile = new File(linkEmissionPerMAnalysisFile);
 
-			BufferedWriter bw1 = new BufferedWriter(new FileWriter(file1));
+			BufferedWriter absolutWriter = new BufferedWriter(new FileWriter(absolutFile));
+			BufferedWriter perMeterWriter = new BufferedWriter(new FileWriter(perMeterFile));
 
-			bw1.write("linkId");
+			absolutWriter.write("linkId");
+			perMeterWriter.write("linkId");
 
 			for (Pollutant pollutant : pollutants2Output) {
-				bw1.write(";" + pollutant);
+				absolutWriter.write(";" + pollutant);
+				perMeterWriter.write(";" + pollutant + " [g/m]");
+
 			}
-			bw1.newLine();
+			absolutWriter.newLine();
+			perMeterWriter.newLine();
+
 
 			Map<Id<Link>, Map<Pollutant, Double>> link2pollutants = emissionsEventHandler.getLink2pollutants();
 
 			for (Id<Link> linkId : link2pollutants.keySet()) {
-				bw1.write(linkId.toString());
+				absolutWriter.write(linkId.toString());
+				perMeterWriter.write(linkId.toString());
 
 				for (Pollutant pollutant : pollutants2Output) {
-					double value = 0.;
+					double emissionValue = 0.;
 					if (link2pollutants.get(linkId).get(pollutant) != null) {
-						value = link2pollutants.get(linkId).get(pollutant);
+						emissionValue = link2pollutants.get(linkId).get(pollutant);
 					}
-					bw1.write(";" + nf.format(value));
-				}
-				bw1.newLine();
-			}
-
-			bw1.close();
-			log.info("Output written to " + linkEmissionAnalysisFile);
-		}
-
-		{
-			File file1 = new File(linkEmissionPerMAnalysisFile);
-
-			BufferedWriter bw1 = new BufferedWriter(new FileWriter(file1));
-
-			bw1.write("linkId");
-
-			for (Pollutant pollutant : pollutants2Output) {
-				bw1.write(";" + pollutant + " [g/m]");
-			}
-			bw1.newLine();
-
-			Map<Id<Link>, Map<Pollutant, Double>> link2pollutants = emissionsEventHandler.getLink2pollutants();
-
-			for (Id<Link> linkId : link2pollutants.keySet()) {
-				bw1.write(linkId.toString());
-
-				for (Pollutant pollutant : pollutants2Output) {
-					double emission = 0.;
-					if (link2pollutants.get(linkId).get(pollutant) != null) {
-						emission = link2pollutants.get(linkId).get(pollutant);
-					}
+					absolutWriter.write(";" + nf.format(emissionValue));
 
 					double emissionPerM = Double.NaN;
 					Link link = scenario.getNetwork().getLinks().get(linkId);
 					if (link != null) {
-						emissionPerM = emission / link.getLength();
+						emissionPerM = emissionValue / link.getLength();
 					}
-					bw1.write(";" + nf.format(emissionPerM));
+					perMeterWriter.write(";" + nf.format(emissionPerM));
+
 				}
-				bw1.newLine();
+				absolutWriter.newLine();
+				perMeterWriter.newLine();
+
 			}
 
-			bw1.close();
+			absolutWriter.close();
+			log.info("Output written to " + linkEmissionAnalysisFile);
+			perMeterWriter.close();
 			log.info("Output written to " + linkEmissionPerMAnalysisFile);
 		}
 
 		{
-			File file2 = new File(vehicleTypeFile);
+			File vehicleTypeFile = new File(vehicleTypeFileStr);
 
-			BufferedWriter bw2 = new BufferedWriter(new FileWriter(file2));
+			BufferedWriter vehicleTypeWriter = new BufferedWriter(new FileWriter(vehicleTypeFile));
 
-			bw2.write("vehicleId;vehicleType;emissionsConcept");
-			bw2.newLine();
+			vehicleTypeWriter.write("vehicleId;vehicleType;emissionsConcept");
+			vehicleTypeWriter.newLine();
 
 			for (Vehicle vehicle : scenario.getVehicles().getVehicles().values()) {
 				String emissionsConcept = "null";
@@ -409,12 +392,12 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 					emissionsConcept = VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation());
 				}
 
-				bw2.write(vehicle.getId() + ";" + vehicle.getType().getId().toString() + ";" + emissionsConcept);
-				bw2.newLine();
+				vehicleTypeWriter.write(vehicle.getId() + ";" + vehicle.getType().getId().toString() + ";" + emissionsConcept);
+				vehicleTypeWriter.newLine();
 			}
 
-			bw2.close();
-			log.info("Output written to " + vehicleTypeFile);
+			vehicleTypeWriter.close();
+			log.info("Output written to " + vehicleTypeFileStr);
 		}
 	}
 
