@@ -18,7 +18,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.run;
+package org.matsim.run.reallabHHPolicyScenarios;
 
 import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
@@ -29,7 +29,6 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.run.Modal;
-import org.matsim.contrib.dvrp.run.MultiModal;
 import org.matsim.contrib.dvrp.run.MultiModals;
 import org.matsim.contrib.dynagent.run.DynActivityEngine;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
@@ -42,9 +41,11 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.mobsim.qsim.PreplanningEngineQSimModule;
 import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
+import org.matsim.run.HamburgExperimentalConfigGroup;
+import org.matsim.run.RunDRTHamburgScenario;
+import org.matsim.run.RunSharingScenario;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

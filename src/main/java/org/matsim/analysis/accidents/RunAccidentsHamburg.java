@@ -13,7 +13,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.matsim.run.RunReallabHH2030Scenario;
+import org.matsim.run.reallabHHPolicyScenarios.RunReallabHH2030Scenario;
 
 import java.io.IOException;
 import java.util.Set;
