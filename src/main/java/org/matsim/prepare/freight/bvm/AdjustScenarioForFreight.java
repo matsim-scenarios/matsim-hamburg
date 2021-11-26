@@ -1,4 +1,4 @@
-package org.matsim.prepare.freight;
+package org.matsim.prepare.freight.bvm;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -21,16 +21,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.matsim.prepare.freight.CreatFreightAgents.COMMERCIAL;
+import static org.matsim.prepare.freight.bvm.CreatFreightAgents.COMMERCIAL;
 
 /**
  * @author zmeng
  */
+@Deprecated /* this class is used for confidential freight model that is a part of the ReallabHH project but not of the open HH model (v3.x or newer). TODO: delete?*/
 public class AdjustScenarioForFreight {
 
     private static final Logger log = Logger.getLogger(AdjustScenarioForFreight.class);
     private static final List<String> modes = Arrays.asList("Lfw","Lkw-g","Lkw-k","Lkw-m","Trans","PWV_IV","Pkw-Lfw");
 
+    @Deprecated
     public static void adjustScenarioForFreight(Scenario scenario, List<String> modes){
         // network
         Network network = scenario.getNetwork();
@@ -83,6 +85,7 @@ public class AdjustScenarioForFreight {
         return modes.stream().map(mode -> COMMERCIAL + "_" + mode).collect(Collectors.toList());
     }
 
+    @Deprecated
     public static void adjustControlerForFreight(Controler controler, List<String> modes){
         for (String mode : modes) {
             controler.addOverridingModule( new AbstractModule() {

@@ -34,7 +34,7 @@ import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.massConservation4SingleTripModeChoice.PenalizeMassConservationViolationsModule;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
-import org.matsim.prepare.freight.AdjustScenarioForFreight;
+import org.matsim.prepare.freight.bvm.AdjustScenarioForFreight;
 import playground.vsp.scoring.IncomeDependentUtilityOfMoneyPersonScoringParameters;
 
 import java.io.IOException;

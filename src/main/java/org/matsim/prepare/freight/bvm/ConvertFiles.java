@@ -1,4 +1,4 @@
-package org.matsim.prepare.freight;
+package org.matsim.prepare.freight.bvm;
 
 import org.apache.log4j.Logger;
 
@@ -17,6 +17,7 @@ import java.util.Objects;
  * origin destination3 value3
  *
  */
+@Deprecated /* this class is used for confidential freight model that is a part of the ReallabHH project but not of the open HH model (v3.x or newer). TODO: delete?*/
 public class ConvertFiles {
     private final static File folder = new File("../shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018/");
     private final static Logger log = Logger.getLogger(ConvertFiles.class);

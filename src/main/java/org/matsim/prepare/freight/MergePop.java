@@ -9,7 +9,7 @@ import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
 
-import static org.matsim.prepare.freight.CreatFreightAgents.COMMERCIAL;
+import static org.matsim.prepare.freight.bvm.CreatFreightAgents.COMMERCIAL;
 import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
 /**

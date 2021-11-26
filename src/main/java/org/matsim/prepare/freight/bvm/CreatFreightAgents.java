@@ -1,6 +1,5 @@
-package org.matsim.prepare.freight;
+package org.matsim.prepare.freight.bvm;
 
-import com.sun.jdi.connect.Transport;
 import org.jboss.logging.Logger;
 import org.locationtech.jts.geom.Point;
 import org.matsim.api.core.v01.Coord;
@@ -26,6 +25,7 @@ import java.util.*;
 /**
  * @author zmeng
  */
+@Deprecated /* this class is used for confidential freight model that is a part of the ReallabHH project but not of the open HH model (v3.x or newer). TODO: delete?*/
 public class CreatFreightAgents {
 
     private static final Logger log = Logger.getLogger(CreatFreightAgents.class);
