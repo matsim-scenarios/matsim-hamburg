@@ -1,4 +1,4 @@
-package org.matsim.run;
+package org.matsim.run.reallabHHPolicyScenarios;
 
 import org.junit.Assert;
 import org.junit.Rule;

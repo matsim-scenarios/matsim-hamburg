@@ -34,8 +34,8 @@ public class CutNetwork2LinkIds {
 	public static void main(String[] args) {
 
 		String area = "hvvArea"; //set to either 'hvvArea' or 'hhCity'
-		String linkId_path = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" + area + ".tsv";
-		String inputNetwork_path = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
+		String linkId_path = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-links-in-" + area + ".tsv";
+		String inputNetwork_path = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
 
 
 		Set<String> linksInside;

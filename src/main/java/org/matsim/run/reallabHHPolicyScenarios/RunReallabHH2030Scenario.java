@@ -18,7 +18,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.run;
+package org.matsim.run.reallabHHPolicyScenarios;
 
 import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
@@ -29,7 +29,6 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.run.Modal;
-import org.matsim.contrib.dvrp.run.MultiModal;
 import org.matsim.contrib.dvrp.run.MultiModals;
 import org.matsim.contrib.dynagent.run.DynActivityEngine;
 import org.matsim.contrib.sharing.run.SharingConfigGroup;
@@ -42,15 +41,26 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.mobsim.qsim.PreplanningEngineQSimModule;
 import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
+import org.matsim.run.HamburgExperimentalConfigGroup;
+import org.matsim.run.RunDRTHamburgScenario;
+import org.matsim.run.RunSharingScenario;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-//TODO provide some information on the scenario
+/** this class is used to simulate 2 policy scenarios for the year 2030: <br> <ul>
+ * <li>ReallabHH2030 scenario which consists of the following measurements</i> <br> <ul>
+ * <li>DRT-Feeder to public transport - only allowed for intermodal trips - no point2point service <br>
+ * <li>Sharing car and sharing bike are introduced and operate with freeflowing AND are stationed at HVV switch points <br>
+ * <li>heavy and wide bike infrastructure improvement. this is modeled via ASC, based on stated preference data by DLR <br>
+ * <li>mobility budget: 2.5 €/day as incentive to abandon private cars <br>
+ * </ul>
+ * <li> Reallab2030HH plus scenario which adds a modified transit schedule to the above described scenario. This can be incorporated by the config. This is why, we use the same run class.
+ * </ul>
+ */
 public class RunReallabHH2030Scenario {
 
 	private static final Logger log = Logger.getLogger(RunReallabHH2030Scenario.class);

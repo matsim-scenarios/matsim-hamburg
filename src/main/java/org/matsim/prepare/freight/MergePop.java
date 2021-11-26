@@ -19,9 +19,9 @@ public class MergePop {
     public static void main(String[] args) {
 
         if(args.length == 0){
-            args = new String[]{"/Users/meng/work/realLabHH_meng/files/v3/h-25pct-36.output_plans.xml.gz",
-                    "/Users/meng/work/realLabHH_meng/files/v3/hamburg-commercial-25pct.plans.xml.gz",
-                    "/Users/meng/work/realLabHH_meng/files/v3/"
+            args = new String[]{"plans 1",
+                    "plans 2",
+                    "output path"
             };
         }
         // subpopulation: persons

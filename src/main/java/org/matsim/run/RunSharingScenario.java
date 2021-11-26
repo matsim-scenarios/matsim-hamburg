@@ -26,6 +26,10 @@ import java.util.*;
 
 /**
  * @author zmeng, tschlenther
+ *
+ * uses infrastructure from the sharing contrib and incorporates a bike sharing and a car sharing service that operate in freeflow mode.
+ * user costs are based on real data from 2021.
+ * scoring mode parameters are copied from bike and car.
  */
 public class RunSharingScenario {
 
@@ -104,7 +108,7 @@ public class RunSharingScenario {
         return configureBikeAndCarSharingServices(config);
     }
 
-    static Config configureBikeAndCarSharingServices(Config config) {
+    public static Config configureBikeAndCarSharingServices(Config config) {
         //the SharingServiceConfigGroups (and SharingConfigGroup) can not be read from xml yet!
         //This is why we set the input files from our experimental config groups. I know, it is ugly.... tschlenther sep '21.
 

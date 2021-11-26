@@ -54,7 +54,7 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHHwOSpeedUp.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030/hamburg-v2.2-10pct.config.reallabHH2030.xml"};
         }
 
         RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();
@@ -79,7 +79,7 @@ public class RunDRTHamburgScenario {
         return controler;
     }
 
-    static void prepareControler(Controler controler) {
+    public static void prepareControler(Controler controler) {
         //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
@@ -141,7 +141,7 @@ public class RunDRTHamburgScenario {
         return prepareNetwork(scenario);
     }
 
-    static Scenario prepareNetwork(Scenario scenario) {
+    public static Scenario prepareNetwork(Scenario scenario) {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
             //TODO: this is not the best solution as it requires the user to set an additional config pointer to an additional shape file that must contain all drt service areas...

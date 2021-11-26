@@ -51,7 +51,7 @@ public final class CreateNetwork implements Callable<Integer> {
 	private static final Logger log = LogManager.getLogger(CreateNetwork.class);
 
 	/**
-	 * Capacities below this threshold are unplausible and ignored.
+	 * Capacities below this threshold are implausible and ignored.
 	 */
 	private static final double CAPACITY_THRESHOLD = 375;
 

@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  */
 public class ConvertFiles {
-    private final static File folder = new File("/Users/meng/shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018/");
+    private final static File folder = new File("../shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018/");
     private final static Logger log = Logger.getLogger(ConvertFiles.class);
 
     public static void main(String[] args) throws IOException {

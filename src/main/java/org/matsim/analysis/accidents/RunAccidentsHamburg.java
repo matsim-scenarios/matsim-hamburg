@@ -13,7 +13,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
-import org.matsim.run.RunReallabHH2030Scenario;
+import org.matsim.run.reallabHHPolicyScenarios.RunReallabHH2030Scenario;
 
 import java.io.IOException;
 import java.util.Set;
@@ -29,7 +29,8 @@ public class RunAccidentsHamburg {
 
     private static final boolean PREPROCESS_NETWORK_DEFAULT = true;
     private static final boolean BASE_CASE_DEFAULT = true;
-    private static final String CONFIG = "provide config";
+    private static final String CONFIG = "provide output config (copy w/o sharing module cause it can not be read)";
+    private static final double SCALE_FACTOR = 10.0; //set according to sample size
 
     public static void main(String[] args) throws IOException {
         boolean preProcessNetwork;
@@ -54,9 +55,7 @@ public class RunAccidentsHamburg {
             config = RunReallabHH2030Scenario.prepareConfig(configArgs);
         }
         config.plans().setInputFile(config.controler().getRunId() + ".output_plans.xml.gz");
-//        config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "/accidentsAnalysis/");
-
-        String outputDir = CONFIG.substring(0, CONFIG.lastIndexOf( '/') + 1) + "accidentsAnalysis/";
+        String outputDir = config.controler().getOutputDirectory().substring(0, config.controler().getOutputDirectory().lastIndexOf( '/') + 1) + "accidentsAnalysis/";
         config.controler().setOutputDirectory(outputDir);
 
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.overwriteExistingFiles);
@@ -64,7 +63,7 @@ public class RunAccidentsHamburg {
         config.strategy().setFractionOfIterationsToDisableInnovation(0);
         config.travelTimeCalculator().setTraveltimeBinSize(2*3600);
         AccidentsConfigGroup accidentsSettings = ConfigUtils.addOrGetModule(config, AccidentsConfigGroup.class);
-        accidentsSettings.setScaleFactor(10.);
+        accidentsSettings.setScaleFactor(SCALE_FACTOR);
         accidentsSettings.setEnableAccidentsModule(true);
 
         log.info("Loading scenario...");
