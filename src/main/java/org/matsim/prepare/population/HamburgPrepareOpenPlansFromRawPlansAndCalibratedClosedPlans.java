@@ -27,6 +27,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
+import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.population.PersonUtils;
@@ -35,25 +36,32 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-public class CopyPlanAttributesAndActivityCoordinates {
+/**
+ *
+ * this class merges information from two sources.
+ * <ul>
+ *     <li>It takes (person) agent id's and attributes from the raw population file provided by senozon (and computes a resulting personal income attribute)
+ *     <li>It takes the activity chains (and leg modes) from closed, calibrated plans that were used inside the ReallabHH project.
+ *     These plans contain additional short trips from and to "other" activities that had been inserted to better match the trip distance distribution and number of trips.
+ *     <li>It modifies the activity coordinates such they fit the open raw data (from where the attributes are taken) - which are on a 300m grid
+ *     <li>output population is dumped out. Later, activity coordinates are re-distributed within the grid using a modified version of the corresponding script in matsim-application contrib.
+ * </ul>
+ */
+public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 
-	private static final Logger log = Logger.getLogger(CopyPlanAttributesAndActivityCoordinates.class);
+	private static final Logger log = Logger.getLogger(HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans.class);
 
 	public static void main(String[] args) {
 
 		String idMappingFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
 		String fromAttributesFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
 		String fromPlansFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
-		String targetPopulationFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz.gz";
-		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v3.0-25pct.plans-firstVersion-freight-as-closed.xml.gz";
+		String targetPopulationFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
+		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v3.0-25pct.plans-secondVersion.xml.gz";
 
 		Map<Id<Person>, Id<Person>> idMap = new HashMap<>();
 		log.info("start to read idMapping File");
@@ -68,95 +76,89 @@ public class CopyPlanAttributesAndActivityCoordinates {
 		}
 		log.info("finished to read idMapping File");
 
-		Population fromPopulation = loadFromPlans(fromAttributesFile, fromPlansFile);
-		Population toPopulation = PopulationUtils.readPopulation(targetPopulationFile);
-
-
-		log.info("START DELETING OLD ATTRIBUTES");
-		log.info("######################################################################");
-
-		for (Person toPerson : toPopulation.getPersons().values()) {
-			//remove attributes
-			PopulationUtils.removePersonAttribute(toPerson, "IPD_actEndTimes");
-			PopulationUtils.removePersonAttribute(toPerson, "IPD_actStartTimes");
-			PopulationUtils.removePersonAttribute(toPerson, "IPD_actTypes");
-			PopulationUtils.removePersonAttribute(toPerson, "sim_regionType");
-			PopulationUtils.removePersonAttribute(toPerson, "marginalUtilityOfMoney");
-			PopulationUtils.removePersonAttribute(toPerson, "income"); //we will override the income attribute
-		}
+		Population attributesAndCoordinatesPopulation = loadFromPlansWithExternalAttributesFile(fromAttributesFile, fromPlansFile);
+		Population plansPopulation = PopulationUtils.readPopulation(targetPopulationFile);
+		Population outputPopulation = PopulationUtils.createPopulation(ConfigUtils.createConfig());
+		PopulationFactory factory = outputPopulation.getFactory();
 
 		log.info("START COPYING ATTRIBUTES");
 		log.info("######################################################################");
 
-		long numberOfPersonsToHandle = toPopulation.getPersons().values().stream()
+		long numberOfPersonsToHandle = plansPopulation.getPersons().values().stream()
 				.filter(person -> PopulationUtils.getSubpopulation(person).equals("person"))
 				.count();
 		int handledPersons = 0;
 
-		for (Person fromPerson : fromPopulation.getPersons().values()) {
-			Person toPerson = toPopulation.getPersons().get(idMap.get(fromPerson.getId()));
-
-			if(toPerson == null){
-				throw new IllegalArgumentException("could not find person " + idMap.get(fromPerson.getId()) + " in target population. Was mapped to " + fromPerson.getId() + " in fromPopulation");
+		for (Person attributedPerson : attributesAndCoordinatesPopulation.getPersons().values()) {
+			Person personWithPlan = plansPopulation.getPersons().get(idMap.get(attributedPerson.getId()));
+			if(personWithPlan == null){
+				throw new IllegalArgumentException("could not find person " + idMap.get(attributedPerson.getId()) + " in population with target plans. Was mapped to " + attributedPerson.getId() + " in attributesAndCoordinatesPopulation");
 			}
-
 
 			//check socio-demographic attributes
-			if(PersonUtils.getAge(fromPerson) != PersonUtils.getAge(toPerson)){
-				log.warn("age attribute does not match for " + fromPerson.getId() + " and " + toPerson.getId());
+			if(PersonUtils.getAge(attributedPerson) != PersonUtils.getAge(personWithPlan)){
+				log.warn("age attribute does not match for " + attributedPerson.getId() + " and " + personWithPlan.getId());
 			}
-			if(! PopulationUtils.getPersonAttribute(fromPerson, "gender").equals(PopulationUtils.getPersonAttribute(toPerson, "gender"))){
-				log.warn("gender attribute does not match for " + fromPerson.getId() + " and " + toPerson.getId());
+			if(! PopulationUtils.getPersonAttribute(attributedPerson, "gender").equals(PopulationUtils.getPersonAttribute(personWithPlan, "gender"))){
+				log.warn("gender attribute does not match for " + attributedPerson.getId() + " and " + personWithPlan.getId());
 			}
 
+			//we need to change the id which is not allowed while in a population so we need to remove and re-add
+			Person targetPerson = factory.createPerson(attributedPerson.getId());
+			targetPerson.addPlan(personWithPlan.getSelectedPlan());
+			outputPopulation.addPerson(targetPerson);
+
 			//copy Attributes
-			String incomeGroupString = (String) PopulationUtils.getPersonAttribute(fromPerson, "householdincome");
-			String householdSizeString = (String) PopulationUtils.getPersonAttribute(fromPerson, "householdsize");
-			PopulationUtils.putPersonAttribute(toPerson, "householdincome", incomeGroupString);
-			PopulationUtils.putPersonAttribute(toPerson, "householdsize", householdSizeString);
+			String incomeGroupString = (String) PopulationUtils.getPersonAttribute(attributedPerson, "householdincome");
+			String householdSizeString = (String) PopulationUtils.getPersonAttribute(attributedPerson, "householdsize");
+			PopulationUtils.putPersonAttribute(targetPerson, "householdincome", incomeGroupString);
+			PopulationUtils.putPersonAttribute(targetPerson, "householdsize", householdSizeString);
 
 			//compute and set new income
 			final Random rnd = new Random(1234);
 			double income = drawIncome(incomeGroupString, householdSizeString, rnd);
-			PersonUtils.setIncome(toPerson, income);
+			PersonUtils.setIncome(targetPerson, income);
 
-			List<Activity> fromActivities = TripStructureUtils.getActivities(fromPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
-			List<Activity> toActivities = TripStructureUtils.getActivities(toPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
+			List<Activity> activitiesWithRightCoordinates = TripStructureUtils.getActivities(attributedPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
+			List<Activity> activitiesToBeOverridden = TripStructureUtils.getActivities(targetPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
 
 
-			//in the toPopulation, we inserted short trips according to the following pattern:
+			//in the plansPopulation, we inserted short trips according to the following pattern:
 			// ... originaTrip -> originalOrigin -> additionalTrip -> otherActivity -> additionalTrip -> originalOrigin -> originalTrip -> originalDestination
 			//this means, we have to make sure to copy the coordinates to the corresponding activity only! And to also copy it to the second occurrence of the originalOrigin!
 			int toActivityCounter = 0;
-			for (int fromActivityCounter = 0; fromActivityCounter < fromActivities.size(); fromActivityCounter++) {
-				Activity fromActivity = fromActivities.get(fromActivityCounter);
-				Activity toActivity = toActivities.get(toActivityCounter);
+			for (int fromActivityCounter = 0; fromActivityCounter < activitiesWithRightCoordinates.size(); fromActivityCounter++) {
+				Activity fromActivity = activitiesWithRightCoordinates.get(fromActivityCounter);
+				Activity toActivity = activitiesToBeOverridden.get(toActivityCounter);
 
 				if(toActivity.getType().startsWith("other")){
-					Activity secondOccurrenceOfLastFromActivity = toActivities.get(toActivityCounter + 1);
-					copyCoord(fromPerson.getId(), fromActivities.get(fromActivityCounter - 1), secondOccurrenceOfLastFromActivity);
+					Activity secondOccurrenceOfLastFromActivity = activitiesToBeOverridden.get(toActivityCounter + 1);
+					copyCoord(attributedPerson.getId(), activitiesWithRightCoordinates.get(fromActivityCounter - 1), secondOccurrenceOfLastFromActivity);
 
 					toActivityCounter += 2;
-					toActivity = toActivities.get(toActivityCounter);
+					toActivity = activitiesToBeOverridden.get(toActivityCounter);
 				}
-				copyCoord(fromPerson.getId(), fromActivity, toActivity);
+				copyCoord(attributedPerson.getId(), fromActivity, toActivity);
 				toActivityCounter ++;
 			}
+
 			handledPersons ++;
 		}
 
 		if(numberOfPersonsToHandle != handledPersons){
 			throw new IllegalStateException("number of persons in target population = " + numberOfPersonsToHandle + ". Handled persons = " + handledPersons + ". Should be equal!");
 		}
+		log.info("######################################################################");
+
 
 		log.info("START DUMPING OUTPUT");
 		log.info("######################################################################");
-		PopulationUtils.writePopulation(toPopulation, outputFile);
+		PopulationUtils.writePopulation(outputPopulation, outputFile);
 		log.info("FINISHED");
 		log.info("######################################################################");
 	}
 
-	private static Population loadFromPlans(String fromAttributesFile, String fromPlansFile) {
+	private static Population loadFromPlansWithExternalAttributesFile(String fromAttributesFile, String fromPlansFile) {
 		Config config = ConfigUtils.createConfig();
 		config.plans().setInputPersonAttributeFile(fromAttributesFile);
 		config.plans().setInputFile(fromPlansFile);
