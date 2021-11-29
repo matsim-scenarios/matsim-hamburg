@@ -24,12 +24,15 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
@@ -58,9 +61,10 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 	public static void main(String[] args) {
 
 		String idMappingFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
-		String fromAttributesFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
-		String fromPlansFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
-		String targetPopulationFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
+		String attributesFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
+		String plansWithCoordinatesAndIds = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
+		String plansWithAllTrips = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
+		String targetNetwork = "";
 		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v3.0-25pct.plans-secondVersion.xml.gz";
 
 		Map<Id<Person>, Id<Person>> idMap = new HashMap<>();
@@ -76,8 +80,9 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		}
 		log.info("finished to read idMapping File");
 
-		Population attributesAndCoordinatesPopulation = loadFromPlansWithExternalAttributesFile(fromAttributesFile, fromPlansFile);
-		Population plansPopulation = PopulationUtils.readPopulation(targetPopulationFile);
+		Population attributesAndCoordinatesPopulation = loadFromPlansWithExternalAttributesFile(attributesFile, plansWithCoordinatesAndIds);
+		Population plansPopulation = PopulationUtils.readPopulation(plansWithAllTrips);
+		Network network = NetworkUtils.readTimeInvariantNetwork(targetNetwork);
 		Population outputPopulation = PopulationUtils.createPopulation(ConfigUtils.createConfig());
 		PopulationFactory factory = outputPopulation.getFactory();
 
@@ -133,12 +138,12 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 
 				if(toActivity.getType().startsWith("other")){
 					Activity secondOccurrenceOfLastFromActivity = activitiesToBeOverridden.get(toActivityCounter + 1);
-					copyCoord(attributedPerson.getId(), activitiesWithRightCoordinates.get(fromActivityCounter - 1), secondOccurrenceOfLastFromActivity);
+					copyCoordAndAdjustLinkId(attributedPerson.getId(), activitiesWithRightCoordinates.get(fromActivityCounter - 1), secondOccurrenceOfLastFromActivity, network);
 
 					toActivityCounter += 2;
 					toActivity = activitiesToBeOverridden.get(toActivityCounter);
 				}
-				copyCoord(attributedPerson.getId(), fromActivity, toActivity);
+				copyCoordAndAdjustLinkId(attributedPerson.getId(), fromActivity, toActivity, network);
 				toActivityCounter ++;
 			}
 
@@ -171,7 +176,7 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		return fromPopulation;
 	}
 
-	private static void copyCoord(Id<Person> fromPersonId, Activity fromActivity, Activity toActivity) {
+	private static void copyCoordAndAdjustLinkId(Id<Person> fromPersonId, Activity fromActivity, Activity toActivity, Network network) {
 		if (Math.abs(fromActivity.getCoord().getX() - toActivity.getCoord().getX()) > 300){
 			log.warn("x coordinate of fromActivity " + fromActivity + " is more than 300 meters away from x coordinate of toActivity. Check fromPerson " + fromPersonId);
 		}
@@ -182,6 +187,11 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			throw new IllegalArgumentException("attempting to copy coordinates for non-matching activity types! fromActivity=" + fromActivity.getType() + " toActivity=" + toActivity.getType());
 		}
 		toActivity.setCoord(fromActivity.getCoord());
+		if (network != null) {
+			Link link = NetworkUtils.getNearestLink(network, toActivity.getCoord());
+			if (link != null)
+				toActivity.setLinkId(link.getId());
+		}
 	}
 
 	private static double drawIncome(String incomeGroupString, String householdSizeString, Random rnd) {
