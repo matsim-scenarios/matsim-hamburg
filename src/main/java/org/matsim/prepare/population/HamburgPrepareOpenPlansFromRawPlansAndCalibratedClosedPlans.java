@@ -30,6 +30,7 @@ import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
+import org.matsim.application.prepare.population.ResolveGridCoordinates;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
@@ -37,6 +38,8 @@ import org.matsim.core.population.PersonUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.run.RunBaseCaseHamburgScenario;
+import picocli.CommandLine;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,9 +52,12 @@ import java.util.*;
  * <ul>
  *     <li>It takes (person) agent id's and attributes from the raw population file provided by senozon (and computes a resulting personal income attribute)
  *     <li>It takes the activity chains (and leg modes) from closed, calibrated plans that were used inside the ReallabHH project.
- *     These plans contain additional short trips from and to "other" activities that had been inserted to better match the trip distance distribution and number of trips.
+ *     		These plans contain additional short trips from and to "other" activities that had been inserted to better match the trip distance distribution and number of trips.
  *     <li>It modifies the activity coordinates such they fit the open raw data (from where the attributes are taken) - which are on a 300m grid
- *     <li>output population is dumped out. Later, activity coordinates are re-distributed within the grid using a modified version of the corresponding script in matsim-application contrib.
+ *     <li>output population is dumped out.
+ *     <li> finally, activity coordinates are re-distributed within the grid using {@link org.matsim.application.prepare.population.ResolveGridCoordinates} in matsim-application contrib. output is overridden.
+ *     	for the mapping of activities to land use geometries, no specific filter or matching is conducted. //TODO this leaves room for improvement. for example, home acts could be exclusively matched to residential geoms etc.
+ *     <li> merged with freight plans. //TODO
  * </ul>
  */
 public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
@@ -60,12 +66,15 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 
 	public static void main(String[] args) {
 
-		String idMappingFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
-		String attributesFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
-		String plansWithCoordinatesAndIds = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
-		String plansWithAllTrips = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
-		String targetNetwork = "";
-		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v3.0-25pct.plans-secondVersion.xml.gz";
+		String idMappingFile = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
+		String attributesFile = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
+		String plansWithCoordinatesAndIds = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
+		String plansWithAllTrips = "../shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
+		String targetNetwork = "../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.1/baseCase/input/hamburg-v2.1-network-with-pt.xml.gz";
+		String crs = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM;
+		String outputFile = "";
+		String landUseShapeFile = "../shared-svn/projects/german-wide-freight/landuse/landuse.shp";
+
 
 		Map<Id<Person>, Id<Person>> idMap = new HashMap<>();
 		log.info("start to read idMapping File");
@@ -80,9 +89,11 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		}
 		log.info("finished to read idMapping File");
 
+//		Network network = NetworkUtils.readTimeInvariantNetwork(targetNetwork);
+		Network network = null; //we resolve the grid coordinates later and map them to the corresponding links afterwards so we can save reading the network here. If no grid resolving is conducted, uncomment the line above.
+
 		Population attributesAndCoordinatesPopulation = loadFromPlansWithExternalAttributesFile(attributesFile, plansWithCoordinatesAndIds);
 		Population plansPopulation = PopulationUtils.readPopulation(plansWithAllTrips);
-		Network network = NetworkUtils.readTimeInvariantNetwork(targetNetwork);
 		Population outputPopulation = PopulationUtils.createPopulation(ConfigUtils.createConfig());
 		PopulationFactory factory = outputPopulation.getFactory();
 
@@ -156,11 +167,25 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		log.info("######################################################################");
 
 
-		log.info("START DUMPING OUTPUT");
+		log.info("START DUMPING OUTPUT WITH GRID COORDINATES");
 		log.info("######################################################################");
 		PopulationUtils.writePopulation(outputPopulation, outputFile);
-		log.info("FINISHED");
+
+		log.info("START RESOLVING GRID COORDINATES");
 		log.info("######################################################################");
+
+		args = new String[]{
+				outputFile,
+				"--input-crs=" + crs,
+				"--grid-resolution=300",
+				"--landuse=" + landUseShapeFile,
+				"--network=" + targetNetwork,
+				"--output=" + outputFile //override
+		};
+		System.exit(new CommandLine(new ResolveGridCoordinates()).execute(args));
+
+		log.info("FINISHED");
+//		log.info("######################################################################");
 	}
 
 	private static Population loadFromPlansWithExternalAttributesFile(String fromAttributesFile, String fromPlansFile) {

@@ -52,7 +52,7 @@ public class RunBaseCaseHamburgScenario {
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v2.2";
+    public static final String VERSION = "v3.x";
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
