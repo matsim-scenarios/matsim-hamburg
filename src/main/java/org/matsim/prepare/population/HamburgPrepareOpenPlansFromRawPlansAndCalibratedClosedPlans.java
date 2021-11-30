@@ -118,11 +118,15 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			if(! PopulationUtils.getPersonAttribute(attributedPerson, "gender").equals(PopulationUtils.getPersonAttribute(personWithPlan, "gender"))){
 				log.warn("gender attribute does not match for " + attributedPerson.getId() + " and " + personWithPlan.getId());
 			}
+			if(! PopulationUtils.getSubpopulation(personWithPlan).equals("person")){
+				throw new IllegalStateException("not treating a person!? agentId=" + personWithPlan.getId());
+			}
 
 			//we need to change the id which is not allowed while in a population so we need to remove and re-add
 			Person targetPerson = factory.createPerson(attributedPerson.getId());
 			targetPerson.addPlan(personWithPlan.getSelectedPlan());
 			outputPopulation.addPerson(targetPerson);
+			PopulationUtils.putSubpopulation(targetPerson, "person");
 
 			//copy Attributes
 			String incomeGroupString = (String) PopulationUtils.getPersonAttribute(attributedPerson, "householdincome");
