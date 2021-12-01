@@ -26,10 +26,7 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Population;
-import org.matsim.api.core.v01.population.PopulationFactory;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.application.prepare.population.ResolveGridCoordinates;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -66,15 +63,16 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 
 	public static void main(String[] args) {
 
-		String idMappingFile = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
-		String attributesFile = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
-		String plansWithCoordinatesAndIds = "../shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
-		String plansWithAllTrips = "../shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
-		String targetNetwork = "../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.1/baseCase/input/hamburg-v2.1-network-with-pt.xml.gz";
+		String idMappingFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/idMapping.csv";
+		String attributesFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
+		String plansWithCoordinatesAndIds = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
+		String plansWithAllTrips = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
+		String targetNetwork = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.1/baseCase/input/hamburg-v2.1-network-with-pt.xml.gz";
 		String crs = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM;
-		String outputFile = "";
-		String landUseShapeFile = "../shared-svn/projects/german-wide-freight/landuse/landuse.shp";
+		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-25pct.plans-not-calibrated.xml.gz";
+		String landUseShapeFile = "../../svn/shared-svn/projects/german-wide-freight/landuse/landuse.shp";
 
+		final Random rnd = new Random(1234);
 
 		Map<Id<Person>, Id<Person>> idMap = new HashMap<>();
 		log.info("start to read idMapping File");
@@ -97,7 +95,7 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		Population outputPopulation = PopulationUtils.createPopulation(ConfigUtils.createConfig());
 		PopulationFactory factory = outputPopulation.getFactory();
 
-		log.info("START COPYING ATTRIBUTES");
+		log.info("START COPYING ATTRIBUTES AND COORDINATES");
 		log.info("######################################################################");
 
 		long numberOfPersonsToHandle = plansPopulation.getPersons().values().stream()
@@ -135,13 +133,11 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			PopulationUtils.putPersonAttribute(targetPerson, "householdsize", householdSizeString);
 
 			//compute and set new income
-			final Random rnd = new Random(1234);
 			double income = drawIncome(incomeGroupString, householdSizeString, rnd);
 			PersonUtils.setIncome(targetPerson, income);
 
 			List<Activity> activitiesWithRightCoordinates = TripStructureUtils.getActivities(attributedPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
 			List<Activity> activitiesToBeOverridden = TripStructureUtils.getActivities(targetPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
-
 
 			//in the plansPopulation, we inserted short trips according to the following pattern:
 			// ... originaTrip -> originalOrigin -> additionalTrip -> otherActivity -> additionalTrip -> originalOrigin -> originalTrip -> originalDestination
@@ -161,7 +157,12 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 				copyCoordAndAdjustLinkId(attributedPerson.getId(), fromActivity, toActivity, network);
 				toActivityCounter ++;
 			}
-
+			
+			//remove routes
+			for (Leg leg : TripStructureUtils.getLegs(targetPerson.getSelectedPlan())) {
+				leg.setRoute(null);
+			}
+			
 			handledPersons ++;
 		}
 
