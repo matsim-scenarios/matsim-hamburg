@@ -26,7 +26,6 @@ import static org.matsim.prepare.freight.bvm.CreatFreightAgents.COMMERCIAL;
 /**
  * @author zmeng
  */
-@Deprecated /* this class is used for confidential freight model that is a part of the ReallabHH project but not of the open HH model (v3.x or newer). TODO: delete?*/
 public class AdjustScenarioForFreight {
 
     private static final Logger log = Logger.getLogger(AdjustScenarioForFreight.class);
