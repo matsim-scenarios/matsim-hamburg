@@ -33,8 +33,8 @@ public class GeneratePersonHomeLocation {
 
     public static void main(String[] args) throws IOException {
 
-        String inputPlan = "../shared-svn/projects/realLabHH/matsim-input-files/v1/hamburg-v1.0-25pct.plans.xml.gz";
-        String outputResult = "../shared-svn/projects/realLabHH/matsim-input-files/v1/person2homeLocation.csv";
+        String inputPlan = "../shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-25pct.plans-not-calibrated.xml.gz";
+        String outputResult = "../shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-person2HomeLocation.csv";
         GeneratePersonHomeLocation generatePersonHomeLocation = new GeneratePersonHomeLocation(inputPlan);
         generatePersonHomeLocation.generate();
         generatePersonHomeLocation.write(outputResult,",");
