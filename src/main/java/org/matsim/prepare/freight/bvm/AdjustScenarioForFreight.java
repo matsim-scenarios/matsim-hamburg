@@ -31,7 +31,6 @@ public class AdjustScenarioForFreight {
     private static final Logger log = Logger.getLogger(AdjustScenarioForFreight.class);
     private static final List<String> modes = Arrays.asList("Lfw","Lkw-g","Lkw-k","Lkw-m","Trans","PWV_IV","Pkw-Lfw");
 
-    @Deprecated
     public static void adjustScenarioForFreight(Scenario scenario, List<String> modes){
         // network
         Network network = scenario.getNetwork();
@@ -84,7 +83,6 @@ public class AdjustScenarioForFreight {
         return modes.stream().map(mode -> COMMERCIAL + "_" + mode).collect(Collectors.toList());
     }
 
-    @Deprecated
     public static void adjustControlerForFreight(Controler controler, List<String> modes){
         for (String mode : modes) {
             controler.addOverridingModule( new AbstractModule() {

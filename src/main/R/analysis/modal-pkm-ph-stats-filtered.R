@@ -2,11 +2,11 @@ library(tidyverse)
 library(dplyr)
 library(lubridate)
 
-jan#read trips table
-
+#define input 
 runDir <- "D:/ReallabHH/v2.2/2021-11-12/reallab2030-ff/"
 runID <- "hamburg-v2.2-10pct-reallabHH2030"
 
+#read legs table
 legs <- read.csv2(paste(runDir, runID, ".output_legs.csv", sep = ""))
 
 # contains a set of person Ids whose trips are to be considered.
