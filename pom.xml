@@ -4,18 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.matsim-scenarios</groupId>
     <artifactId>matsim-hamburg</artifactId>
-    <version>matsim-hamburg-SNAPSHOT</version>
+    <version>v2.2</version>
 
     <name>MATSim Open Hamburg scenario project</name>
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <matsim.version>14.0-PR1568</matsim.version> <!-- currently used on 2.x branch -->
-        <!--<matsim.version>14.0-PR1687</matsim.version>-->
-        <!--<matsim.version>14.0-PR1568</matsim.version>-->
-
-        <!--        <matsim.version>13.0</matsim.version>-->
-        <!--<matsim.version>14.0-SNAPSHOT</matsim.version>-->
+        <matsim.version>14.0-PR1723</matsim.version>
+<!--        <matsim.version>14.0-SNAPSHOT</matsim.version>-->
 
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
     </properties>
@@ -160,7 +156,7 @@
 
         <dependency>
             <groupId>org.matsim.contrib</groupId>
-            <artifactId>analysis</artifactId>
+            <artifactId>sharing</artifactId>
             <version>${matsim.version}</version>
         </dependency>
 
@@ -183,27 +179,27 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.matsim-vsp</groupId>
-            <artifactId>matsim-analysis</artifactId>
-            <version>master-933a6dd4ce-1</version>
-            <exclusions>
-                <!-- Will pull old drt version -->
-                <exclusion>
-                    <groupId>org.matsim.contrib</groupId>
-                    <artifactId>drt</artifactId>
-                </exclusion>
-                    <exclusion>
-                        <groupId>org.matsim.contrib</groupId>
-                        <artifactId>dvrp</artifactId>
-                    </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.matsim-vsp</groupId>-->
+<!--            <artifactId>matsim-analysis</artifactId>-->
+<!--            <version>master-933a6dd4ce-1</version>-->
+<!--            <exclusions>-->
+<!--                &lt;!&ndash; Will pull old drt version &ndash;&gt;-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.matsim.contrib</groupId>-->
+<!--                    <artifactId>drt</artifactId>-->
+<!--                </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.matsim.contrib</groupId>-->
+<!--                        <artifactId>dvrp</artifactId>-->
+<!--                    </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.matsim-vsp</groupId>
             <artifactId>pt-extensions</artifactId>
-            <version>67dec05d3b</version>
+            <version>609986ef68</version>
             <exclusions>
                 <!-- Will pull old drt version -->
                 <exclusion>
@@ -246,18 +242,6 @@
 
             </exclusions>
 
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.eqasim-org</groupId>
-            <artifactId>matsim-sharing</artifactId>
-            <version>792a5147ef</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.matsim.contrib</groupId>
-                    <artifactId>dvrp</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>
@@ -308,8 +292,14 @@
                         <configuration>
                             <outputFile>${project.basedir}/${project.build.finalName}.jar</outputFile>
                             <transformers>
+                                <!-- The following sets the main class for the executable jar as you otherwise would with the assembly plugin -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${mainClass}</mainClass>
+                                    <manifestEntries>
+                                        <Main-Class>org.matsim.gui.MATSimGUI</Main-Class>
+                                        <Specification-Vendor>org.matsim</Specification-Vendor>
+                                        <Implementation-Vendor>org.matsim</Implementation-Vendor>
+                                        <Implementation-Version>${project.version}</Implementation-Version>
+                                    </manifestEntries>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
@@ -366,36 +356,6 @@
                     <version>2.3.0.1</version>
                 </dependency>
             </dependencies>
-        </profile>
-
-        <profile>
-            <id>release</id>
-            <build>
-                <defaultGoal>assembly:assembly</defaultGoal>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-assembly-plugin</artifactId>
-                            <configuration>
-                                <descriptors>
-                                    <descriptor>src/main/assembly/assembly-release.xml</descriptor>
-                                </descriptors>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-jar-plugin</artifactId>
-                            <configuration>
-                                <archive>
-                                    <manifest>
-                                        <addClasspath>true</addClasspath>
-                                        <classpathPrefix>libs/</classpathPrefix>
-                                    </manifest>
-                                </archive>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
     </profiles>
 

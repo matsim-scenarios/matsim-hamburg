@@ -19,9 +19,9 @@ public class CleanPop {
         String planFile;
         String version;
         if(args.length == 0){
-            folder = "/Users/meng/work/realLabHH_meng/files/v4/";
-            planFile = "hamburg-v1.0-25pct.plans.xml.gz";
-            version = "v2";
+            folder = "../shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.2/input/";
+            planFile = "hamburg-v2.2-10pct.input-plans.xml.gz";
+            version = "v2.2";
         } else {
             folder = args[0];
             planFile = args[1];
@@ -45,14 +45,14 @@ public class CleanPop {
             person.setSelectedPlan(selectedPlan);
         }
 
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), folder + "hamburg-" + version + "-25pct.plans.xml.gz");
+        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(), folder + "hamburg-" + version + "-10pct.input-plans.xml.gz");
 
-        // sample 25% to 10%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
-        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(),folder + "hamburg-" + version + "-10pct.plans.xml.gz");
-
-        // sample 10% to 1%
-        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
-        PopulationUtils.writePopulation(scenario.getPopulation(), folder + "hamburg-" + version + "-1pct.plans.xml.gz");
+//        // sample 25% to 10%
+//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.4);
+//        org.matsim.core.population.PopulationUtils.writePopulation(scenario.getPopulation(),folder + "hamburg-" + version + "-10pct.plans.xml.gz");
+//
+//        // sample 10% to 1%
+//        org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), 0.1);
+//        PopulationUtils.writePopulation(scenario.getPopulation(), folder + "hamburg-" + version + "-1pct.plans.xml.gz");
     }
 }

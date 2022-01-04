@@ -22,8 +22,9 @@ public class ClassifyStationType {
 
 
 
-        String configFile = "scenarios/input/hamburg-v1.1-1pct.config.xml";
+        String configFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml";
         Config config = ConfigUtils.loadConfig(configFile);
+
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
 
@@ -98,7 +99,7 @@ public class ClassifyStationType {
 
     private static void writeOutput(List<Stop2type> stops) throws IOException {
         //print out
-        FileWriter out = new FileWriter( new File( "transitStationTypes.csv" ) );
+        FileWriter out = new FileWriter("transitStationTypes_2030.csv");
         //out.write( "X;Y\n" );
         //out.write( xx + ";" + yy + ";\n" );
         out.write("id;x;y;name;stationType\n");

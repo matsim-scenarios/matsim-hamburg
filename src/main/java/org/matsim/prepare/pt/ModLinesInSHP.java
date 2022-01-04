@@ -29,12 +29,12 @@ public class ModLinesInSHP {
 
         if (args.length == 0) {
             args = new String[] {
-                    "scenarios/input/hamburg-v2.0-10pct.config.xml", // [0] "Config file path",
-                    "hamburg-v1.0-network-with-2030pt.xml.gz", // [1] "Network with pt path",
-                    "hamburg-v2.0-transitSchedule.xml.gz", // [2] "TransitSchedule input Path",
-                    "scenarios/input/hamburg-v2.0-transitSchedule_edit.xml.gz", // [3] "TransitSchedule output Path",
-//                    "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_hvv_incl_gtfs2019stops/hamburg_hvv_new.shp", // [4] "shp file path"
-                    "scenarios/input/hamburg_hvv_new.shp" // [4] "shp file path"
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml", // [0] "Config file path",
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.xml.gz", // [1] "Network with pt path",
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitSchedule.xml.gz", // [2] "TransitSchedule input Path",
+                    "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/pt/hamburg-v2.0-reallab2030plus-transitSchedule.xml.gz", // [3] "TransitSchedule output Path",
+                    "https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_hvv_incl_gtfs2019stops/hamburg_hvv_new.shp", // [4] "shp file path"
+//                    "scenarios/input/hamburg_hvv_new.shp" // [4] "shp file path"
             };
         }
 

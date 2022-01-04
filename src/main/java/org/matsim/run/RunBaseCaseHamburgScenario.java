@@ -3,6 +3,7 @@ package org.matsim.run;
 
 import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
+import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
 import org.matsim.analysis.here.HereAPIControlerListener;
@@ -26,9 +27,11 @@ import org.matsim.core.config.groups.SubtourModeChoiceConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
+import org.matsim.massConservation4SingleTripModeChoice.PenalizeMassConservationViolationsModule;
 import org.matsim.parking.NetworkParkPressureReader;
 import org.matsim.parking.UtilityBasedParkingPressureEventHandler;
 import org.matsim.prepare.freight.AdjustScenarioForFreight;
@@ -49,7 +52,7 @@ public class RunBaseCaseHamburgScenario {
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v2.0";
+    public static final String VERSION = "v2.2";
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
@@ -60,7 +63,7 @@ public class RunBaseCaseHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         }
 
         RunBaseCaseHamburgScenario baseCaseHH = new RunBaseCaseHamburgScenario();
@@ -90,12 +93,19 @@ public class RunBaseCaseHamburgScenario {
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                 }
                //use custom AnalysisMainModeIdentifier
-//                bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgAnalysisMainModeIdentifier());
                 bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgIntermodalAnalysisModeIdentifier());
 
 
                 //analyse PersonMoneyEvents
                 install(new PersonMoneyEventsAnalysisModule());
+
+                //if changeSingleTripMode strategy is used, install module for mass conservation scoring
+                if(getConfig().strategy().getStrategySettings().stream()
+                        .filter(settings -> settings.getStrategyName().equals(DefaultPlanStrategiesModule.DefaultStrategy.ChangeSingleTripMode))
+                        .findAny()
+                        .isPresent()){
+                    install(new PenalizeMassConservationViolationsModule());
+                }
             }
         });
         // use HereApiValidator if is needed
@@ -130,16 +140,13 @@ public class RunBaseCaseHamburgScenario {
         });
 
         // use link-based park pressure
-        if(ConfigUtils.addOrGetModule(controler.getConfig(),HamburgExperimentalConfigGroup.class).isUseLinkBasedParkPressure()){
+        controler.addOverridingModule(new AbstractModule() {
 
-            controler.addOverridingModule(new AbstractModule() {
-
-                @Override
-                public void install() {
-                    this.addEventHandlerBinding().to(UtilityBasedParkingPressureEventHandler.class);
-                }
-            });
-        }
+            @Override
+            public void install() {
+                this.addEventHandlerBinding().to(UtilityBasedParkingPressureEventHandler.class);
+            }
+        });
 
         // add Freight
         AdjustScenarioForFreight.adjustControlerForFreight(controler, AdjustScenarioForFreight.getFreightModes());
@@ -182,13 +189,11 @@ public class RunBaseCaseHamburgScenario {
         }
 
         // add parkPressureAttribute
-        if(hamburgExperimentalConfigGroup.isUseLinkBasedParkPressure()){
-        	if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
-        		log.info("Adding missing park pressure link attributes based on provided files...");
-        		NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
-                networkParkPressureReader.addLinkParkTimeAsAttribute();
-        		log.info("Adding missing park pressure link attributes based on provided files... Done.");
-        	}
+        if (hamburgExperimentalConfigGroup.getParkPressureLinkAttributeFile() != null) {
+            log.info("Adding missing park pressure link attributes based on provided files...");
+            NetworkParkPressureReader networkParkPressureReader = new NetworkParkPressureReader(scenario.getNetwork(),hamburgExperimentalConfigGroup);
+            networkParkPressureReader.addLinkParkTimeAsAttribute();
+            log.info("Adding missing park pressure link attributes based on provided files... Done.");
         }
 
 

@@ -39,7 +39,7 @@ public class RailwayCrossings {
         List<Coord> coordinates = readCsv(inputFile);
         //read in networks and filter for modes car and pt
         String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-network-with-pt.xml.gz";
-        Network network = NetworkUtils.readNetwork(networkFile);
+        Network network = NetworkUtils.readTimeInvariantNetwork(networkFile);
         TransportModeNetworkFilter transportModeNetworkFilter = new TransportModeNetworkFilter(network);
         Network ptNetwork = NetworkUtils.createNetwork();
         transportModeNetworkFilter.filter(ptNetwork, new HashSet(Collections.singletonList(TransportMode.pt)));

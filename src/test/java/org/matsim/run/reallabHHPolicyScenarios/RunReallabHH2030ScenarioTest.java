@@ -19,7 +19,7 @@
  * *********************************************************************** *//*
 
 
-package org.matsim.run;
+package org.matsim.run.reallabHHPolicyScenarios;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -37,6 +37,7 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.events.IterationEndsEvent;
 import org.matsim.core.controler.listener.IterationEndsListener;
+import org.matsim.run.reallabHHPolicyScenarios.RunReallabHH2030Scenario;
 import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;

@@ -26,6 +26,10 @@ import java.util.*;
 
 /**
  * @author zmeng, tschlenther
+ *
+ * uses infrastructure from the sharing contrib and incorporates a bike sharing and a car sharing service that operate in freeflow mode.
+ * user costs are based on real data from 2021.
+ * scoring mode parameters are copied from bike and car.
  */
 public class RunSharingScenario {
 
@@ -46,7 +50,7 @@ public class RunSharingScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         }
 
         RunSharingScenario sharingScenario = new RunSharingScenario();
@@ -104,7 +108,7 @@ public class RunSharingScenario {
         return configureBikeAndCarSharingServices(config);
     }
 
-    static Config configureBikeAndCarSharingServices(Config config) {
+    public static Config configureBikeAndCarSharingServices(Config config) {
         //the SharingServiceConfigGroups (and SharingConfigGroup) can not be read from xml yet!
         //This is why we set the input files from our experimental config groups. I know, it is ugly.... tschlenther sep '21.
 
@@ -116,7 +120,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup carSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(carSharingConfig);
         carSharingConfig.setId(SHARING_SERVICE_ID_CAR);
-        carSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
+        carSharingConfig.setMaximumAccessEgressDistance(10_000); //high acceptance for lower probability to stuck
         carSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         carSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
 //        carSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_scar.xml");
@@ -127,7 +131,7 @@ public class RunSharingScenario {
         SharingServiceConfigGroup bikeSharingConfig = new SharingServiceConfigGroup();
         sharingConfigGroup.addService(bikeSharingConfig);
         bikeSharingConfig.setId(SHARING_SERVICE_ID_BIKE);
-        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //TODO decide. consider probability to stuck.
+        bikeSharingConfig.setMaximumAccessEgressDistance(10_000); //high acceptance for lower probability to stuck
         bikeSharingConfig.setServiceScheme(SharingServiceConfigGroup.ServiceScheme.Freefloating);
         bikeSharingConfig.setServiceAreaShapeFile(SERVICE_AREA);
 //        bikeSharingConfig.setServiceInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/sharingStationsAndSharingVehicles_sbike.xml");
@@ -140,6 +144,12 @@ public class RunSharingScenario {
         modes.add(SharingUtils.getServiceMode(bikeSharingConfig));
         config.subtourModeChoice().setModes(modes.toArray(new String[modes.size()]));
 
+        List<String> changeModes = new ArrayList<>(Arrays.asList(config.changeMode().getModes()));
+        changeModes.add(SharingUtils.getServiceMode(carSharingConfig));
+        changeModes.add(SharingUtils.getServiceMode(bikeSharingConfig));
+        config.changeMode().setModes(changeModes.toArray(new String[modes.size()]));
+
+        //configure activities
         PlanCalcScoreConfigGroup.ActivityParams pickupParams = new PlanCalcScoreConfigGroup.ActivityParams(SharingUtils.PICKUP_ACTIVITY);
         pickupParams.setScoringThisActivityAtAll(false);
         config.planCalcScore().addActivityParams(pickupParams);
@@ -169,8 +179,8 @@ public class RunSharingScenario {
             sbikeParams.setMarginalUtilityOfTraveling(bikeParams.getMarginalUtilityOfTraveling());
             sbikeParams.setDailyUtilityConstant(bikeParams.getDailyUtilityConstant());
             sbikeParams.setMarginalUtilityOfDistance(bikeParams.getMarginalUtilityOfDistance());
-            //TODO this comes from the stadtrad fares. the service costs 5 euros per year
-            sbikeParams.setDailyMonetaryConstant( (5. / 365.) );
+            //this comes from the stadtrad fares. the service costs 5 euros per year
+            sbikeParams.setDailyMonetaryConstant( (5. / 230.) ); // circa 230 working days per year (disregarding saturdays) (which is what we model)
 
             config.planCalcScore().addModeParams(sbikeParams);
             config.planCalcScore().addModeParams(scarParams);
@@ -207,7 +217,7 @@ public class RunSharingScenario {
             //and we model the yearly subscription fee in the mode params, see above.
             bikeSharingConfig.setBaseFare(0.);
             bikeSharingConfig.setMinimumFare(0.);
-            bikeSharingConfig.setTimeFare(0.); //per second. costs actually 0.10/min after the 30th minute...
+            bikeSharingConfig.setTimeFare(0.1 / 60.); //per second. costs actually 0.10/min after the 30th minute. as we model large infrastructure changes in the scenario, the intake from the first 30 mins could be taken for financing
             bikeSharingConfig.setDistanceFare(0.); //per meter
         }
 

@@ -50,7 +50,6 @@ import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.facilities.MatsimFacilitiesReader;
-import org.matsim.run.HamburgShpUtils;
 import org.matsim.run.RunBaseCaseHamburgScenario;
 import org.matsim.run.RunDRTHamburgScenario;
 
@@ -83,16 +82,15 @@ public class DrtFeederVehicleCreator {
 	public static void main(String[] args) {
 
 
-		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
-//		String populationFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/berlin/berlin-v5.5-10pct/input/berlin-v5.5-10pct.plans.xml.gz";
+		//careful: currently reallabHH2030plus network!
+		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt-and-parkingPressure.xml.gz";
+//		String populationFile = "";
 //		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
 
-		//insideHH
-//		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/insideHH/serviceArea/hamburg-v2.0-drt-feeder-service-areas.shp";
-		//extended
-		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/extended/serviceArea/hamburg-v2.0-drt-feeder-service-areas-extended.shp";
+		//careful: currently drt2030 area!
+		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
 
 		//where vehicles are allowed to drive
 		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
@@ -100,20 +98,10 @@ public class DrtFeederVehicleCreator {
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
-		String vehiclesFilePrefix = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/drtFeeder/extended/vehicles/hamburg-v2.0-drt-feeder-by-rndLocations-";
+		//TODO you need to adjust this to your local copy because you can not write from your IDE.
+		String vehiclesFilePrefix = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/drt2030/drt/vehicles/hamburg-v2.2-drt-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
-//		numbersOfVehicles.add(20);
-//		numbersOfVehicles.add(30);
-//		numbersOfVehicles.add(50);
-//		numbersOfVehicles.add(80);
-		numbersOfVehicles.add(100);
-//		numbersOfVehicles.add(120);
-//		numbersOfVehicles.add(150);
-		numbersOfVehicles.add(200);
-//		numbersOfVehicles.add(250);
-		numbersOfVehicles.add(300);
-		numbersOfVehicles.add(400);
 		numbersOfVehicles.add(500);
 		numbersOfVehicles.add(600);
 		numbersOfVehicles.add(700);
@@ -121,7 +109,7 @@ public class DrtFeederVehicleCreator {
 		numbersOfVehicles.add(900);
 		numbersOfVehicles.add(1000);
 //		numbersOfVehicles.add(1200);
-//		numbersOfVehicles.add(1500);
+		numbersOfVehicles.add(1500);
 		numbersOfVehicles.add(2000);
 //		numbersOfVehicles.add(2500);
 		numbersOfVehicles.add(3000);

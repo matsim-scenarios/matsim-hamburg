@@ -46,7 +46,7 @@ public class AddMissingTripsToSNZPlans {
 
         if(args.length == 0){
             plans = "test/input/test-hamburg.plans.xml";
-            personInHamburg = "/Users/meng/shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person_in_hamburg.csv";
+            personInHamburg = "../shared-svn/projects/matsim-hamburg/hamburg-v1.0/person_specific_info/person_in_hamburg.csv";
             outputFolder = "test/output/";
             missingTrips = 10;
             range = 1000;

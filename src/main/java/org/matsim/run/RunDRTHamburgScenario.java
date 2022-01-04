@@ -14,7 +14,6 @@ import org.matsim.contrib.drt.run.MultiModeDrtModule;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
-import org.matsim.contrib.dvrp.run.MultiModal;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
@@ -28,17 +27,14 @@ import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTri
 import org.matsim.extensions.pt.routing.EnhancedRaptorIntermodalAccessEgress;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
 import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesModule;
+import org.matsim.prepare.drt.HamburgShpUtils;
 import org.matsim.prepare.pt.ClassifyStationType;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * @author tschlenther
@@ -58,7 +54,7 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v2.0-10pct.config.drtFeederInHHwOSpeedUp.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030/hamburg-v2.2-10pct.config.reallabHH2030.xml"};
         }
 
         RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();
@@ -68,10 +64,6 @@ public class RunDRTHamburgScenario {
     private void run(String[] args) throws IOException {
 
         Config config = prepareConfig(args);
-
-        //TODO bfre release: delete!!
-        //set real (1pct) input plans
-//        config.plans().setInputFile("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/hamburg-v1.1/input/hamburg-v1.1-1pct.plans.xml.gz");
 
         Scenario scenario = prepareScenario(config);
 
@@ -83,19 +75,18 @@ public class RunDRTHamburgScenario {
 
     public static Controler prepareControler(Scenario scenario) {
         Controler controler =  RunBaseCaseHamburgScenario.prepareControler(scenario);
-        return prepareControler(controler);
+        prepareControler(controler);
+        return controler;
     }
 
-    static Controler prepareControler(Controler controler, String... additionalDvrpModes) {
+    public static void prepareControler(Controler controler) {
         //        // drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
 
         //configureQSim: activate all dvrp modes
         MultiModeDrtConfigGroup mmCfg = MultiModeDrtConfigGroup.get(controler.getConfig());
-        List<String> drtModes = Arrays.stream(new MultiModeDrtConfigGroup[]{mmCfg}).flatMap(MultiModal::modes).collect(toList());
-        drtModes.addAll(List.of(additionalDvrpModes));
-        controler.configureQSimComponents(DvrpQSimComponents.activateModes(List.of(),drtModes));
+        controler.configureQSimComponents(DvrpQSimComponents.activateAllModes(mmCfg));
 
         controler.addOverridingModule(new AbstractModule() {
 
@@ -108,8 +99,6 @@ public class RunDRTHamburgScenario {
 
         controler.addOverridingModule(new IntermodalTripFareCompensatorsModule());
         controler.addOverridingModule(new PtIntermodalRoutingModesModule());
-
-        return controler;
     }
 
     public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
@@ -152,13 +141,10 @@ public class RunDRTHamburgScenario {
         return prepareNetwork(scenario);
     }
 
-    static Scenario prepareNetwork(Scenario scenario) {
+    public static Scenario prepareNetwork(Scenario scenario) {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
         for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
-            //TODO: this is not the best solution
-
-            // Michal says restricting drt to a drt network roughly the size of the service area helps to speed up.
-            // This is even more true since drt started to route on a freespeed TT matrix (Nov '20).
+            //TODO: this is not the best solution as it requires the user to set an additional config pointer to an additional shape file that must contain all drt service areas...
             if(hamburgExperimentalConfigGroup.getDrtNetworkOperationArea() != null){
                 addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtNetworkOperationArea(), 0.);
             }

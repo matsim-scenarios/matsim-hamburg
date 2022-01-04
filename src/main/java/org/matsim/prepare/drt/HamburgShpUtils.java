@@ -17,7 +17,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.run;
+package org.matsim.prepare.drt;
 
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;

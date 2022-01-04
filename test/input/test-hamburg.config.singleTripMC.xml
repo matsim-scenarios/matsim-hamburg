@@ -6,12 +6,12 @@
     </module>
 
     <module name="controler">
-        <param name="lastIteration" value="4"/>
+        <param name="lastIteration" value="20"/>
         <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
         <param name="runId" value="hamburg-1pct"/>
         <param name="outputDirectory" value="./output/output-hamburg-test/"/>
-        <param name="writeEventsInterval" value="10"/>
-        <param name="writePlansInterval" value="10"/>
+        <param name="writeEventsInterval" value="1"/>
+        <param name="writePlansInterval" value="1"/>
         <param name="enableLinkToLinkRouting" value="false" />
     </module>
 
@@ -84,10 +84,17 @@
             <param name="subpopulation" value="person"/>
             <param name="weight" value="0.05"/>
         </parameterset>
-        <parameterset type="strategysettings">
-            <param name="strategyName" value="SubtourModeChoice"/>
-            <param name="subpopulation" value="person"/>
-            <param name="weight" value="0.2"/>
+<!--        <parameterset type="strategysettings">-->
+<!--            <param name="strategyName" value="SubtourModeChoice"/>-->
+<!--            <param name="subpopulation" value="person"/>-->
+<!--            <param name="weight" value="0.2"/>-->
+<!--        </parameterset>-->
+        <parameterset type="strategysettings" >
+            <param name="disableAfterIteration" value="-1" />
+            <param name="executionPath" value="null" />
+            <param name="strategyName" value="ChangeSingleTripMode" />
+            <param name="subpopulation" value="person" />
+            <param name="weight" value="0.2" />
         </parameterset>
         <parameterset type="strategysettings">
             <param name="strategyName" value="TimeAllocationMutator"/>
@@ -96,11 +103,19 @@
         </parameterset>
     </module>
 
-    <!-- TODO: the test still uses subtourModeChoice. change to singleTripChange! -->
-    <module name="subtourModeChoice">
-        <param name="chainBasedModes" value="car,bike"/>
-        <param name="modes" value="car,pt,bike,walk"/>
+    <module name="changeMode" >
+        <!-- Defines whether car availability is considered be considered or not. An agent has no car only if it has no license, or never access to a car. Default: true -->
+        <param name="ignoreCarAvailability" value="false" />
+        <!-- Defines the mode switch behavior. Possible values [fromAllModesToSpecifiedModes, fromSpecifiedModesToSpecifiedModes] Default: fromSpecifiedModesToSpecifiedModes. -->
+        <param name="modeSwitchBehavior" value="fromSpecifiedModesToSpecifiedModes" />
+        <!-- Defines all the modes available, including chain-based modes, seperated by commas -->
+        <param name="modes" value="car,pt,bike,walk" />
     </module>
+
+<!--    <module name="subtourModeChoice">-->
+<!--        <param name="chainBasedModes" value="car,bike"/>-->
+<!--        <param name="modes" value="car,pt,bike,walk"/>-->
+<!--    </module>-->
 
     <module name="transitRouter">
         <param name="extensionRadius" value="500.0"/>

@@ -57,7 +57,7 @@ import static org.matsim.contrib.emissions.Pollutant.*;
 
 /**
  *
- * Computes the emissions using the 'allVehicles' output file which should be written out as a default in more recent MATSim runs
+ * Computes the emissions using the 'allVehicles' output file
  *
  * @author tschlenther
  */
@@ -74,7 +74,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 	private final EnumeratedDistribution lightCommercialVehicleTypeDistribution;
 	private final EnumeratedDistribution passengerVehicleTypeDistribution;
 
-	static List<Pollutant> pollutants2Output = Arrays.asList(CO2_TOTAL, NOx, PM, PN, Pb, PM2_5);
+	static List<Pollutant> pollutants2Output = Arrays.asList(CO2_TOTAL, NOx, PM, PM_non_exhaust);
 
 	//TODO maybe use a builder
 	RunOfflineAirPollutionAnalysisByEngineInformation(String runDirectory, String runId, String hbefaFileWarm, String hbefaFileCold, String analysisOutputDirectory, List<Pair<String, Double>> passengerCarEmissionConceptShares, List<Pair<String, Double>> heavyGoodsVehiclesEmissionConceptShares, List<Pair<String, Double>> lightCommercialVehiclesEmissionConceptShares) {
@@ -95,33 +95,25 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 
 	public static void main(String[] args) throws IOException {
 
-		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as envrionment variable to decrypt the files.
+		//TODO: Please set MATSIM_DECRYPTION_PASSWORD as environment variable to decrypt the files. ask VSP for access.
 
-		final String hbefaPath = "D://Arbeit//shared-svn//projects//matsim-germany//hbefa//hbefa-files//v4.1";
+		final String hbefaPath = "https://svn.vsp.tu-berlin.de/repos/public-svn/3507bb3997e5657ab9da76dbedbb13c9b5991d3e/";
 		//actually the hbefa files need to be set relative to the config or by absolute path...
-
-		final String hbefaFileCold = "D:/Arbeit/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
-		final String hbefaFileWarm = "D:/Arbeit/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
 //		final String hbefaFileCold = hbefaPath + "0e73947443d68f95202b71a156b337f7f71604ae/5a297db51545335b2f7899002a1ea6c45d4511a3.enc";
-//		final String hbefaFileCold = "D://Arbeit//shared-svn//projects//matsim-germany//hbefa//hbefa-files//v4.1//EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
-//		final String hbefaFileWarm = "D://Arbeit//shared-svn//projects//matsim-germany//hbefa//hbefa-files//v4.1//EFA_HOT_Concept_2020_detailed_perTechAverage.csv";
-//		final String hbefaFileCold = "D:/Arbeit/svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
-//		final String hbefaFileWarm = hbefaPath + "0e73947443d68f95202b71a156b337f7f71604ae/944637571c833ddcf1d0dfcccb59838509f397e6.enc";
-//		final String hbefaFileCold = "D://Arbeit//shared-svn//projects//matsim-germany//hbefa//hbefa-files//v4.1//EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
-//		final String hbefaFileWarm = "D://Arbeit//shared-svn//projects//matsim-germany//hbefa//hbefa-files//v4.1//EFA_HOT_Concept_2020_Average.csv";
+		final String hbefaFileCold = "../../svn/shared-svn/projects/matsim-germany/hbefa/hbefa-files/v4.1/EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
+		final String hbefaFileWarm = hbefaPath + "0e73947443d68f95202b71a156b337f7f71604ae/944637571c833ddcf1d0dfcccb59838509f397e6.enc";
 
 		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
-		final String runId = "h-v2-10pct-accEcc-c4" ;
-		String runDirectory = "D://Gregor//Uni//TUCloud//Masterarbeit//MATSim//SingleTrip//FixedValue/2.50";
+		final String runId = "hamburg-v2.2-proKlima2030" ;
+		String runDirectory = "provide run output directory";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,
 				hbefaFileWarm,
 				hbefaFileCold,
-//				"../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.1/hamburg-v1.1-10pct/output/" + "emission-analysis-hbefa-v4.1-2020", //TS path
-				"D://Gregor//Uni/TUCloud//Masterarbeit//MATSim//Outputs//FixedValue//0.5" + "emission-analysis-hbefa-v4.1-2020", //KMT path
+				runDirectory + "emission-analysis-hbefa-v4.1-2020",
 				HBEFAEmissionConceptShares.HBEFA_PSNGCAR_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_HGV_SHARE_2020,
 				HBEFAEmissionConceptShares.HBEFA_LCV_SHARE_2020);
@@ -130,32 +122,6 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-//		processPolicyCases(hbefaFileCold, hbefaFileWarm);
-	}
-
-	private static void processPolicyCases(String hbefaFileCold, String hbefaFileWarm, String runRootDirectory) {
-		Set<String> runIds = new HashSet<>();
-//		runIds.add("p-baseSingleTrip");
-		Set<String> errors = new HashSet<>();
-		runIds.forEach(runId -> {
-			String runDirectory = runRootDirectory + "output-" + runId + "/";
-			RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
-					runDirectory,
-					runId,
-					hbefaFileWarm,
-					hbefaFileCold,
-					runDirectory + "emission-analysis-hbefa-v4.1-2020",
-					HBEFAEmissionConceptShares.HBEFA_PSNGCAR_SHARE_2020, //also use 2020 shares for policy cases...
-					HBEFAEmissionConceptShares.HBEFA_HGV_SHARE_2020,
-					HBEFAEmissionConceptShares.HBEFA_LCV_SHARE_2020);
-			try {
-				analysis.run();
-			} catch (IOException e) {
-				errors.add(runDirectory);
-			}
-		});
-		errors.forEach(run -> System.out.println("could not process " + run));
 	}
 
 	void run() throws IOException {
@@ -182,7 +148,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		eConfig.setDetailedWarmEmissionFactorsFile(hbefaWarmFile);
 		eConfig.setHbefaRoadTypeSource(HbefaRoadTypeSource.fromLinkAttributes);
 		eConfig.setNonScenarioVehicles(NonScenarioVehicles.ignore);
-		eConfig.setWritingEmissionsEvents(true);
+		eConfig.setWritingEmissionsEvents(true); //in the end, the EventXMLWriter is currently out commented (see below)
 
 		//TODO ?????
 		eConfig.setHbefaTableConsistencyCheckingLevel(EmissionsConfigGroup.HbefaTableConsistencyCheckingLevel.none);
@@ -202,7 +168,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		prepareNetwork(hamburgCfg, scenario);
 
-		//create add vehicle types and add them to the scenario and store them in maps
+		//create vehicle types and add them to the scenario and store them in maps
 
 		//passenger car vehicle types
 		Map<String, VehicleType> passengerVehicleTypes = createAndAddVehicleTypesForAllEmissionConcepts(scenario, HbefaVehicleCategory.PASSENGER_CAR);
@@ -351,7 +317,7 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		return vehicleType;
 	}
 
-	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFile, Scenario scenario, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
+	private void writeOutput(String linkEmissionAnalysisFile, String linkEmissionPerMAnalysisFile, String vehicleTypeFileStr, Scenario scenario, EmissionsOnLinkHandler emissionsEventHandler) throws IOException {
 
 		log.info("Emission analysis completed.");
 
@@ -362,80 +328,63 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		nf.setGroupingUsed(false);
 
 		{
-			File file1 = new File(linkEmissionAnalysisFile);
+			File absolutFile = new File(linkEmissionAnalysisFile);
+			File perMeterFile = new File(linkEmissionPerMAnalysisFile);
 
-			BufferedWriter bw1 = new BufferedWriter(new FileWriter(file1));
+			BufferedWriter absolutWriter = new BufferedWriter(new FileWriter(absolutFile));
+			BufferedWriter perMeterWriter = new BufferedWriter(new FileWriter(perMeterFile));
 
-			bw1.write("linkId");
+			absolutWriter.write("linkId");
+			perMeterWriter.write("linkId");
 
 			for (Pollutant pollutant : pollutants2Output) {
-				bw1.write(";" + pollutant);
+				absolutWriter.write(";" + pollutant);
+				perMeterWriter.write(";" + pollutant + " [g/m]");
+
 			}
-			bw1.newLine();
+			absolutWriter.newLine();
+			perMeterWriter.newLine();
+
 
 			Map<Id<Link>, Map<Pollutant, Double>> link2pollutants = emissionsEventHandler.getLink2pollutants();
 
 			for (Id<Link> linkId : link2pollutants.keySet()) {
-				bw1.write(linkId.toString());
+				absolutWriter.write(linkId.toString());
+				perMeterWriter.write(linkId.toString());
 
 				for (Pollutant pollutant : pollutants2Output) {
-					double value = 0.;
+					double emissionValue = 0.;
 					if (link2pollutants.get(linkId).get(pollutant) != null) {
-						value = link2pollutants.get(linkId).get(pollutant);
+						emissionValue = link2pollutants.get(linkId).get(pollutant);
 					}
-					bw1.write(";" + nf.format(value));
-				}
-				bw1.newLine();
-			}
-
-			bw1.close();
-			log.info("Output written to " + linkEmissionAnalysisFile);
-		}
-
-		{
-			File file1 = new File(linkEmissionPerMAnalysisFile);
-
-			BufferedWriter bw1 = new BufferedWriter(new FileWriter(file1));
-
-			bw1.write("linkId");
-
-			for (Pollutant pollutant : pollutants2Output) {
-				bw1.write(";" + pollutant + " [g/m]");
-			}
-			bw1.newLine();
-
-			Map<Id<Link>, Map<Pollutant, Double>> link2pollutants = emissionsEventHandler.getLink2pollutants();
-
-			for (Id<Link> linkId : link2pollutants.keySet()) {
-				bw1.write(linkId.toString());
-
-				for (Pollutant pollutant : pollutants2Output) {
-					double emission = 0.;
-					if (link2pollutants.get(linkId).get(pollutant) != null) {
-						emission = link2pollutants.get(linkId).get(pollutant);
-					}
+					absolutWriter.write(";" + nf.format(emissionValue));
 
 					double emissionPerM = Double.NaN;
 					Link link = scenario.getNetwork().getLinks().get(linkId);
 					if (link != null) {
-						emissionPerM = emission / link.getLength();
+						emissionPerM = emissionValue / link.getLength();
 					}
-					bw1.write(";" + nf.format(emissionPerM));
+					perMeterWriter.write(";" + nf.format(emissionPerM));
+
 				}
-				bw1.newLine();
+				absolutWriter.newLine();
+				perMeterWriter.newLine();
+
 			}
 
-			bw1.close();
+			absolutWriter.close();
+			log.info("Output written to " + linkEmissionAnalysisFile);
+			perMeterWriter.close();
 			log.info("Output written to " + linkEmissionPerMAnalysisFile);
 		}
 
 		{
-			File file2 = new File(vehicleTypeFile);
+			File vehicleTypeFile = new File(vehicleTypeFileStr);
 
-			BufferedWriter bw2 = new BufferedWriter(new FileWriter(file2));
+			BufferedWriter vehicleTypeWriter = new BufferedWriter(new FileWriter(vehicleTypeFile));
 
-			bw2.write("vehicleId;vehicleType;emissionsConcept");
-			bw2.newLine();
+			vehicleTypeWriter.write("vehicleId;vehicleType;emissionsConcept");
+			vehicleTypeWriter.newLine();
 
 			for (Vehicle vehicle : scenario.getVehicles().getVehicles().values()) {
 				String emissionsConcept = "null";
@@ -443,12 +392,12 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 					emissionsConcept = VehicleUtils.getHbefaEmissionsConcept(vehicle.getType().getEngineInformation());
 				}
 
-				bw2.write(vehicle.getId() + ";" + vehicle.getType().getId().toString() + ";" + emissionsConcept);
-				bw2.newLine();
+				vehicleTypeWriter.write(vehicle.getId() + ";" + vehicle.getType().getId().toString() + ";" + emissionsConcept);
+				vehicleTypeWriter.newLine();
 			}
 
-			bw2.close();
-			log.info("Output written to " + vehicleTypeFile);
+			vehicleTypeWriter.close();
+			log.info("Output written to " + vehicleTypeFileStr);
 		}
 	}
 
@@ -476,9 +425,10 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 					continue;
 				}
 
-			} else if (vehicle.getId().toString().contains("drt") || vehicle.getId().toString().contains("taxi")) {
+			} else if (vehicle.getId().toString().contains("drt") || vehicle.getId().toString().contains("taxi") || vehicle.getId().toString().contains("scar")) {
 				//drt vehicles are considered to be electric in any case
-				VehicleType newVehicleType = passengerVehicleTypes.get("electricty"); //TODO could also be a light commercial vehicle ?!
+				//car sharing vehicles as well
+				VehicleType newVehicleType = passengerVehicleTypes.get("electricity"); //TODO could also be a light commercial vehicle ?!
 				Gbl.assertNotNull(newVehicleType);
 				veh2NewType.put(vehicle.getId(),newVehicleType);
 				continue;

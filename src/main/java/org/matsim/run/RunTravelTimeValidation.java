@@ -33,11 +33,11 @@ public class RunTravelTimeValidation {
         };
 
         Config config = prepareConfig(args);
-        config.plans().setInputFile("/Volumes/Macintosh HD/Users/meng/work/realLabHH/calibrate/HERE/hh-1pct-18-0.output_plans.xml.gz");
-        config.controler().setOutputDirectory("/Users/meng/work/realLabHH/calibrate/HERE");
+        config.plans().setInputFile("provide input plans");
+        config.controler().setOutputDirectory("set output directory!");
         ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class).setNumOfTrips("1000");
 
-        config.controler().setRunId("freeFlow_1.0");
+        config.controler().setRunId("someRunId");
 
         Scenario scenario = prepareScenario(config);
 
@@ -45,7 +45,7 @@ public class RunTravelTimeValidation {
         CarTripsExtractor carTripsExtractor = new CarTripsExtractor(scenario.getPopulation().getPersons().keySet(), scenario.getNetwork());
         eventManager.addHandler(carTripsExtractor);
         eventManager.initProcessing();
-        (new MatsimEventsReader(eventManager)).readFile("/Users/meng/work/realLabHH/calibrate/HERE" + "/hh-1pct-18-0.output_events.xml.gz");
+        (new MatsimEventsReader(eventManager)).readFile("provide output events file from simulation");
 
         HereAPITravelTimeValidation hereAPITravelTimeValidation = new HereAPITravelTimeValidation(carTripsExtractor,config);
         hereAPITravelTimeValidation.run();

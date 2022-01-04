@@ -1,4 +1,4 @@
-package org.matsim.run;
+package org.matsim.run.reallabHHPolicyScenarios;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -13,7 +13,9 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.prepare.SelectionMobilityBudget;
+import org.matsim.run.RunBaseCaseHamburgScenario;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,45 +31,89 @@ public class RunBaseCaseWithMobilityBudget {
 
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
-    public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v1.1";
-    public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
-    public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
-    public static final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
-    public static double totalSumMobilityBudget = 0;
-    static double dailyMobilityBudget;
-    static boolean useIncomeForMobilityBudget;
-    static double shareOfIncome;
-    public static boolean useShapeFile;
-    static String shapeFile;
-    public static boolean incomeBasedSelection;
-    static double shareOfAgents;
+    public final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
+    private double dailyMobilityBudget;
+    private final double shareOfIncome;
+    private final String shapeFile;
+    private final boolean incomeBasedSelection;
+    private final double shareOfAgents;
 
-
+    /*i decided to move from static methods to an object-oriented approach as a temporary solution to handle the program arguments and all the field variables. The latter should basically be moved
+     * into a config group (e.g. HamburgExperimentalConfigGroup
+     */
     public static void main(String[] args) throws ParseException, IOException {
 
+        int ii=0;
         for (String arg : args) {
+            System.out.println(ii);
             log.info(arg);
+            ii++;
         }
+
+
+        double dailyMobilityBudget = 10;
+        Double shareOfIncome = null;
+        String shapeFile = null;
+        boolean incomeBasedSelection = false;
+        double shareOfAgents = 0.;
+
+        String[] configArguments;
 
         if (args.length == 0) {
-            args = new String[] {"scenarios/input/hamburg-v1.1-10pct.config.xml"};
+            configArguments = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
+        } else {
+            configArguments = new String[args.length - 5];
+            for (int i = 0; i < args.length - 6; i++) {
+                configArguments[i] = args[i];
+            }
+            dailyMobilityBudget = Double.parseDouble(args[args.length - 5]);
+            shareOfIncome = Double.parseDouble(args[args.length - 4]);
+            shapeFile = args[args.length - 3];
+            incomeBasedSelection = Boolean.parseBoolean(args[args.length - 2]);
+            shareOfAgents = Double.parseDouble(args[args.length - 1]);
         }
 
-        processArguments(args);
-        RunBaseCaseWithMobilityBudget.run(args);
-    }
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget,
+                shareOfIncome,
+                shapeFile,
+                incomeBasedSelection,
+                shareOfAgents);
 
-    private static void run(String[] args) throws IOException {
-        Config config = prepareConfig(args);
-        Scenario scenario = prepareScenario(config);
-        Controler controler = prepareControler(scenario);
+        Config config = runner.prepareConfig(configArguments);
+        Scenario scenario = runner.prepareScenario(config);
+        Controler controler = runner.prepareControler(scenario);
         controler.run();
         log.info("Done.");
     }
 
-    public static Controler prepareControler(Scenario scenario) {
+
+    //TODO move variables to config group or use a builder...
+    // kind of had to to this as a quick, intermediate fix.., tschlenther late sep, '21
+
+    /**
+     *
+     * @param dailyMobilityBudget
+     * @param shareOfIncome set to 0.0 or negative in order to disable incomeBasedMobilityBudget
+     * @param shapeFile
+     * @param incomeBasedSelection
+     * @param shareOfAgents
+     */
+    /*package*/ RunBaseCaseWithMobilityBudget (Double dailyMobilityBudget,
+                                               double shareOfIncome,
+                                               @Nullable String shapeFile,
+                                               boolean incomeBasedSelection,
+                                               double shareOfAgents
+                                               ) {
+        this.dailyMobilityBudget = dailyMobilityBudget;
+        this.shareOfIncome = shareOfIncome;
+        this.shapeFile = shapeFile;
+        this.incomeBasedSelection = incomeBasedSelection;
+        this.shareOfAgents = shareOfAgents;
+    }
+
+
+    Controler prepareControler(Scenario scenario) {
         log.info("Preparing controler");
         Controler controler = RunBaseCaseHamburgScenario.prepareControler(scenario);
         MobilityBudgetEventHandler mobilityBudgetEventHandler = new MobilityBudgetEventHandler(personsEligibleForMobilityBudget);
@@ -85,19 +131,20 @@ public class RunBaseCaseWithMobilityBudget {
         });
     }
 
-    public static Scenario prepareScenario(Config config) throws IOException {
+    Scenario prepareScenario(Config config) throws IOException {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
         for (Map.Entry<Id<Person>, Double> entry : getPersonsEligibleForMobilityBudget2FixedValue(scenario, dailyMobilityBudget).entrySet()) {
             Id<Person> person = entry.getKey();
             Double budget = entry.getValue();
+//            System.out.println(budget);
             personsEligibleForMobilityBudget.put(person, budget);
         }
 
-        log.info("using income "+ useIncomeForMobilityBudget);
+        log.info("using income " + (shareOfIncome > 0.0));
         log.info("share of income "+ shareOfIncome);
-        if (useIncomeForMobilityBudget == true) {
+        if (shareOfIncome > 0.) {
             log.info("using the income for the MobilityBudget");
             for (Id<Person> personId : personsEligibleForMobilityBudget.keySet()) {
                 double monthlyIncomeOfAgent = (double) scenario.getPopulation().getPersons().get(personId).getAttributes().getAttribute("income")/12;
@@ -108,8 +155,8 @@ public class RunBaseCaseWithMobilityBudget {
             }
         }
 
-        if (useShapeFile == true) {
-            log.info("Filtering for Region" + useShapeFile);
+        if (shapeFile != null) {
+            log.info("Filtering for Region " + shapeFile);
             SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
         }
 
@@ -121,14 +168,14 @@ public class RunBaseCaseWithMobilityBudget {
         return scenario;
     }
 
-    public static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
+    static Map<Id<Person>, Double> getPersonsEligibleForMobilityBudget2FixedValue(Scenario scenario, Double value) {
 
         Map<Id<Person>, Double> persons2Budget = new HashMap<>();
 
         log.info("filtering population for mobilityBudget");
 
         for (Person person : scenario.getPopulation().getPersons().values()) {
-            Id<Person> personId = person.getId();
+            Id personId = person.getId();
             if(!personId.toString().contains("commercial")) {
                 Plan plan = person.getSelectedPlan();
                 //TripStructureUtil get Legs
@@ -148,39 +195,12 @@ public class RunBaseCaseWithMobilityBudget {
         return persons2Budget;
     }
 
-    public static Config prepareConfig(String[] args, ConfigGroup... customModules) {
+     Config prepareConfig(String[] args, ConfigGroup... customModules) {
         log.info("Preparing config");
         Config config = RunBaseCaseHamburgScenario.prepareConfig(args, customModules);
 
-        log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
-        log.info("share of income: "+ shareOfIncome);
-        log.info("use ShapeFile "+ useShapeFile);
-        log.info("using income for mobilityBudget: "+ useIncomeForMobilityBudget);
-        log.info("share of income: "+ shareOfIncome);
-        log.info("use ShapeFile "+ useShapeFile);
-        log.info("income based Selection "+incomeBasedSelection);
-        log.info("agents share" + shareOfAgents);
         return config;
     }
 
-    private static void processArguments(String[] args) {
-
-        log.info("Processing arguments for MobBudget");
-        dailyMobilityBudget = Double.parseDouble(args[6]);
-        useIncomeForMobilityBudget = Boolean.parseBoolean(args[8]);
-        shareOfIncome =Double.parseDouble(args[10]);
-        useShapeFile = Boolean.parseBoolean(args[12]);
-        shapeFile = args[14];
-        incomeBasedSelection = Boolean.parseBoolean(args[16]);
-        shareOfAgents = Double.parseDouble(args[18]);
-
-        log.info("dailyMobBud "+dailyMobilityBudget);
-        log.info("use Income " +useIncomeForMobilityBudget);
-        log.info("share of income "+shareOfIncome);
-        log.info("use shape File "+useShapeFile);
-        log.info("income based Selection "+incomeBasedSelection);
-        log.info(shareOfAgents +shareOfAgents);
-
-    }
 }
 

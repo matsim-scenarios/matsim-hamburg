@@ -473,6 +473,71 @@
 
     <!-- ====================================================================== -->
 
+    <person id="113f02_2violatingSubtours">
+        <attributes>
+            <attribute name="IPD_actEndTimes" class="java.lang.String">19883.0;56491.0;58350.0;59495.0;69118.0;81850.0;-Infinity</attribute>
+            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;20083.0;56683.0;58903.0;68503.0;70003.0;82603.0</attribute>
+            <attribute name="IPD_actTypes" class="java.lang.String">home;work;home;leisure;leisure;leisure;home</attribute>
+            <attribute name="age" class="java.lang.Integer">17</attribute>
+            <attribute name="carAvail" class="java.lang.String">never</attribute>
+            <attribute name="gender" class="java.lang.String">m</attribute>
+            <attribute name="sim_carAvailability" class="java.lang.String">never</attribute>
+            <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
+            <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
+            <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">2300.0</attribute>
+        </attributes>
+        <plan selected="yes">
+            <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" end_time="05:31:23" >
+            </activity>
+            <leg mode="bike" dep_time="05:31:23" trav_time="00:06:43">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">bike</attribute>
+                </attributes>
+            </leg>
+            <activity type="work_36600.0" x="598032.4670694929" y="5984525.721476143" start_time="05:34:43" end_time="15:41:31" >
+            </activity>
+            <leg mode="ride" dep_time="15:41:31" trav_time="00:02:11">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="home_1800.0" x="597154.5346880215" y="5984459.402417765" start_time="15:44:43" end_time="16:12:30" >
+            </activity>
+            <leg mode="ride" dep_time="16:12:30" trav_time="00:05:27">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_600.0" x="593783.5496643056" y="5984976.5887164995" start_time="16:21:43" end_time="16:31:35" >
+            </activity>
+            <leg mode="bike" trav_time="02:06:49">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">bike</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_600.0" x="596728.2855898713" y="5979703.683421475" start_time="19:01:43" end_time="19:11:58" >
+            </activity>
+            <leg mode="ride" dep_time="19:11:58" trav_time="00:14:10">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="leisure_12000.0" x="603029.4835282456" y="5986344.68260557" start_time="19:26:43" end_time="22:44:10" >
+            </activity>
+            <leg mode="ride" dep_time="22:44:10" trav_time="00:07:59">
+                <attributes>
+                    <attribute name="routingMode" class="java.lang.String">ride</attribute>
+                </attributes>
+            </leg>
+            <activity type="home_23400.0" x="597154.5346880215" y="5984459.402417765" start_time="22:56:43" >
+            </activity>
+        </plan>
+
+    </person>
+
+    <!-- ====================================================================== -->
+
     <person id="commercial_820440">
         <attributes>
             <attribute name="marginalUtilityOfMoney" class="java.lang.Double">1.0</attribute>

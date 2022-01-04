@@ -35,7 +35,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
     private static final Logger log = Logger.getLogger(InitialSharingStationsVehiclesGenerator.class);
 
-    private static final String NETWORK_PATH = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
+    private static final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
 
     private static final String SERVICE_AREA = "../../svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_city/hamburg_stadtteil.shp";
     private static final String SWITCH_POINTS_CSV = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/hvv-switch-points-2030.csv";
@@ -56,7 +56,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
     public static void main(String[] args) throws IOException {
         String csvCoordinationSystem = TransformationFactory.WGS84;
-        String outputDirectory = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/";
+        String outputDirectory = "../public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/sharing/";
 
         Network network = prepareNetwork();
         InitialSharingStationsVehiclesGenerator carSharingService = new InitialSharingStationsVehiclesGenerator("scar", outputDirectory, network);
@@ -125,7 +125,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
 
     private static Network prepareNetwork() {
-        Network network = NetworkUtils.readNetwork(NETWORK_PATH);
+        Network network = NetworkUtils.readTimeInvariantNetwork(NETWORK_PATH);
 
         // remove pt_links and pt_nodes
         var ptLinks = network.getLinks().keySet().stream().filter(linkId -> linkId.toString().contains("pt")).collect(Collectors.toList());

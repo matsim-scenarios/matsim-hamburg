@@ -64,7 +64,10 @@ public class HereAPITravelTimeValidation {
                 + config.controler().getRunId() + "_"
                 + hereAPITravelTimeValidationConfigGroup.getDate() + "/"
                 + hereAPITravelTimeValidationConfigGroup.getTimeWindow()+ "/",
-                hereAPITravelTimeValidationConfigGroup.getHereMapsAPIKey(), hereAPITravelTimeValidationConfigGroup.getDate(), transformation);
+                hereAPITravelTimeValidationConfigGroup.getHereMapsAPIKey(),
+                hereAPITravelTimeValidationConfigGroup.getDate(),
+                transformation,
+                true);
 
         travelTimeValidator.setWriteDetailedFiles(false);
 

@@ -1,4 +1,4 @@
-package org.matsim.prepare;
+package org.matsim.prepare.network;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -51,7 +51,7 @@ public final class CreateNetwork implements Callable<Integer> {
 	private static final Logger log = LogManager.getLogger(CreateNetwork.class);
 
 	/**
-	 * Capacities below this threshold are unplausible and ignored.
+	 * Capacities below this threshold are implausible and ignored.
 	 */
 	private static final double CAPACITY_THRESHOLD = 375;
 

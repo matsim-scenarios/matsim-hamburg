@@ -2,6 +2,8 @@ package org.matsim.run;
 
 import org.matsim.core.config.ReflectiveConfigGroup;
 
+import java.util.Map;
+
 /**
  * @author zmeng
  */
@@ -11,7 +13,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String POPULATION_DOWNSAMPLE_FACTOR = "populationDownsampleFactor";
     private static final String USE_PERSON_INCOME_BASED_SCORING = "usePersonIncomeBasedScoring";
     private static final String FREE_SPEED_FACTOR = "freeSpeedFactor";
-    private static final String USE_Link_BASED_PARK_PRESSURE = "useLinkBasedParkPressure";
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE = "parkPressureLinkAttributeFile";
     private static final String PARK_PRESSURE_SCORE_PARAMS = "parkPressureScoreParams";
     private static final String PARK_PRESSURE_SCORE_CONSTANT = "parkPressureScoreConstant";
@@ -23,15 +24,19 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
     private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
     private static final String SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE = "smcProbaForSingleTripChange";
+    private static final String SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION = "scorePenaltyForMassConservationViolation";
+
+
+    private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE_EXP = "set to null if parkPressure attribute is already defined in the network. Otherwise, a csv with 2 columns (link, value) is expected.";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
     }
 
+
     private double populationDownsampleFactor = 1.0;
     private boolean usePersonIncomeBasedScoring = true;
     private double freeSpeedFactor = 1.;
-    private boolean useLinkBasedParkPressure = false;
     private String parkPressureLinkAttributeFile = null;
     private String parkPressureScoreParams = "1.,0.7,0.";
     private double parkPressureScoreConstant = -1.0;
@@ -43,6 +48,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private String carSharingServiceInputFile = null;
     private String bikeSharingServiceInputFile = null;
     private double smcProbaForSingleTripChange = 0; // same default as in {@link SubtourModeChoiceConfigGroup} //TODO delete and make original config group setting available in MATSim
+    private double scorePenaltyForMassConservationViolation = -0.0d;
 
 
     @StringGetter(Filter_Commercial)
@@ -71,26 +77,21 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
         this.increaseStorageCapacity = increaseStorageCapacity;
     }
 
-    @StringGetter(USE_Link_BASED_PARK_PRESSURE)
-    public boolean isUseLinkBasedParkPressure() {
-        return useLinkBasedParkPressure;
-    }
-    @StringSetter(USE_Link_BASED_PARK_PRESSURE)
-    public void setUseLinkBasedParkPressure(boolean useLinkBasedParkPressure) {
-        this.useLinkBasedParkPressure = useLinkBasedParkPressure;
-    }
     @StringGetter(PARK_PRESSURE_LINK_ATTRIBUTE_FILE)
     public String getParkPressureLinkAttributeFile() {
         return parkPressureLinkAttributeFile;
     }
+
     @StringSetter(PARK_PRESSURE_LINK_ATTRIBUTE_FILE)
     public void setParkPressureLinkAttributeFile(String parkPressureLinkAttributeFile) {
         this.parkPressureLinkAttributeFile = parkPressureLinkAttributeFile;
     }
+
     @StringGetter(PARK_PRESSURE_SCORE_PARAMS)
     public String getParkPressureScoreParams() {
         return parkPressureScoreParams;
     }
+
     @StringSetter(PARK_PRESSURE_SCORE_PARAMS)
     public void setParkPressureScoreParams(String parkPressureScoreParams) {
         this.parkPressureScoreParams = parkPressureScoreParams;
@@ -161,5 +162,22 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     @StringSetter(SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE)
     public void setSubTourModeChoiceProbaForSingleTripChange(double val) {
         this.smcProbaForSingleTripChange = val;
+    }
+
+    @StringGetter(SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION)
+    public double getScorePenaltyForMassConservationViolation() {
+        return this.scorePenaltyForMassConservationViolation;
+    }
+
+    @StringSetter(SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION)
+    public void setScorePenaltyForMassConservationViolation(double penaltyPerViolation) {
+        this.scorePenaltyForMassConservationViolation = penaltyPerViolation;
+    }
+
+    @Override
+    public Map<String, String> getComments() {
+        Map<String, String> map = super.getComments();
+        map.put(PARK_PRESSURE_LINK_ATTRIBUTE_FILE, PARK_PRESSURE_LINK_ATTRIBUTE_FILE_EXP);
+        return map;
     }
 }
