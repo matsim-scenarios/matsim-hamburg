@@ -1,4 +1,4 @@
-package org.matsim.prepare.freight;
+package org.matsim.prepare.freight.bvm;
 
 import org.apache.log4j.Logger;
 

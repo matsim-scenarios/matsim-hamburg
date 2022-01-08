@@ -1,6 +1,5 @@
-package org.matsim.prepare.freight;
+package org.matsim.prepare.freight.bvm;
 
-import com.sun.jdi.connect.Transport;
 import org.jboss.logging.Logger;
 import org.locationtech.jts.geom.Point;
 import org.matsim.api.core.v01.Coord;

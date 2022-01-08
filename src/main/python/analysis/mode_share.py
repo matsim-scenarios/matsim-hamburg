@@ -5,9 +5,14 @@ import geopandas as gpd
 import pandas as pd
 from shapely.geometry import Point
 
+#########################################################################
+### DEPRECATED, better use mode-analysis-spatial.R which is faster!!!
+#########################################################################
+
+
 # give the folder path:
-runId = "hamburg-v2.2-10pct-reallabHH2030-plus"
-trips_info_folder = 'D:/ReallabHH/v2.2/2021-11-12/reallab2030plus-ff/'
+runId = "hamburg-v3.0-25pct-base"
+trips_info_folder = 'D:/ReallabHH/v3.0/25pct/hv3-25-3/'
 
 #output location
 outputDir = trips_info_folder + 'analysis/'
@@ -21,7 +26,7 @@ trips_raw_data = pd.read_csv(trips_info_folder + runId + trips_ending, sep=';')
 
 # put the file here which contains information about person and their home coordinate. Download it from:
 # shared-svn/projects/matsim-hamburg/hamburg-v1/person2homeCoord.csv
-person_to_home = pd.read_csv('D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v1/person2homeCoord.csv')
+person_to_home = pd.read_csv('D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-person2HomeLocation.tsv', sep="\t")
 
 # put the shapefile of hamburg here, Download it from:
 # /shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_merge/hamburg.shp

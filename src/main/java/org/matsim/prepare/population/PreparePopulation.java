@@ -1,4 +1,4 @@
-package org.matsim.prepare;
+package org.matsim.prepare.population;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.VERSION;
 
@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
