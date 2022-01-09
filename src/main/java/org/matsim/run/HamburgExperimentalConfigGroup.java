@@ -25,14 +25,16 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
     private static final String SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE = "smcProbaForSingleTripChange";
     private static final String SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION = "scorePenaltyForMassConservationViolation";
-
+    private static final String SHARE_OF_INCOME = "shareOfIncome";
+    private static final String SHAPE_FILE = "shapeFile";
+    private static final String INCOME_BASED_SELECTION = "incomeBasedSelection";
+    private static final String SHARE_OF_AGENTS = "shareOfAgents";
 
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE_EXP = "set to null if parkPressure attribute is already defined in the network. Otherwise, a csv with 2 columns (link, value) is expected.";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
     }
-
 
     private double populationDownsampleFactor = 1.0;
     private boolean usePersonIncomeBasedScoring = true;
@@ -49,6 +51,10 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private String bikeSharingServiceInputFile = null;
     private double smcProbaForSingleTripChange = 0; // same default as in {@link SubtourModeChoiceConfigGroup} //TODO delete and make original config group setting available in MATSim
     private double scorePenaltyForMassConservationViolation = -0.0d;
+    private double shareOfIncome = 0.0;
+    private String shapeFile = null;
+    private boolean incomeBasedSelection = false;
+    private double shareOfAgents =0.0;
 
 
     @StringGetter(Filter_Commercial)
@@ -173,6 +179,48 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public void setScorePenaltyForMassConservationViolation(double penaltyPerViolation) {
         this.scorePenaltyForMassConservationViolation = penaltyPerViolation;
     }
+
+    @StringGetter(SHARE_OF_INCOME)
+    public double getShareOfIncome() {
+        return shareOfIncome;
+    }
+
+    @StringSetter(SHARE_OF_INCOME)
+    public void setShareOfIncome(double shareOfIncome) {
+        this.shareOfIncome = shareOfIncome;
+    }
+
+    @StringGetter(SHAPE_FILE)
+    public String getShapeFile() {
+        return shapeFile;
+    }
+
+    @StringSetter(SHAPE_FILE)
+    public void setShapeFile(String shapeFile) {
+        this.shapeFile = shapeFile;
+    }
+
+    @StringGetter(INCOME_BASED_SELECTION)
+    public boolean isIncomeBasedSelection() {
+        return incomeBasedSelection;
+    }
+
+    @StringSetter(INCOME_BASED_SELECTION)
+    public void setIncomeBasedSelection(boolean incomeBasedSelection) {
+        this.incomeBasedSelection = incomeBasedSelection;
+    }
+
+    @StringGetter(SHARE_OF_AGENTS)
+    public double getShareOfAgents() {
+        return shareOfAgents;
+    }
+
+    @StringSetter(INCOME_BASED_SELECTION)
+    public void setShareOfAgents(double shareOfAgents) {
+        this.shareOfAgents = shareOfAgents;
+    }
+
+
 
     @Override
     public Map<String, String> getComments() {
