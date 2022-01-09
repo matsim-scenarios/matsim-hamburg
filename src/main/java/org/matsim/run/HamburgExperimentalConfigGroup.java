@@ -51,7 +51,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private String bikeSharingServiceInputFile = null;
     private double smcProbaForSingleTripChange = 0; // same default as in {@link SubtourModeChoiceConfigGroup} //TODO delete and make original config group setting available in MATSim
     private double scorePenaltyForMassConservationViolation = -0.0d;
-    private double shareOfIncome = 0.0;
+    private double shareOfIncome = 0.;
     private String shapeFile = null;
     private boolean incomeBasedSelection = false;
     private double shareOfAgents =0.0;
@@ -215,12 +215,10 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
         return shareOfAgents;
     }
 
-    @StringSetter(INCOME_BASED_SELECTION)
+    @StringSetter(SHARE_OF_AGENTS)
     public void setShareOfAgents(double shareOfAgents) {
         this.shareOfAgents = shareOfAgents;
     }
-
-
 
     @Override
     public Map<String, String> getComments() {

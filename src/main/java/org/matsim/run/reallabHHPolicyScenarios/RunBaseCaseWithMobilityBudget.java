@@ -1,5 +1,6 @@
 package org.matsim.run.reallabHHPolicyScenarios;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -9,10 +10,12 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.prepare.SelectionMobilityBudget;
+import org.matsim.run.HamburgExperimentalConfigGroup;
 import org.matsim.run.RunBaseCaseHamburgScenario;
 
 import javax.annotation.Nullable;
@@ -33,10 +36,10 @@ public class RunBaseCaseWithMobilityBudget {
 
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
     public final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
-    private double dailyMobilityBudget;
-    private final double shareOfIncome;
-    private final String shapeFile;
-    private final boolean incomeBasedSelection;
+    private Double dailyMobilityBudget;
+    private double shareOfIncome;
+    private String shapeFile;
+    private boolean incomeBasedSelection;
     private final double shareOfAgents;
 
     /*i decided to move from static methods to an object-oriented approach as a temporary solution to handle the program arguments and all the field variables. The latter should basically be moved
@@ -44,13 +47,9 @@ public class RunBaseCaseWithMobilityBudget {
      */
     public static void main(String[] args) throws ParseException, IOException {
 
-        int ii=0;
         for (String arg : args) {
-            System.out.println(ii);
             log.info(arg);
-            ii++;
         }
-
 
         double dailyMobilityBudget = 10;
         Double shareOfIncome = null;
@@ -58,20 +57,8 @@ public class RunBaseCaseWithMobilityBudget {
         boolean incomeBasedSelection = false;
         double shareOfAgents = 0.;
 
-        String[] configArguments;
-
         if (args.length == 0) {
-            configArguments = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
-        } else {
-            configArguments = new String[args.length - 5];
-            for (int i = 0; i < args.length - 6; i++) {
-                configArguments[i] = args[i];
-            }
-            dailyMobilityBudget = Double.parseDouble(args[args.length - 5]);
-            shareOfIncome = Double.parseDouble(args[args.length - 4]);
-            shapeFile = args[args.length - 3];
-            incomeBasedSelection = Boolean.parseBoolean(args[args.length - 2]);
-            shareOfAgents = Double.parseDouble(args[args.length - 1]);
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         }
 
         RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget,
@@ -80,7 +67,7 @@ public class RunBaseCaseWithMobilityBudget {
                 incomeBasedSelection,
                 shareOfAgents);
 
-        Config config = runner.prepareConfig(configArguments);
+        Config config = runner.prepareConfig(args);
         Scenario scenario = runner.prepareScenario(config);
         Controler controler = runner.prepareControler(scenario);
         controler.run();
@@ -135,13 +122,16 @@ public class RunBaseCaseWithMobilityBudget {
 
         Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
+        dailyMobilityBudget = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getfixedDailyMobilityBudget();
+        Preconditions.checkNotNull(dailyMobilityBudget, "you need to specify fixedDailyMobilityBudget in " + HamburgExperimentalConfigGroup.class);
+
         for (Map.Entry<Id<Person>, Double> entry : getPersonsEligibleForMobilityBudget2FixedValue(scenario, dailyMobilityBudget).entrySet()) {
             Id<Person> person = entry.getKey();
             Double budget = entry.getValue();
-//            System.out.println(budget);
             personsEligibleForMobilityBudget.put(person, budget);
         }
 
+        shareOfIncome = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getShareOfIncome();
         log.info("using income " + (shareOfIncome > 0.0));
         log.info("share of income "+ shareOfIncome);
         if (shareOfIncome > 0.) {
@@ -155,11 +145,13 @@ public class RunBaseCaseWithMobilityBudget {
             }
         }
 
+        shapeFile = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).getShapeFile();
         if (shapeFile != null) {
             log.info("Filtering for Region " + shapeFile);
             SelectionMobilityBudget.filterForRegion(scenario.getPopulation(), shapeFile, personsEligibleForMobilityBudget );
         }
 
+        incomeBasedSelection = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isIncomeBasedSelection();
         if (incomeBasedSelection==true) {
             log.info("Selceting Agents based on Income " + incomeBasedSelection);
             SelectionMobilityBudget.incomeBasedSelection(scenario.getPopulation(),shareOfAgents, personsEligibleForMobilityBudget);

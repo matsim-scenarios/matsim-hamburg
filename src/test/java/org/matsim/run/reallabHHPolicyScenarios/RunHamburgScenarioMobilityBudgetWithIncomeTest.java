@@ -33,10 +33,12 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
+                "--config:hamburgExperimental.fixedDailyMobilityBudget","100.",
+                "--config:hamburgExperimental.shareOfIncome","10.5",
         };
 
 
-        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(10., 10.5, null, false, 1.0);
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1000., -1000.5, null, false, 1.0);
         Config config = runner.prepareConfig(args);
 
         //adjusting strategy setting of config so agents try out different modes

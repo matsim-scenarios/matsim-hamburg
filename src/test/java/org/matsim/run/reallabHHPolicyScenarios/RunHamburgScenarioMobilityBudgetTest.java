@@ -42,12 +42,10 @@ public class RunHamburgScenarioMobilityBudgetTest {
                 "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
+                "--config:hamburgExperimental.fixedDailyMobilityBudget","100.",
         };
 
-
-        double dailyMobilityBudget = 100.0;
-
-        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget, -1., null, false, 1.0);
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1., -1., null, false, 1.0);
         Config config = runner.prepareConfig(args);
 
         //adjusting strategy setting of config so agents try out different modes
@@ -70,11 +68,9 @@ public class RunHamburgScenarioMobilityBudgetTest {
                 addEventHandlerBinding().toInstance(handler);
             }
         });
-
         controler.run();
 
-
-
+        double dailyMobilityBudget = 100.0;
         Assert.assertEquals("wrong number of expected mobility budget payments!",1, handler.mobilityBudgetEvents.size());
 
         PersonMoneyEvent event = handler.mobilityBudgetEvents.iterator().next();
