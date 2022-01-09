@@ -1,3 +1,4 @@
+/*
 package org.matsim.analysis;
 
 import org.matsim.api.core.v01.Id;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class MobBudgetAnalysePlansForSubtourModeChoice {
 
-    private static final HamburgAnalysisMainModeIdentifier mainModeIdentifier = new HamburgAnalysisMainModeIdentifier();
+    //private static final HamburgAnalysisMainModeIdentifier mainModeIdentifier = new HamburgAnalysisMainModeIdentifier();
     private static final Set<String> chainBasedModes = Set.of(TransportMode.bike, TransportMode.car);
     private static final Set<String> modes = Set.of("car","pt","bike","walk");
 
@@ -141,11 +142,13 @@ public class MobBudgetAnalysePlansForSubtourModeChoice {
     }
 
 
-    /**
+    */
+/**
      * in other words: will not be mutated by ChoosRandomeLegModeForSubtour
      * @param subtour
      * @return
-     */
+     *//*
+
     private static boolean isProblematic(TripStructureUtils.Subtour subtour) {
         return !subtour.isClosed() || !isMassConserving(subtour) || containsUnknownMode(subtour);
     }
@@ -239,3 +242,4 @@ public class MobBudgetAnalysePlansForSubtourModeChoice {
 
 
 }
+*/
