@@ -30,7 +30,7 @@ import org.matsim.core.scenario.ScenarioUtils;
  * @author gryb
  */
 public class PreparePopulationMobilityBudget {
-    private static final Logger log = Logger.getLogger(PreparePopulation.class);
+    private static final Logger log = Logger.getLogger(PreparePopulationMobilityBudget.class);
 
     private final Scenario scenario;
     private final Path output;

@@ -1,3 +1,4 @@
+/*
 package org.matsim.prepare;
 
 import org.matsim.api.core.v01.Id;
@@ -14,11 +15,13 @@ import org.matsim.pt.utils.CreatePseudoNetwork;
 import org.matsim.vehicles.MatsimVehicleWriter;
 import org.matsim.vehicles.Vehicles;
 
+*/
 /**
  * @author zmeng whao
  *
  * run NetworkReducer and TransitReducer to in order to decrease the memoery demands
- */
+ *//*
+
 public class ScenarioReducer {
 
     private final Scenario scenario;
@@ -64,3 +67,4 @@ public class ScenarioReducer {
 
 
 }
+*/

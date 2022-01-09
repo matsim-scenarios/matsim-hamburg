@@ -1,3 +1,4 @@
+/*
 package org.matsim.analysis.mobBug;
 
 
@@ -66,4 +67,4 @@ public class Network2Shape {
         log.info("Writing network to shapefile... Done.");
     }
 
-}
+}*/

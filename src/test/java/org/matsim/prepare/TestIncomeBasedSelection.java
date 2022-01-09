@@ -1,3 +1,4 @@
+/*
 package org.matsim.prepare;
 
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import org.matsim.testcases.MatsimTestUtils;
 
 import java.io.IOException;
 
-import static org.matsim.run.RunBaseCaseWithMobilityBudget.*;
+import static org.matsim.run.reallabHHPolicyScenarios.RunBaseCaseWithMobilityBudget.*;
 
 public class TestIncomeBasedSelection {
 
@@ -51,3 +52,4 @@ public class TestIncomeBasedSelection {
         Assert.assertEquals(originalSize, personsEligibleForMobilityBudget.size()+3);
     }
 }
+*/
