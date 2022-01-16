@@ -41,6 +41,7 @@ public class RunBaseCaseWithMobilityBudget {
     private String shapeFile;
     private boolean incomeBasedSelection;
     private final double shareOfAgents;
+    private boolean basedOnCarUse;
 
     /*i decided to move from static methods to an object-oriented approach as a temporary solution to handle the program arguments and all the field variables. The latter should basically be moved
      * into a config group (e.g. HamburgExperimentalConfigGroup
@@ -52,20 +53,17 @@ public class RunBaseCaseWithMobilityBudget {
         }
 
         double dailyMobilityBudget = 10;
-        Double shareOfIncome = null;
+        Double shareOfIncome = 0.0;
         String shapeFile = null;
         boolean incomeBasedSelection = false;
         double shareOfAgents = 0.;
+        boolean basedOnCarUse = false;
 
         if (args.length == 0) {
             args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
         }
 
-        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget,
-                shareOfIncome,
-                shapeFile,
-                incomeBasedSelection,
-                shareOfAgents);
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(dailyMobilityBudget, shareOfIncome, shapeFile, incomeBasedSelection, shareOfAgents, basedOnCarUse);
 
         Config config = runner.prepareConfig(args);
         Scenario scenario = runner.prepareScenario(config);
@@ -79,24 +77,25 @@ public class RunBaseCaseWithMobilityBudget {
     // kind of had to to this as a quick, intermediate fix.., tschlenther late sep, '21
 
     /**
-     *
-     * @param dailyMobilityBudget
+     *  @param dailyMobilityBudget
      * @param shareOfIncome set to 0.0 or negative in order to disable incomeBasedMobilityBudget
      * @param shapeFile
      * @param incomeBasedSelection
      * @param shareOfAgents
+     * @param basedOnCarUse
      */
-    /*package*/ RunBaseCaseWithMobilityBudget (Double dailyMobilityBudget,
-                                               double shareOfIncome,
-                                               @Nullable String shapeFile,
-                                               boolean incomeBasedSelection,
-                                               double shareOfAgents
-                                               ) {
+    /*package*/ RunBaseCaseWithMobilityBudget(Double dailyMobilityBudget,
+                                              double shareOfIncome,
+                                              @Nullable String shapeFile,
+                                              boolean incomeBasedSelection,
+                                              double shareOfAgents,
+                                              boolean basedOnCarUse) {
         this.dailyMobilityBudget = dailyMobilityBudget;
         this.shareOfIncome = shareOfIncome;
         this.shapeFile = shapeFile;
         this.incomeBasedSelection = incomeBasedSelection;
         this.shareOfAgents = shareOfAgents;
+        this.basedOnCarUse = basedOnCarUse;
     }
 
 
@@ -155,6 +154,12 @@ public class RunBaseCaseWithMobilityBudget {
         if (incomeBasedSelection==true) {
             log.info("Selceting Agents based on Income " + incomeBasedSelection);
             SelectionMobilityBudget.incomeBasedSelection(scenario.getPopulation(),shareOfAgents, personsEligibleForMobilityBudget);
+        }
+
+        basedOnCarUse = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isBasedOnCarUse();
+        if (basedOnCarUse==true) {
+            log.info("Based on Car Use");
+            SelectionMobilityBudget.basedOnCarUse(scenario.getPopulation(), scenario.getConfig(), personsEligibleForMobilityBudget);
         }
 
         return scenario;

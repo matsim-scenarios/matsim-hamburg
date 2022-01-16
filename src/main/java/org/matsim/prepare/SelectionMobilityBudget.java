@@ -5,9 +5,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Population;
+import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.population.*;
+import org.matsim.core.config.Config;
+import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.utils.gis.ShapeFileReader;
@@ -72,8 +73,7 @@ public class SelectionMobilityBudget {
 
     }
 
-
-    public static void  incomeBasedSelection(Population population, double percentage, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
+    public static void incomeBasedSelection(Population population, double percentage, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
 
         LinkedHashMap<Id<Person>, Double> incomeBasedSelectedAgents = new LinkedHashMap<>();
 
@@ -87,8 +87,6 @@ public class SelectionMobilityBudget {
         int sizeOfMap = incomeBasedSelectedAgents.size();
         int numberOfAgents = (int) Math.ceil(sizeOfMap * percentage);
         Map<Id<Person>, Double> sortedIncomeBasedSelection = sortByValue(incomeBasedSelectedAgents);
-
-
 
         int counter = 0;
         List<Id<Person>> agentsToKeep = new ArrayList();
@@ -111,6 +109,38 @@ public class SelectionMobilityBudget {
             personsEligibleForMobilityBudget.remove(personId);
             log.info("Removed: " + personId + "because of his income");
         }
+
+    }
+
+    public static void basedOnCarUse(Population population, Config config, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {
+
+        double constant = -1*config.planCalcScore().getModes().get(TransportMode.car).getConstant();
+        double monetaryConstant = -1*config.planCalcScore().getModes().get(TransportMode.car).getDailyMonetaryConstant();
+        double marginalUtilityOfDistance_util_m = -1*config.planCalcScore().getModes().get(TransportMode.car).getMarginalUtilityOfDistance();
+        double monetaryDistanceRate = -1*config.planCalcScore().getModes().get(TransportMode.car).getMarginalUtilityOfDistance();
+
+
+        for (Person p: population.getPersons().values()) {
+            Plan personsPlan = p.getSelectedPlan();
+            List<TripStructureUtils.Trip> trips = TripStructureUtils.getTrips(personsPlan);
+            for (TripStructureUtils.Trip trip: trips) {
+                List<Leg> listLegs = trip.getLegsOnly();
+                double costOfCarUse= 0.;
+                for (Leg leg: listLegs) {
+                    if (leg.getMode().equals(TransportMode.car)) {
+                        costOfCarUse+=leg.getRoute().getDistance()*marginalUtilityOfDistance_util_m*monetaryDistanceRate;
+
+                    }
+                }
+                costOfCarUse+=monetaryConstant+constant* (double) p.getAttributes().getAttribute("marginalUtilityOfMoney");
+
+                if (personsEligibleForMobilityBudget.containsKey(p.getId())) {
+                    personsEligibleForMobilityBudget.replace(p.getId(),costOfCarUse);
+                }
+            }
+        }
+
+
 
     }
 

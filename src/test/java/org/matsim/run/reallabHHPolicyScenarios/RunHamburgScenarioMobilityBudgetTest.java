@@ -45,7 +45,7 @@ public class RunHamburgScenarioMobilityBudgetTest {
                 "--config:hamburgExperimental.fixedDailyMobilityBudget","100.",
         };
 
-        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1., -1., null, false, 1.0);
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1., -1., null, false, 1.0, true);
         Config config = runner.prepareConfig(args);
 
         //adjusting strategy setting of config so agents try out different modes

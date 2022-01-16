@@ -29,8 +29,8 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String SHAPE_FILE = "shapeFile";
     private static final String INCOME_BASED_SELECTION = "incomeBasedSelection";
     private static final String SHARE_OF_AGENTS = "shareOfAgents";
-
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE_EXP = "set to null if parkPressure attribute is already defined in the network. Otherwise, a csv with 2 columns (link, value) is expected.";
+    private static final String BASED_ON_CAR_USE = "basedOnCarUse";
 
     public HamburgExperimentalConfigGroup() {
         super(GROUP_NAME);
@@ -55,6 +55,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private String shapeFile = null;
     private boolean incomeBasedSelection = false;
     private double shareOfAgents =0.0;
+    private boolean basedOnCarUse = false;
 
 
     @StringGetter(Filter_Commercial)
@@ -218,6 +219,15 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     @StringSetter(SHARE_OF_AGENTS)
     public void setShareOfAgents(double shareOfAgents) {
         this.shareOfAgents = shareOfAgents;
+    }
+
+    @StringGetter(BASED_ON_CAR_USE)
+    public boolean isBasedOnCarUse() {
+        return basedOnCarUse;
+    }
+    @StringSetter(BASED_ON_CAR_USE)
+    public void setBasedOnCarUse(boolean basedOnCarUse) {
+        this.basedOnCarUse = basedOnCarUse;
     }
 
     @Override

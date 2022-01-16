@@ -38,7 +38,7 @@ public class RunHamburgScenarioMobilityBudgetWithIncomeTest {
         };
 
 
-        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1000., -1000.5, null, false, 1.0);
+        RunBaseCaseWithMobilityBudget runner = new RunBaseCaseWithMobilityBudget(1000., -1000.5, null, false, 1.0, true );
         Config config = runner.prepareConfig(args);
 
         //adjusting strategy setting of config so agents try out different modes
