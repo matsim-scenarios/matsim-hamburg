@@ -4,7 +4,6 @@
 
 This repository provides an open MATSim transport model for Hamburg, provided by the [Transport Systems Planning and Transport Telematics group](https://www.vsp.tu-berlin.de) of [Technische Universität Berlin](http://www.tu-berlin.de).
 
-
 ### Licenses
 
 The **MATSim program code** in this repository is distributed under the terms of the [GNU General Public License as published by the Free Software Foundation (version 2)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html). The MATSim program code are files that reside in the `src` directory hierarchy and typically end with `*.java`.
@@ -30,12 +29,12 @@ Handling of large files within git is not without problems (git lfs files are no
 ##### Run VIA on output files
 
 1. Get VIA from https://www.simunto.com/via/.  (There is a free license for a small number of agents; that will probably work but only display a small number of vehicles/agents.)
-1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/output.
-1. Inside there, decide for a scenario that you find interesting (e.g. hamburg-v1.1-10pct) and go into that directory. look for an `output-*` directory that you find interesting and go into that directory.
-1. Download `*.output_network.xml.gz` and `*.output_events.xml.gz`.  Best make sure that they do not uncompress, e.g. by "Download linked file as ...". Note that for v2.2, these files are only provided for the baseCase.
+1. Go to https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/output.
+1. Inside there, decide for a scenario that you find interesting (e.g. baseCase) and go into that directory. look for an `output-*` directory that you find interesting and go into that directory.
+1. Download `*.output_network.xml.gz` and `*.output_events.xml.gz`.  Best make sure that they do not uncompress, e.g. by "Download linked file as ...". Note that for v3.0, these files are only provided for the baseCase.
 1. Get these files into VIA.  This can be achieved in various ways; one is to open VIA and then drag the files from a file browser into VIA.
 1. Run VIA and enjoy.
-1. You can also visit SimWrapper, an interactive visualisation platform. See https://vsp.berlin/simwrapper/public/de/hamburg/hamburg-v2/hamburg-v2.2/viz
+1. You can also visit SimWrapper, an interactive visualisation platform. See https://vsp.berlin/simwrapper/public/de/hamburg/hamburg-v2/hamburg-v2.2/viz. Note that this corresponds to an older version of the model.
 
 ### Downloading the repository alternative 1: Download ZIP
 
