@@ -61,7 +61,7 @@ public class RunBaseCaseWithMobilityBudget {
         String[] configArguments;
 
         if (args.length == 0) {
-            configArguments = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/baseCase/hamburg-v2.2-10pct.config.baseCase.xml"};
+            configArguments = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-25pct.config.baseCase.xml"};
         } else {
             configArguments = new String[args.length - 5];
             for (int i = 0; i < args.length - 6; i++) {

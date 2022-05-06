@@ -54,8 +54,7 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-
-        args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-25pct.config.reallabHH2030.xml"};
+            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030/hamburg-v3.0-10pct.config.reallabHH2030.xml"};
         }
 
         RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();

@@ -65,8 +65,8 @@ public class RunReallabHH2030Scenario {
 
 	private static final Logger log = Logger.getLogger(RunReallabHH2030Scenario.class);
 
-	static final String CFG_REALLABHH2030_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030/hamburg-v2.2-10pct.config.reallabHH2030.xml";
-	static final String CFG_REALLABHH2030_PLUS_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/reallab2030plus/hamburg-v2.2-10pct.config.reallabHH2030-plus.xml";
+	static final String CFG_REALLABHH2030_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030/hamburg-v3.0-10pct.config.reallabHH2030.xml";
+	static final String CFG_REALLABHH2030_PLUS_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030plus/hamburg-v3.0-10pct.config.reallabHH2030-plus.xml";
 
 
 	public static void main(String[] args) throws IOException {
