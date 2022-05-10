@@ -67,9 +67,11 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		String attributesFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/personAttributes.xml.gz";
 		String plansWithCoordinatesAndIds = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/20211118_open_hamburg_delivery_senozon/population.xml.gz";
 		String plansWithAllTrips = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
-		String targetNetwork = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.1/baseCase/input/hamburg-v2.1-network-with-pt.xml.gz";
+
+		//CAUTION: DO NOT USE A NETWORK THAT HAS NON CAR LINKS! WILL LEAD TO PROBLEMS IN THE QSIM IN POLICY CASES AS ACTIVITIES WILL BE ATTACHED TO NON CAR-LINK
+		String targetNetwork = "";
 		String crs = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM;
-		String outputFile = "D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-25pct.plans-not-calibrated.xml.gz";
+		String outputFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-25pct.plans-not-calibrated.xml.gz";
 		String landUseShapeFile = "../../svn/shared-svn/projects/german-wide-freight/landuse/landuse.shp";
 
 		final Random rnd = new Random(1234);
