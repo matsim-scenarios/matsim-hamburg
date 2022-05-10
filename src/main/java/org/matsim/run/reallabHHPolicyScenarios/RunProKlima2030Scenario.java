@@ -70,7 +70,11 @@ public class RunProKlima2030Scenario {
 	}
 
 	public static Config prepareConfig(String[] args){
-		return RunReallabHH2030Scenario.prepareConfig(args);
+		Config config =  RunReallabHH2030Scenario.prepareConfig(args);
+		String runId = config.controler().getRunId();
+		runId.replace("base", "proKlima2030");
+		config.controler().setRunId(runId);
+		return config;
 	}
 
 	public static Scenario prepareScenario(Config config) throws IOException {
