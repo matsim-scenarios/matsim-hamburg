@@ -106,8 +106,10 @@ public class RunOfflineAirPollutionAnalysisByEngineInformation {
 		final String hbefaFileCold_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/d1944abead553305d9f1c4131cadbd382655f592.enc";
 		final String hbefaFileWarm_2030 = hbefaPath + "6d425121249f0be3f411175b88cf7551e24f7143/c154fc5d5ca7471c232f1b602575bdabbda26fab.enc";
 
-		final String runId = "hamburg-v2.2-proKlima2030" ;
-		String runDirectory = "provide run output directory";
+		final String runId = "hamburg-v3.0-10pct-base" ;
+		String runDirectory = "provide run output path";
+
+		if(!runDirectory.endsWith("/")) runDirectory = runDirectory + "/";
 		RunOfflineAirPollutionAnalysisByEngineInformation analysis = new RunOfflineAirPollutionAnalysisByEngineInformation(
 				runDirectory,
 				runId,

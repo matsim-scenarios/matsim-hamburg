@@ -75,6 +75,7 @@ public class RunAccidentsHamburg {
             } else {
                 scenario =  RunReallabHH2030Scenario.prepareScenario(config);
             }
+            //the v3.0 network actually has the same number of lanes. TODO this code should be deleted eventually
             Network networkWithRealisticNumberOfLanes = NetworkUtils.readTimeInvariantNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v1/hamburg-v1.0/hamburg-v1.0-network-with-pt.xml.gz");
             Set<Id<Link>> tunnelLinks;
             if(baseCase){
@@ -93,7 +94,8 @@ public class RunAccidentsHamburg {
                     planfreeLinks);
         } else {
             //plan free and tunnel links as of 2021
-            config.network().setInputFile("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz");
+            //For an older version, see https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt-with-accidentAttributes-2021.xml.gz
+            config.network().setInputFile("provide path to preprocessed network file!");
             if(baseCase){
                 scenario =  RunBaseCaseHamburgScenario.prepareScenario(config);
             } else {
