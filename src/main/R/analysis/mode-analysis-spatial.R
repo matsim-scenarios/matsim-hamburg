@@ -3,15 +3,14 @@ library(readr)
 library(dplyr)
 
 #define input 
-runDir <- 'Z:/net/ils/schlenther/hamburg-v3.0/output/output-hh-base-1pct/'
-runID <- "hamburg-v3.0-1pct-base"
+runDir <- 'provide local file path to run output directory'
+runID <- "hamburg-v3.0-25pct-base"
 
-#runDir <- 'Z:/net/ils/schlenther/openHH-calibration/output/output-hv3-10-7-4-4-ff/ITERS/it.0/'
-#runID <- "hamburg-v3.0-10pct-base.0.trips.csv.gz"
 
 
 #read trips table
 trips <- read_csv2(paste(runDir, runID, ".output_trips.csv.gz", sep = ""))
+
 #trips <- read_csv2(paste(runDir, runID, sep = ""))
 
 # contains a set of person Ids whose trips are to be considered.
