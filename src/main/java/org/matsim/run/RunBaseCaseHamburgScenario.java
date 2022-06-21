@@ -2,13 +2,11 @@ package org.matsim.run;
 
 
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import org.apache.log4j.Logger;
 import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
-import org.matsim.analysis.here.HereAPIControlerListener;
-import org.matsim.analysis.here.HereAPITravelTimeValidation;
-import org.matsim.analysis.here.HereAPITravelTimeValidationConfigGroup;
 import org.matsim.analysis.personMoney.PersonMoneyEventsAnalysisModule;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -16,7 +14,7 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.contrib.analysis.vsp.traveltimedistance.CarTripsExtractor;
+import org.matsim.application.analysis.population.ComparePlanModes;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
 import org.matsim.core.config.Config;
@@ -27,6 +25,8 @@ import org.matsim.core.config.groups.SubtourModeChoiceConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.replanning.choosers.ForceInnovationStrategyChooser;
+import org.matsim.core.replanning.choosers.StrategyChooser;
 import org.matsim.core.replanning.strategies.DefaultPlanStrategiesModule;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -88,6 +88,8 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
 
+                bind(new TypeLiteral<StrategyChooser<Plan, Person>>() {}).toInstance(new ForceInnovationStrategyChooser<>(10, true));
+
                 // use PersonIncomeSpecificScoringFunction if is needed
                 if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
                     bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
@@ -108,6 +110,7 @@ public class RunBaseCaseHamburgScenario {
                 }
             }
         });
+        /*
         // use HereApiValidator if is needed
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -120,6 +123,7 @@ public class RunBaseCaseHamburgScenario {
                 }
             }
         });
+         */
 
         // use pt validation
 //        controler.addOverridingModule(new AbstractModule() {
@@ -240,8 +244,6 @@ public class RunBaseCaseHamburgScenario {
 
         final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
         HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
-        ConfigUtils.addOrGetModule(config, HereAPITravelTimeValidationConfigGroup.class);
-
 
         // delete default modes
         config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);

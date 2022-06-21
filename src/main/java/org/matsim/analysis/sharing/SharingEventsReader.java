@@ -20,7 +20,7 @@
 
 package org.matsim.analysis.sharing;
 
-import org.matsim.contrib.sharing.service.events.*;
+import org.matsim.contrib.shared_mobility.service.events.*;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.MatsimEventsReader;
 

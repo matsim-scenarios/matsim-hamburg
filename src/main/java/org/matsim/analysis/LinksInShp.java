@@ -53,7 +53,7 @@ public class LinksInShp {
 
 
 		List<PreparedGeometry> hamburgHVVGeoms = ShpGeometryUtils.loadPreparedGeometries(IOUtils.resolveFileOrResource(hamburgHVVShape));
-		Network hamburgNetwork = NetworkUtils.readTimeInvariantNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.xml.gz");
+		Network hamburgNetwork = NetworkUtils.readNetwork("https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt.xml.gz");
 
 		writeLinksInShpCSV(hamburgNetwork, hamburgHVVGeoms, "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-links-in-hvvArea.tsv");
 	}

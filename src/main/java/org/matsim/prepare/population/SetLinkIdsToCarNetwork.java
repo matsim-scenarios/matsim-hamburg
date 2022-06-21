@@ -49,7 +49,7 @@ public class SetLinkIdsToCarNetwork {
 		String inputPopulation = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-10pct-base.plans.xml.gz";
 		String outputPopulation = "D:/svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-10pct-base.plans-acts-on-car-network.xml.gz";
 
-		Network net = NetworkUtils.readTimeInvariantNetwork(outputNetwork);
+		Network net = NetworkUtils.readNetwork(outputNetwork);
 //		filterAndWriteCarNetwork(net, outputNetwork);
 
 		//read population

@@ -10,8 +10,8 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.sharing.io.*;
-import org.matsim.contrib.sharing.service.SharingVehicle;
+import org.matsim.contrib.shared_mobility.io.*;
+import org.matsim.contrib.shared_mobility.service.SharingVehicle;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
@@ -99,7 +99,7 @@ public class InitialSharingStationsVehiclesGenerator {
             bufferedWriter.write(l.getId().toString() +";" + l.getCoord().getX() + ";" + l.getCoord().getY() + ";" + sharingStation.getCapacity());
 
             ImmutableSharingStationSpecification sharingStationSpecification = ImmutableSharingStationSpecification.newBuilder() //
-                    .id(Id.create(mode+"_"+ stationId, org.matsim.contrib.sharing.service.SharingStation.class)) //
+                    .id(Id.create(mode+"_"+ stationId, org.matsim.contrib.shared_mobility.service.SharingStation.class)) //
                     .capacity(sharingStation.getCapacity()) //
                     .linkId(sharingStation.getLink().getId()) //
                     .build();
@@ -125,7 +125,7 @@ public class InitialSharingStationsVehiclesGenerator {
 
 
     private static Network prepareNetwork() {
-        Network network = NetworkUtils.readTimeInvariantNetwork(NETWORK_PATH);
+        Network network = NetworkUtils.readNetwork(NETWORK_PATH);
 
         // remove pt_links and pt_nodes
         var ptLinks = network.getLinks().keySet().stream().filter(linkId -> linkId.toString().contains("pt")).collect(Collectors.toList());
