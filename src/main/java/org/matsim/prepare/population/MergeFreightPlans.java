@@ -28,14 +28,13 @@ public class MergeFreightPlans {
 
 	public static void main(String[] args) {
 
-		Population withoutFreight = PopulationUtils.readPopulation("D:/ReallabHH/v3.0/25pct/hv3-25-2/hamburg-v2.2-25pct-base.output_plans.xml.gz");
-		Population withFreight = PopulationUtils.readPopulation("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz");
+		Population withoutFreight = PopulationUtils.readPopulation("../../svn/shared-svn/projects/matsim-hamburg/hamburg-v4/hamburg-v4.0-25pct.plans-personsOnly.xml.gz");
+		Population withFreight = PopulationUtils.readPopulation("../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz");
 
 		withFreight.getPersons().values().stream()
 				.filter(person -> person.getId().toString().startsWith(CreatFreightAgents.COMMERCIAL))
 				.forEach(person -> withoutFreight.addPerson(person));
 
-		PopulationUtils.writePopulation(withoutFreight, "D:/ReallabHH/v3.0/25pct/hv3-25-2/hamburg-v3.0-25pct.plans-not-calibrated-wFreight.xml.gz");
-
+		PopulationUtils.writePopulation(withoutFreight, "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v4/hamburg-v4.0-25pct.plans-not-calibrated-wFreight.xml.gz");
 	}
 }
