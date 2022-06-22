@@ -118,9 +118,7 @@ public class RunSharingScenarioTest {
         List<Id<Person>> stuckPersons = new LinkedList<>();
         @Override
         public void handleEvent(PersonStuckEvent personStuckEvent) {
-            if(personStuckEvent.getLegMode().equals("sharing:car")){
-                stuckPersons.add(personStuckEvent.getPersonId());
-            }
+            stuckPersons.add(personStuckEvent.getPersonId());
         }
 
         public List<Id<Person>> getStuckPersons() {

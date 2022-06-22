@@ -27,7 +27,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing booking interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -37,7 +37,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing pickup interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -47,7 +47,7 @@
             </activity>
             <leg mode="scar" dep_time="09:05:00" trav_time="00:19:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing dropoff interaction" link="1569383580003f" start_time="09:05:00" max_dur="00:01:00" >
@@ -57,7 +57,7 @@
             </activity>
             <leg mode="walk" dep_time="09:06:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
              </leg>
             <activity type="business_8400.0" link="1073680130012f" x="612093.7949747152" y="5975892.555604265" end_time="12:21:00" >
@@ -83,7 +83,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing booking interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -93,7 +93,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing pickup interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -103,7 +103,7 @@
             </activity>
             <leg mode="scar" dep_time="09:05:00" trav_time="00:19:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing dropoff interaction" link="1569383580003f" start_time="09:05:00" max_dur="00:01:00" >
@@ -113,7 +113,7 @@
             </activity>
             <leg mode="walk" dep_time="09:06:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_8400.0" link="1569383580003f" x="612093.7949747152" y="5975892.555604265" end_time="12:21:00" >
@@ -139,7 +139,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing booking interaction" link="226631060002f" start_time="09:04:00" max_dur="00:01:00" >
@@ -149,7 +149,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing pickup interaction" link="226631060002f" start_time="09:04:00" max_dur="00:01:00" >
@@ -159,7 +159,7 @@
             </activity>
             <leg mode="scar" dep_time="09:05:00" trav_time="00:19:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing dropoff interaction" link="5170509070009r" start_time="09:05:00" max_dur="00:01:00" >
@@ -169,7 +169,7 @@
             </activity>
             <leg mode="walk" dep_time="09:06:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_8400.0" link="5170509070009r" end_time="12:21:00" >
@@ -195,7 +195,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing booking interaction" link="5170509070009r" start_time="09:04:00" max_dur="00:01:00" >
@@ -205,7 +205,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing pickup interaction" link="5170509070009r" start_time="09:04:00" max_dur="00:01:00" >
@@ -215,7 +215,7 @@
             </activity>
             <leg mode="scar" dep_time="09:05:00" trav_time="00:19:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="sharing dropoff interaction" link="416447810007f" start_time="09:05:00" max_dur="00:01:00" >
@@ -225,7 +225,7 @@
             </activity>
             <leg mode="walk" dep_time="09:06:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_8400.0" link="416447810007f" end_time="12:21:00" >
@@ -251,7 +251,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:bike</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_bike</attribute>
                 </attributes>
             </leg>
             <activity type="sharing booking interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -261,7 +261,7 @@
             </activity>
             <leg mode="walk" dep_time="09:04:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:bike</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_bike</attribute>
                 </attributes>
             </leg>
             <activity type="sharing pickup interaction" link="261715230005f" start_time="09:04:00" max_dur="00:01:00" >
@@ -271,7 +271,7 @@
             </activity>
             <leg mode="sbike" dep_time="09:05:00" trav_time="00:19:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:bike</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_bike</attribute>
                 </attributes>
             </leg>
             <activity type="sharing dropoff interaction" link="1569383580003f" start_time="09:05:00" max_dur="00:01:00" >
@@ -281,7 +281,7 @@
             </activity>
             <leg mode="walk" dep_time="09:06:00" trav_time="00:00:00">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:bike</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_bike</attribute>
                 </attributes>
             </leg>
             <activity type="business_8400.0" link="1073680130012f" x="612093.7949747152" y="5975892.555604265" end_time="12:21:00" >

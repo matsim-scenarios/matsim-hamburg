@@ -412,21 +412,21 @@
             </activity>
             <leg mode="scar" dep_time="10:13:00" trav_time="00:19:36">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_6000.0" x="585128.1378518876" y="5980085.529591967" start_time="10:49:00" end_time="12:26:00" >
             </activity>
             <leg mode="scar" dep_time="12:26:00" trav_time="00:52:49">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_2400.0" x="564710.8554359305" y="5948694.418322517" start_time="13:18:00" end_time="14:01:00" >
             </activity>
             <leg mode="scar" dep_time="14:01:00" trav_time="00:13:33">
                 <attributes>
-                    <attribute name="routingMode" class="java.lang.String">sharing:car</attribute>
+                    <attribute name="routingMode" class="java.lang.String">sharing_car</attribute>
                 </attributes>
             </leg>
             <activity type="business_2400.0" x="566209.6079807894" y="5941141.097231428" start_time="14:19:00" end_time="15:00:00" >
