@@ -25,11 +25,9 @@ public class RunHamburgScenarioTest {
     public void runTest() throws IOException {
 
         String[] args = new String[]{
-                "test/input//test-hamburg.config.singleTripMC.xml" ,
+                "test/input//test-hamburg.config.xml" ,
                 "--config:controler.lastIteration" , "1",
                 "--config:hamburgExperimental.freeSpeedFactor", "1.2",
-                "--config:hamburgExperimental.usePersonIncomeBasedScoring", "false",
-                "--config:HereAPITravelTimeValidation.useHereAPI","false",
                 "--config:hamburgExperimental.parkPressureScoreConstant","-2.",
                 "--config:plans.inputPlansFile" , "plans/test-hamburg.plans.xml",
 
@@ -44,8 +42,6 @@ public class RunHamburgScenarioTest {
         Controler controler = prepareControler(scenario);
 
         controler.run();
-
-
     }
 
 }

@@ -35,7 +35,6 @@ public class RunU18CarUsingTest {
         config.controler().setOutputDirectory(utils.getOutputDirectory());
 
         config.plans().setInputFile("plans/test-u18-hamburg.plans.xml");
-        ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class).setUsePersonIncomeBasedScoring(false); //TODO assign (dummy) incomes and remove this config parameter! such that incomeBasedScoring is mandatory!
         config.subtourModeChoice().setConsiderCarAvailability(true);
 
         Scenario scenario = prepareScenario(config);

@@ -11,7 +11,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public static final String GROUP_NAME = "hamburgExperimental";
 
     private static final String POPULATION_DOWNSAMPLE_FACTOR = "populationDownsampleFactor";
-    private static final String USE_PERSON_INCOME_BASED_SCORING = "usePersonIncomeBasedScoring";
     private static final String FREE_SPEED_FACTOR = "freeSpeedFactor";
     private static final String PARK_PRESSURE_LINK_ATTRIBUTE_FILE = "parkPressureLinkAttributeFile";
     private static final String PARK_PRESSURE_SCORE_PARAMS = "parkPressureScoreParams";

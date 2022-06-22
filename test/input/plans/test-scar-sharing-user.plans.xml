@@ -19,6 +19,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
 
         <plan score="29.086211440912123" selected="yes">
@@ -74,6 +75,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
 
         <plan score="29.086211440912123" selected="yes">
@@ -129,6 +131,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
 
         <plan score="29.086211440912123" selected="yes">
@@ -184,6 +187,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
 
         <plan score="29.086211440912123" selected="yes">
@@ -239,6 +243,7 @@
             <attribute name="sim_ptAbo" class="java.lang.String">none</attribute>
             <attribute name="sim_regionType" class="java.lang.String">NULL</attribute>
             <attribute name="subpopulation" class="java.lang.String">person</attribute>
+            <attribute name="income" class="java.lang.Double">100.0</attribute>
         </attributes>
 
         <plan score="29.086211440912123" selected="yes">

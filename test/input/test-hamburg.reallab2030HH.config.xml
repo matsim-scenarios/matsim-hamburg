@@ -185,7 +185,6 @@
         <param name="parkPressureScoreParams" value="1.,0.7,0." />
         <param name="populationDownsampleFactor" value="1.0" />
         <param name="sampleSize" value="10" />
-        <param name="usePersonIncomeBasedScoring" value="true" />
 
         <!-- ######################################################										###################################################################################################### -->
         <!-- ###################################################### drtFeeder-specific stuff underneath ###################################################################################################### -->
