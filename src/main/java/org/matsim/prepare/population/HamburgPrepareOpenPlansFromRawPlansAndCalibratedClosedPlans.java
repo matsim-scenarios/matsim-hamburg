@@ -24,9 +24,11 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.*;
+import org.matsim.application.prepare.population.FixSubtourModes;
 import org.matsim.application.prepare.population.ResolveGridCoordinates;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -47,14 +49,16 @@ import java.util.*;
  *
  * this class merges information from two sources.
  * <ul>
- *     <li>It takes (person) agent id's and attributes from the raw population file provided by senozon (and computes a resulting personal income attribute)
+ *     <li>It takes (person) agent id's and attributes from the raw population file provided by senozon (and computes a resulting personal income attribute). <br>
+ *      	It also sets car availability such that persons under the age of 18 can not take the car but all others can.
  *     <li>It takes the activity chains (and leg modes) from closed, calibrated plans that were used inside the ReallabHH project.
  *     		These plans contain additional short trips from and to "other" activities that had been inserted to better match the trip distance distribution and number of trips.
  *     <li>It modifies the activity coordinates such they fit the open raw data (from where the attributes are taken) - which are on a 300m grid
+ *     <li> It modifies the leg modes such that car availability is consistently respected.
  *     <li>output population is dumped out.
  *     <li> finally, activity coordinates are re-distributed within the grid using {@link org.matsim.application.prepare.population.ResolveGridCoordinates} in matsim-application contrib. output is overridden.
  *     	for the mapping of activities to land use geometries, no specific filter or matching is conducted. //TODO this leaves room for improvement. for example, home acts could be exclusively matched to residential geoms etc.
- *     <li> merged with freight plans. //TODO
+ *     <li> plans should be merged with freight plans afterwards. Use class {@link MergeFreightPlans}
  * </ul>
  */
 public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
@@ -69,9 +73,9 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		String plansWithAllTrips = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v2/hamburg-v2.0/input/hamburg-v2.0-25pct.plans.xml.gz";
 
 		//CAUTION: DO NOT USE A NETWORK THAT HAS NON CAR LINKS! WILL LEAD TO PROBLEMS IN THE QSIM IN POLICY CASES AS ACTIVITIES WILL BE ATTACHED TO NON CAR-LINK
-		String targetNetwork = "";
+		String targetNetwork = "../../svn/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-car-network.xml.gz";
 		String crs = RunBaseCaseHamburgScenario.COORDINATE_SYSTEM;
-		String outputFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-25pct.plans-not-calibrated.xml.gz";
+		String outputFile = "../../svn/shared-svn/projects/matsim-hamburg/hamburg-v4/hamburg-v4.0-25pct.plans-personsOnly.xml.gz";
 		String landUseShapeFile = "../../svn/shared-svn/projects/german-wide-freight/landuse/landuse.shp";
 
 		final Random rnd = new Random(1234);
@@ -89,6 +93,12 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 		}
 		log.info("finished to read idMapping File");
 
+		FixSubtourModes subtourModeFixer = new FixSubtourModes();
+		subtourModeFixer.withArgs(
+				"--input", "does not matter",
+				"--output", "does not matter",
+				"--chain-based-modes","car,bike");
+
 //		Network network = NetworkUtils.readTimeInvariantNetwork(targetNetwork);
 		Network network = null; //we resolve the grid coordinates later and map them to the corresponding links afterwards so we can save reading the network here. If no grid resolving is conducted, uncomment the line above.
 
@@ -104,6 +114,7 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 				.filter(person -> PopulationUtils.getSubpopulation(person).equals("person"))
 				.count();
 		int handledPersons = 0;
+		int subtoursFixed = 0;
 
 		for (Person attributedPerson : attributesAndCoordinatesPopulation.getPersons().values()) {
 			Person personWithPlan = plansPopulation.getPersons().get(idMap.get(attributedPerson.getId()));
@@ -133,6 +144,16 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			String householdSizeString = (String) PopulationUtils.getPersonAttribute(attributedPerson, "householdsize");
 			PopulationUtils.putPersonAttribute(targetPerson, "householdincome", incomeGroupString);
 			PopulationUtils.putPersonAttribute(targetPerson, "householdsize", householdSizeString);
+			PopulationUtils.putPersonAttribute(targetPerson, "senozon_carAvailability", PopulationUtils.getPersonAttribute(attributedPerson, "sim_carAvailability"));
+			PopulationUtils.putPersonAttribute(targetPerson, "senozon_ptAbo", PopulationUtils.getPersonAttribute(attributedPerson, "sim_carAvailability"));
+			PersonUtils.setSex(targetPerson, (String) PopulationUtils.getPersonAttribute(attributedPerson, "gender")); //attribute name is changed from 'gender' to 'sex'
+			int age = PersonUtils.getAge(attributedPerson);
+			PersonUtils.setAge(targetPerson, age);
+			if (age >= 18) {
+				PersonUtils.setCarAvail(targetPerson, "always");
+			} else {
+				PersonUtils.setCarAvail(targetPerson, "never");
+			}
 
 			//compute and set new income
 			double income = drawIncome(incomeGroupString, householdSizeString, rnd);
@@ -142,7 +163,7 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			List<Activity> activitiesToBeOverridden = TripStructureUtils.getActivities(targetPerson.getSelectedPlan(), TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
 
 			//in the plansPopulation, we inserted short trips according to the following pattern:
-			// ... originaTrip -> originalOrigin -> additionalTrip -> otherActivity -> additionalTrip -> originalOrigin -> originalTrip -> originalDestination
+			// ... originalTrip -> originalOrigin -> additionalTrip -> otherActivity -> additionalTrip -> originalOrigin -> originalTrip -> originalDestination
 			//this means, we have to make sure to copy the coordinates to the corresponding activity only! And to also copy it to the second occurrence of the originalOrigin!
 			int toActivityCounter = 0;
 			for (int fromActivityCounter = 0; fromActivityCounter < activitiesWithRightCoordinates.size(); fromActivityCounter++) {
@@ -160,11 +181,20 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 				toActivityCounter ++;
 			}
 			
-			//remove routes
+			//first remove routes from all legs and set make mode consistent to carAvailability
 			for (Leg leg : TripStructureUtils.getLegs(targetPerson.getSelectedPlan())) {
 				leg.setRoute(null);
+				if(!PersonUtils.canUseCar(targetPerson) && leg.getMode().equals(TransportMode.car)){
+					leg.setMode(TransportMode.walk); // we override car with walk.
+				}
 			}
-			
+
+			//fix non-mass-conserving subtours
+			for (TripStructureUtils.Subtour st : TripStructureUtils.getSubtours(targetPerson.getSelectedPlan())) {
+				if (subtourModeFixer.fixSubtour(targetPerson, st))
+					subtoursFixed++;
+			}
+
 			handledPersons ++;
 		}
 
@@ -172,8 +202,8 @@ public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 			throw new IllegalStateException("number of persons in target population = " + numberOfPersonsToHandle + ". Handled persons = " + handledPersons + ". Should be equal!");
 		}
 		log.info("######################################################################");
-
-
+		log.info("Nr of subtours that were not mass conserving but got fixed = " + subtoursFixed);
+		log.info("######################################################################");
 		log.info("START DUMPING OUTPUT WITH GRID COORDINATES");
 		log.info("######################################################################");
 		PopulationUtils.writePopulation(outputPopulation, outputFile);
