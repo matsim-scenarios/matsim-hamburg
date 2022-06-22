@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.application.MATSimApplication;
 import org.matsim.application.prepare.population.ExtractHomeCoordinates;
+import org.matsim.application.prepare.population.FixSubtourModes;
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.Controler;
 import picocli.CommandLine;
@@ -20,7 +21,7 @@ import java.io.UncheckedIOException;
  * @author rakow
  */
 @MATSimApplication.Prepare({
-		ExtractHomeCoordinates.class
+		FixSubtourModes.class, ExtractHomeCoordinates.class
 })
 @CommandLine.Command(header = ":: Open Hamburg Scenario ::", version = RunBaseCaseHamburgScenario.VERSION)
 public class RunHamburgScenario extends MATSimApplication {
