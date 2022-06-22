@@ -35,7 +35,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
 
 
     private double populationDownsampleFactor = 1.0;
-    private boolean usePersonIncomeBasedScoring = true;
     private double freeSpeedFactor = 1.;
     private String parkPressureLinkAttributeFile = null;
     private String parkPressureScoreParams = "1.,0.7,0.";
@@ -113,14 +112,7 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public void setPopulationDownsampleFactor(double populationDownsampleFactor) {
         this.populationDownsampleFactor = populationDownsampleFactor;
     }
-    @StringGetter(USE_PERSON_INCOME_BASED_SCORING)
-    public boolean isUsePersonIncomeBasedScoring() {
-        return usePersonIncomeBasedScoring;
-    }
-    @StringSetter(USE_PERSON_INCOME_BASED_SCORING)
-    public void setUsePersonIncomeBasedScoring(boolean usePersonIncomeBasedScoring) {
-        this.usePersonIncomeBasedScoring = usePersonIncomeBasedScoring;
-    }
+
     @StringGetter(FREE_SPEED_FACTOR)
     public double getFreeSpeedFactor() {
         return freeSpeedFactor;

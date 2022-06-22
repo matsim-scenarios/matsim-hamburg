@@ -90,10 +90,8 @@ public class RunBaseCaseHamburgScenario {
 
                 bind(new TypeLiteral<StrategyChooser<Plan, Person>>() {}).toInstance(new ForceInnovationStrategyChooser<>(10, true));
 
-                // use PersonIncomeSpecificScoringFunction if is needed
-                if(ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class).isUsePersonIncomeBasedScoring()){
-                    bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
-                }
+                // use PersonIncomeSpecificScoringFunction
+                bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
                //use custom AnalysisMainModeIdentifier
                 bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgIntermodalAnalysisModeIdentifier());
 
