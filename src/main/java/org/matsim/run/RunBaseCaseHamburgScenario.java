@@ -164,8 +164,6 @@ public class RunBaseCaseHamburgScenario {
         RouteFactories routeFactories = scenario.getPopulation().getFactory().getRouteFactories();
         routeFactories.setRouteFactory(DrtRoute.class, new DrtRouteFactory());
 
-        ScenarioUtils.loadScenario(scenario);
-
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
 
         org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), hamburgExperimentalConfigGroup.getPopulationDownsampleFactor());
@@ -231,6 +229,8 @@ public class RunBaseCaseHamburgScenario {
          * class is also used for runs without drt.
          */
         final Scenario scenario = ScenarioUtils.createScenario( config );
+
+        ScenarioUtils.loadScenario(scenario);
 
         prepareScenario(scenario);
 
