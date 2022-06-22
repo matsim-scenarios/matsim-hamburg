@@ -11,9 +11,6 @@
 
     <person id="14566a">
     <attributes>
-        <attribute name="IPD_actEndTimes" class="java.lang.String">27882.0;50283.0;57510.0;61811.0;-Infinity</attribute>
-        <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;28412.0;50912.0;58412.0;62312.0</attribute>
-        <attribute name="IPD_actTypes" class="java.lang.String">home;educ_secondary;home;leisure;home</attribute>
         <attribute name="age" class="java.lang.Integer">16</attribute>
         <attribute name="carAvail" class="java.lang.String">never</attribute>
         <attribute name="gender" class="java.lang.String">m</attribute>

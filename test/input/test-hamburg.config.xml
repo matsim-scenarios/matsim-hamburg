@@ -96,10 +96,12 @@
         </parameterset>
     </module>
 
-    <!-- TODO: the test still uses subtourModeChoice. change to singleTripChange! -->
     <module name="subtourModeChoice">
         <param name="chainBasedModes" value="car,bike"/>
         <param name="modes" value="car,pt,bike,walk"/>
+        <param name="behavior" value="betweenAllAndFewerConstraints"/>
+        <param name="probaForRandomSingleTripMode" value="0.5" />
+        <param name="considerCarAvailability" value="true"/>
     </module>
 
     <module name="transitRouter">

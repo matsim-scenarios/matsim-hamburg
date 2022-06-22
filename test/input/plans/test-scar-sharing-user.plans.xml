@@ -12,9 +12,6 @@
 
     <person id="scarUser_1a">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -70,9 +67,6 @@
 
     <person id="scarUser_1b">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -128,9 +122,6 @@
 
     <person id="scarUser_2a">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -186,9 +177,6 @@
 
     <person id="scarUser_2b">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -244,9 +232,6 @@
 
     <person id="sbikeUserFirst">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>

@@ -11,9 +11,6 @@
 
     <person id="113ecc">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">32640.0;44460.0;54720.0;57540.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;35880.0;46140.0;55140.0;59220.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;home</attribute>
             <attribute name="age" class="java.lang.Integer">59</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -61,9 +58,6 @@
     <!-- ====================================================================== -->
     <person id="113efb">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home</attribute>
             <attribute name="age" class="java.lang.Integer">61</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">f</attribute>
@@ -84,9 +78,6 @@
 
     <person id="113f00">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">36780.0;44760.0;50460.0;54000.0;71160.0;75780.0;79440.0;84840.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;38940.0;47880.0;51540.0;54840.0;72360.0;76920.0;80160.0;85500.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;business;business;business;business;business</attribute>
             <attribute name="age" class="java.lang.Integer">64</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">f</attribute>
@@ -247,9 +238,6 @@
 
     <person id="113f00_ptCopy">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">36780.0;44760.0;50460.0;54000.0;71160.0;75780.0;79440.0;84840.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;38940.0;47880.0;51540.0;54840.0;72360.0;76920.0;80160.0;85500.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;business;business;business;business;business;business;business;business</attribute>
             <attribute name="age" class="java.lang.Integer">64</attribute>
             <attribute name="carAvail" class="java.lang.String">always</attribute>
             <attribute name="gender" class="java.lang.String">f</attribute>
@@ -410,9 +398,6 @@
 
     <person id="113f02">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">19883.0;56491.0;58350.0;59495.0;69118.0;81850.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;20083.0;56683.0;58903.0;68503.0;70003.0;82603.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;work;home;leisure;leisure;leisure;home</attribute>
             <attribute name="age" class="java.lang.Integer">17</attribute>
             <attribute name="carAvail" class="java.lang.String">never</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
@@ -475,9 +460,6 @@
 
     <person id="113f02_2violatingSubtours">
         <attributes>
-            <attribute name="IPD_actEndTimes" class="java.lang.String">19883.0;56491.0;58350.0;59495.0;69118.0;81850.0;-Infinity</attribute>
-            <attribute name="IPD_actStartTimes" class="java.lang.String">-Infinity;20083.0;56683.0;58903.0;68503.0;70003.0;82603.0</attribute>
-            <attribute name="IPD_actTypes" class="java.lang.String">home;work;home;leisure;leisure;leisure;home</attribute>
             <attribute name="age" class="java.lang.Integer">17</attribute>
             <attribute name="carAvail" class="java.lang.String">never</attribute>
             <attribute name="gender" class="java.lang.String">m</attribute>
