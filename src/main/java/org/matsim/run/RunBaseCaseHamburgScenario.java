@@ -14,7 +14,6 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
-import org.matsim.application.analysis.population.ComparePlanModes;
 import org.matsim.contrib.drt.routing.DrtRoute;
 import org.matsim.contrib.drt.routing.DrtRouteFactory;
 import org.matsim.core.config.Config;
@@ -52,7 +51,7 @@ public class RunBaseCaseHamburgScenario {
     private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
-    public static final String VERSION = "v3.0";
+    public static final String VERSION = "v4.0";
     public static final double[] X_EXTENT = new double[]{490826.5738238178, 647310.6279172485};
     public static final double[] Y_EXTENT = new double[]{5866434.167201331, 5996884.970634732};
 
@@ -81,8 +80,7 @@ public class RunBaseCaseHamburgScenario {
         log.info("Done.");
     }
 
-    public static Controler prepareControler(Scenario scenario) {
-        Controler controler = new Controler(scenario);
+    public static void prepareControler(Controler controler) {
 
         controler.addOverridingModule(new AbstractModule() {
             @Override
@@ -92,7 +90,7 @@ public class RunBaseCaseHamburgScenario {
 
                 // use PersonIncomeSpecificScoringFunction
                 bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);
-               //use custom AnalysisMainModeIdentifier
+                //use custom AnalysisMainModeIdentifier
                 bind(AnalysisMainModeIdentifier.class).toInstance(new HamburgIntermodalAnalysisModeIdentifier());
 
 
@@ -138,7 +136,7 @@ public class RunBaseCaseHamburgScenario {
             public void install() {
                 this.bind(PlanBasedTripsFileWriter.class).asEagerSingleton();
                 this.addControlerListenerBinding().to(PlanBasedTripsWriterControlerListener.class);
-                }
+            }
         });
 
         // use link-based park pressure
@@ -152,25 +150,23 @@ public class RunBaseCaseHamburgScenario {
 
         // add Freight
         AdjustScenarioForFreight.adjustControlerForFreight(controler, AdjustScenarioForFreight.getFreightModes());
+    }
+
+    public static Controler prepareControler(Scenario scenario) {
+        Controler controler = new Controler(scenario);
+
+        prepareControler(controler);
 
         return controler;
     }
 
-    public static Scenario prepareScenario(Config config) throws IOException {
-
-        /*
-         * We need to set the DrtRouteFactory before loading the scenario. Otherwise DrtRoutes in input plans are loaded
-         * as GenericRouteImpls and will later cause exceptions in DrtRequestCreator. So we do this here, although this
-         * class is also used for runs without drt.
-         */
-        final Scenario scenario = ScenarioUtils.createScenario( config );
-
+    public static void prepareScenario(Scenario scenario) throws IOException {
         RouteFactories routeFactories = scenario.getPopulation().getFactory().getRouteFactories();
         routeFactories.setRouteFactory(DrtRoute.class, new DrtRouteFactory());
 
         ScenarioUtils.loadScenario(scenario);
 
-        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
+        HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
 
         org.matsim.core.population.PopulationUtils.sampleDown(scenario.getPopulation(), hamburgExperimentalConfigGroup.getPopulationDownsampleFactor());
 
@@ -225,6 +221,18 @@ public class RunBaseCaseHamburgScenario {
                 }
             }
         }
+    }
+
+    public static Scenario prepareScenario(Config config) throws IOException {
+
+        /*
+         * We need to set the DrtRouteFactory before loading the scenario. Otherwise DrtRoutes in input plans are loaded
+         * as GenericRouteImpls and will later cause exceptions in DrtRequestCreator. So we do this here, although this
+         * class is also used for runs without drt.
+         */
+        final Scenario scenario = ScenarioUtils.createScenario( config );
+
+        prepareScenario(scenario);
 
         return scenario;
     }
@@ -241,13 +249,21 @@ public class RunBaseCaseHamburgScenario {
 
 
         final Config config = ConfigUtils.loadConfig(args[0], customModulesAll);
+
+        prepareConfig(config);
+
+        String[] typedArgs = Arrays.copyOfRange(args, 1, args.length);
+        ConfigUtils.applyCommandline(config, typedArgs);
+
+        return config;
+    }
+
+    public static void prepareConfig(Config config) {
+
         HamburgExperimentalConfigGroup hamburgCfg = ConfigUtils.addOrGetModule(config, HamburgExperimentalConfigGroup.class);
 
         // delete default modes
         config.plansCalcRoute().removeModeRoutingParams(TransportMode.ride);
-
-        String[] typedArgs = Arrays.copyOfRange(args, 1, args.length);
-        ConfigUtils.applyCommandline(config, typedArgs);
 
         //todo: think about opening and closing time, there can be some overnight activities like shopping or business...
         for (long ii = 600; ii <= 97200; ii += 600) {
@@ -266,6 +282,6 @@ public class RunBaseCaseHamburgScenario {
 
         ConfigUtils.addOrGetModule(config, SubtourModeChoiceConfigGroup.class).setProbaForRandomSingleTripMode(hamburgCfg.getSubTourModeChoiceProbaForSingleTripChange());
 
-        return config;
     }
+
 }
