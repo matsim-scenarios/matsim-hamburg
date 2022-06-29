@@ -1,3 +1,4 @@
+/*
 package org.matsim.run;
 
 import org.junit.Assert;
@@ -14,9 +15,11 @@ import java.io.IOException;
 
 import static org.matsim.run.RunBaseCaseHamburgScenario.*;
 
+*/
 /**
  * @author zmeng
- */
+ *//*
+
 public class RunU18CarUsingTest {
     @Rule
     public MatsimTestUtils utils = new MatsimTestUtils() ;
@@ -48,3 +51,4 @@ public class RunU18CarUsingTest {
         Assert.assertFalse("U18 person should not drive car",modeStatsControlerListener.getModeHistories().containsKey("car"));
     }
 }
+*/
