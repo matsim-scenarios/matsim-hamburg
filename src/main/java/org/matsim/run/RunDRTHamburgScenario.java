@@ -3,7 +3,8 @@ package org.matsim.run;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
 import com.google.common.base.Preconditions;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -41,7 +42,7 @@ import java.util.Set;
  */
 public class RunDRTHamburgScenario {
 
-    private static final Logger log = Logger.getLogger(RunDRTHamburgScenario.class);
+    private static final Logger log = LogManager.getLogger(RunDRTHamburgScenario.class);
 
     public static final String DRT_FEEDER_MODE = "drt_feeder";
     private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
@@ -153,7 +154,7 @@ public class RunDRTHamburgScenario {
                 //tag pt stops that are to be used for intermodal access and egress
                 tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
                         DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
-                        drtCfg.getDrtServiceAreaShapeFile(),
+                        drtCfg.drtServiceAreaShapeFile,
                         /* "stopFilter", "station_S/U/RE/RB",*/
                         0.); //
             }

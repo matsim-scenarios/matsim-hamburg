@@ -1,6 +1,7 @@
 package org.matsim.parking;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -22,7 +23,7 @@ import static org.matsim.parking.UtilityBasedParkingPressureEventHandler.PARK_PR
  * @author zmeng
  */
 public class NetworkParkPressureReader {
-    private static final Logger log = Logger.getLogger(NetworkParkPressureReader.class);
+    private static final Logger log = LogManager.getLogger(NetworkParkPressureReader.class);
 
     private final Network network;
     private final HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup;

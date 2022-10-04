@@ -1,6 +1,7 @@
 package org.matsim.analysis.accidents;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -39,7 +40,7 @@ import java.util.*;
  */
 
 public class HamburgAccidentsNetworkModification {
-    private static final Logger log = Logger.getLogger(HamburgAccidentsNetworkModification.class);
+    private static final Logger log = LogManager.getLogger(HamburgAccidentsNetworkModification.class);
 
     private final Scenario scenario;
 

@@ -1,6 +1,7 @@
 package org.matsim.prepare.freight.bvm;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.Objects;
@@ -19,7 +20,7 @@ import java.util.Objects;
  */
 public class ConvertFiles {
     private final static File folder = new File("../shared-svn/projects/realLabHH/data/BVM_Modelldaten/UmlegungsmatrizenAnalyse2018/");
-    private final static Logger log = Logger.getLogger(ConvertFiles.class);
+    private final static Logger log = LogManager.getLogger(ConvertFiles.class);
 
     public static void main(String[] args) throws IOException {
 

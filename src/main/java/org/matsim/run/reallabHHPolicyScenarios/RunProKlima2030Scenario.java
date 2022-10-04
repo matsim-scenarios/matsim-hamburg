@@ -20,7 +20,8 @@
 
 package org.matsim.run.reallabHHPolicyScenarios;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -46,7 +47,7 @@ public class RunProKlima2030Scenario {
 	 * this is the area in which car links are modified. The currently used shape consists of several polygons (city districts)
 	 */
 	public static final String SHP_CAR_PUSH_MEASURES_AREA = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg_city/hamburg_stadtteil.shp";
-	private static final Logger log = Logger.getLogger(RunProKlima2030Scenario.class);
+	private static final Logger log = LogManager.getLogger(RunProKlima2030Scenario.class);
 
 	public static void main(String[] args) throws IOException {
 

@@ -1,6 +1,7 @@
 package org.matsim.prepare.pt;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -19,7 +20,7 @@ public class ModLinesInSHP {
 
     static List<TransitRoute> trToDelete = new ArrayList<>();
     static List<TransitLine> tlToDelete = new ArrayList<>();
-    private static final Logger log = Logger.getLogger(ModLinesInSHP.class);
+    private static final Logger log = LogManager.getLogger(ModLinesInSHP.class);
 
     public static void main(String[] args) {
 

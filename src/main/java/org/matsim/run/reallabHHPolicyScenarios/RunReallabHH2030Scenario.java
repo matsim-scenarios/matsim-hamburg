@@ -21,7 +21,8 @@
 package org.matsim.run.reallabHHPolicyScenarios;
 
 import com.google.common.base.Preconditions;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -63,7 +64,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class RunReallabHH2030Scenario {
 
-	private static final Logger log = Logger.getLogger(RunReallabHH2030Scenario.class);
+	private static final Logger log = LogManager.getLogger(RunReallabHH2030Scenario.class);
 
 	static final String CFG_REALLABHH2030_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030/hamburg-v3.0-10pct.config.reallabHH2030.xml";
 	static final String CFG_REALLABHH2030_PLUS_SCENARIO = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030plus/hamburg-v3.0-10pct.config.reallabHH2030-plus.xml";

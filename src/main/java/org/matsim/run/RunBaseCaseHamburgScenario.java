@@ -3,7 +3,8 @@ package org.matsim.run;
 
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.analysis.HamburgIntermodalAnalysisModeIdentifier;
 import org.matsim.analysis.PlanBasedTripsFileWriter;
 import org.matsim.analysis.PlanBasedTripsWriterControlerListener;
@@ -48,7 +49,7 @@ import java.util.List;
  */
 public class RunBaseCaseHamburgScenario {
 
-    private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
+    private static final Logger log = LogManager.getLogger(RunBaseCaseHamburgScenario.class);
 
     public static final String COORDINATE_SYSTEM = "EPSG:25832";
     public static final String VERSION = "v4.0";
@@ -86,7 +87,7 @@ public class RunBaseCaseHamburgScenario {
             @Override
             public void install() {
 
-                bind(new TypeLiteral<StrategyChooser<Plan, Person>>() {}).toInstance(new ForceInnovationStrategyChooser<>(10, true));
+                bind(new TypeLiteral<StrategyChooser<Plan, Person>>() {}).toInstance(new ForceInnovationStrategyChooser<>(10, ForceInnovationStrategyChooser.Permute.yes));
 
                 // use PersonIncomeSpecificScoringFunction
                 bind(ScoringParametersForPerson.class).to(IncomeDependentUtilityOfMoneyPersonScoringParameters.class).in(Singleton.class);

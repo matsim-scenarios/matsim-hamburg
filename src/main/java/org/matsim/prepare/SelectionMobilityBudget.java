@@ -1,6 +1,7 @@
 package org.matsim.prepare;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
@@ -20,7 +21,7 @@ import java.util.*;
 
 public class SelectionMobilityBudget {
 
-    private static final Logger log = Logger.getLogger(SelectionMobilityBudget.class);
+    private static final Logger log = LogManager.getLogger(SelectionMobilityBudget.class);
 
 
     public static void filterForRegion(Population population, String shapeFile, Map<Id<Person>, Double> personsEligibleForMobilityBudget) {

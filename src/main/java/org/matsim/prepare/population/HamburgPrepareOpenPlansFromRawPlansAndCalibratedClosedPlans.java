@@ -22,7 +22,8 @@ package org.matsim.prepare.population;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -63,7 +64,7 @@ import java.util.*;
  */
 public class HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans {
 
-	private static final Logger log = Logger.getLogger(HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans.class);
+	private static final Logger log = LogManager.getLogger(HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans.class);
 
 	public static void main(String[] args) {
 

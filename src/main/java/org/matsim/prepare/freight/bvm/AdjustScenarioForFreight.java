@@ -1,6 +1,7 @@
 package org.matsim.prepare.freight.bvm;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
@@ -28,7 +29,7 @@ import static org.matsim.prepare.freight.bvm.CreatFreightAgents.COMMERCIAL;
  */
 public class AdjustScenarioForFreight {
 
-    private static final Logger log = Logger.getLogger(AdjustScenarioForFreight.class);
+    private static final Logger log = LogManager.getLogger(AdjustScenarioForFreight.class);
     private static final List<String> modes = Arrays.asList("Lfw","Lkw-g","Lkw-k","Lkw-m","Trans","PWV_IV","Pkw-Lfw");
 
     public static void adjustScenarioForFreight(Scenario scenario, List<String> modes){

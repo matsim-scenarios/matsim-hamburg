@@ -1,6 +1,7 @@
 package org.matsim.prepare;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  */
 public class InitialSharingStationsVehiclesGenerator {
 
-    private static final Logger log = Logger.getLogger(InitialSharingStationsVehiclesGenerator.class);
+    private static final Logger log = LogManager.getLogger(InitialSharingStationsVehiclesGenerator.class);
 
     private static final String NETWORK_PATH = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/baseCase/input/hamburg-v2.0-network-with-pt.xml.gz";
 

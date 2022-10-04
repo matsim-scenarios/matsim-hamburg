@@ -22,7 +22,8 @@ package org.matsim.analysis.emissions;
 
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
@@ -63,7 +64,7 @@ import static org.matsim.contrib.emissions.Pollutant.*;
  */
 
 public class RunOfflineAirPollutionAnalysisByEngineInformation {
-	private static final Logger log = Logger.getLogger(RunOfflineAirPollutionAnalysisByEngineInformation.class);
+	private static final Logger log = LogManager.getLogger(RunOfflineAirPollutionAnalysisByEngineInformation.class);
 
 	private final String runDirectory;
 	private final String runId;

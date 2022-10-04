@@ -1,7 +1,8 @@
 package org.matsim.run;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.application.MATSimApplication;
 import org.matsim.application.prepare.population.CleanPopulation;
@@ -27,7 +28,7 @@ import java.io.UncheckedIOException;
 @CommandLine.Command(header = ":: Open Hamburg Scenario ::", version = RunBaseCaseHamburgScenario.VERSION)
 public class RunHamburgScenario extends MATSimApplication {
 
-	private static final Logger log = Logger.getLogger(RunHamburgScenario.class);
+	private static final Logger log = LogManager.getLogger(RunHamburgScenario.class);
 
 	public static void main(String[] args) {
 		MATSimApplication.run(RunHamburgScenario.class, args);

@@ -10,7 +10,7 @@
     <description>MATSim Open Hamburg scenario project</description>
 
     <properties>
-        <matsim.version>15.0-PR2080</matsim.version>
+        <matsim.version>15.0-PR2210</matsim.version>
 <!--        <matsim.version>15.0-SNAPSHOT</matsim.version>-->
 
         <mainClass>org.matsim.run.RunBaseCaseHamburgScenario</mainClass>
@@ -252,8 +252,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                     <showWarnings>false</showWarnings>
                     <showDeprecation>false</showDeprecation>
                     <encoding>UTF-8</encoding>

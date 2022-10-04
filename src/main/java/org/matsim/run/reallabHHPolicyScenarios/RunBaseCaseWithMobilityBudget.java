@@ -1,6 +1,7 @@
 package org.matsim.run.reallabHHPolicyScenarios;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 public class RunBaseCaseWithMobilityBudget {
 
-    private static final Logger log = Logger.getLogger(RunBaseCaseHamburgScenario.class);
+    private static final Logger log = LogManager.getLogger(RunBaseCaseHamburgScenario.class);
 
     //public static final HashMap<Id<Person>, Double > personsWithMobilityBudget = new HashMap<>();
     public final Map<Id<Person>, Double> personsEligibleForMobilityBudget = new HashMap<>();
