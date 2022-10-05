@@ -263,6 +263,8 @@ public class RunBaseCaseHamburgScenario {
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("shop_other_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(20. * 3600.));
             config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("educ_kiga_" + ii + ".0").setTypicalDuration(ii).setOpeningTime(8. * 3600.).setClosingTime(18. * 3600.));
         }
+        config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("sightseeing").setTypicalDuration(3 * 3600));
+        config.planCalcScore().addActivityParams(new PlanCalcScoreConfigGroup.ActivityParams("ship").setTypicalDuration(10 * 3600));
 
         ConfigUtils.addOrGetModule(config, SubtourModeChoiceConfigGroup.class).setProbaForRandomSingleTripMode(hamburgCfg.getSubTourModeChoiceProbaForSingleTripChange());
 
