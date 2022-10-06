@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 /**
  * @author zmeng
  */
+@Deprecated /*this class was used in earlier model versions to incorporate short trips missing in the snz input plans.
+The (further processed/calibrated) result was used for plans generation in v4, as done in {@link HamburgPrepareOpenPlansFromRawPlansAndCalibratedClosedPlans)*/
 public class AddMissingTripsToSNZPlans {
     private static final Logger log = LogManager.getLogger(AddMissingTripsToSNZPlans.class);
     private static final Random rnd = MatsimRandom.getLocalInstance();
