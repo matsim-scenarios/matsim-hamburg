@@ -57,14 +57,16 @@ public class AdjustScenarioForFreight {
             config.planCalcScore().addModeParams(new PlanCalcScoreConfigGroup.ModeParams(mode).setMonetaryDistanceRate(-0.0004));
         }
 
-        log.info("will delete routes from commercial legs and set coords of commercial activities to coord of their link!! This requires that the input plans were routed at least once, beforehand!");
+        log.info("will delete routes from commercial legs and set coords of commercial activities to coord of their link!! If activities have no link id, nothing happens. The simulation will assign this coord later.");
         scenario.getPopulation().getPersons().values().stream()
-                .filter(person -> PopulationUtils.getSubpopulation(person).equals(COMMERCIAL))
+                .filter(person -> COMMERCIAL.equals(PopulationUtils.getSubpopulation(person)))
                 .flatMap(person -> person.getSelectedPlan().getPlanElements().stream())
                 .forEach(planElement -> {
                     if(planElement instanceof Activity){
                         Id<Link> linkId = ((Activity) planElement).getLinkId();
-                        ((Activity) planElement).setCoord(network.getLinks().get(linkId).getCoord());
+                        if (linkId != null) {
+                            ((Activity) planElement).setCoord(network.getLinks().get(linkId).getCoord());
+                        }
                     } else {
                         ((Leg) planElement).setRoute(null);
                     }
