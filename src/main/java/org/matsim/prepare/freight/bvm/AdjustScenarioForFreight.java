@@ -63,7 +63,7 @@ public class AdjustScenarioForFreight {
                 .forEach(planElement -> {
                     if(planElement instanceof Activity){
                         Id<Link> linkId = ((Activity) planElement).getLinkId();
-                        if (linkId != null) {
+                        if (linkId != null && network.getLinks().containsKey(linkId)) {
                             ((Activity) planElement).setCoord(network.getLinks().get(linkId).getCoord());
                         }
                     } else {
