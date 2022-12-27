@@ -8,8 +8,8 @@ from shapely.geometry import Point
 # give the folder path:
 
 # give the folder path:
-runId = "hamburg-v3.0-25pct-base"
-trips_info_folder = 'D:/ReallabHH/v3.0/25pct/hv3-25-7-1/'
+runId = "020"
+trips_info_folder = '//sshfs.r/schlenther@cluster.math.tu-berlin.de/net/ils/matsim-hamburg/v4.0-calibration/runs/020'
 
 #output file path
 outputDir = trips_info_folder + 'analysis/'

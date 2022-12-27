@@ -8,7 +8,7 @@ library(sf)
 
 source("https://raw.githubusercontent.com/matsim-scenarios/matsim-duesseldorf/master/src/main/R/theme.R")
 
-setwd("PLEASE ADJUST TO YOUR LOCAL DIRECTORY FOR matsim-kelheim/src/main/R")
+setwd("PLEASE ADJUST TO YOUR LOCAL DIRECTORY FOR matsim-hamburg/src/main/R")
 
 theme_set(theme_Publication(18))
 
@@ -16,7 +16,7 @@ theme_set(theme_Publication(18))
 levels = c("0 - 1000", "1000 - 2000", "2000 - 5000", "5000 - 10000", "10000 - 20000", "20000+")
 breaks = c(0, 1000, 2000, 5000, 10000, 20000, Inf)
 
-shape <- st_read("../../../scenarios/input/shp/dilutionArea.shp", crs=25832)
+shape <- st_read("../../../scenarios/input/shp/metropolregion.shp", crs=25832)
 
 #########
 # Read simulation data
@@ -63,7 +63,7 @@ sim <- trips %>%
 
 srv <- read_csv("mid.csv") %>%
     mutate(main_mode=mode) %>%
-    mutate(scaled_trips=122258 * 3.2 * share) %>%
+    mutate(scaled_trips=122258 * 3.2 * share) %>% ## number of person agents * avgTrips * mode-share
     mutate(source = "mid") %>%
     mutate(dist_group=fct_relevel(dist_group, levels)) %>%
     arrange(dist_group)
@@ -126,7 +126,7 @@ dist_order <- factor(total$dist_group, level = levels)
 dist_order <- fct_explicit_na(dist_order, "20000+")
 
 g <- ggplot(total, aes(fill=mode, y=scaled_trips, x=source)) +
-  labs(subtitle = paste("Kelheim scenario", substring(f, 52)), x="distance [m]", y="trips") +
+  labs(subtitle = paste("Hamburg scenario", substring(f, 52)), x="distance [m]", y="trips") +
   geom_bar(position="stack", stat="identity", width = 0.5) +
   facet_wrap(dist_order, nrow = 1) +
   scale_y_continuous(labels = scales::number_format(suffix = " K", scale = 1e-3)) +
@@ -208,7 +208,7 @@ dist_order <- factor(by_distance$dist_group, level = levels)
 dist_order <- fct_explicit_na(dist_order, "100000+")
 
 g <- ggplot(by_distance, aes(y=share, x=source, fill=mode)) +
-  labs(subtitle = paste("Kelheim scenario", substring(f, 52)), x="distance [m]", y="share") +
+  labs(subtitle = paste("Hamburg scenario", substring(f, 52)), x="distance [m]", y="share") +
   geom_bar(position="stack", stat="identity", width = 0.5) +
   facet_wrap(dist_order, nrow = 1) +
   scale_fill_locuszoom() +
