@@ -1,6 +1,8 @@
 package org.matsim.run;
 
 
+import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
+import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
@@ -13,11 +15,18 @@ import org.matsim.contrib.drt.estimator.MultiModalDrtLegEstimator;
 import org.matsim.contrib.drt.estimator.run.DrtEstimatorConfigGroup;
 import org.matsim.contrib.drt.estimator.run.DrtEstimatorModule;
 import org.matsim.contrib.drt.estimator.run.MultiModeDrtEstimatorConfigGroup;
+import org.matsim.contrib.drt.run.DrtConfigGroup;
+import org.matsim.contrib.drt.run.DrtConfigs;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
+import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
+import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
 import org.matsim.modechoice.InformedModeChoiceModule;
 import org.matsim.modechoice.ModeOptions;
 import org.matsim.modechoice.commands.StrategyOptions;
@@ -35,6 +44,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -53,13 +63,15 @@ public class RunHamburgScenario extends MATSimApplication {
 	@CommandLine.Mixin
 	private StrategyOptions strategy = new StrategyOptions(StrategyOptions.ModeChoice.subTourModeChoice, "person");
 
+	@CommandLine.Option(names = "--with-drt", defaultValue = "false", description = "enable DRT functionality. you need to provide the corresponding config groups...")
+	private boolean drt;
 
 	public static void main(String[] args) {
 		MATSimApplication.run(RunHamburgScenario.class, args);
 	}
 
 	public RunHamburgScenario() {
-		super("scenarios/input/hamburg-v4.0-1pct.config.baseCase.xml");
+		super("scenarios/input/hamburg-v4.0-1pct.config.drt.xml");
 	}
 
 	public RunHamburgScenario(@Nullable Config config) {
@@ -74,13 +86,8 @@ public class RunHamburgScenario extends MATSimApplication {
 		{ //informed mode choice stuff. part of this potentially should be migrated to RunDRTHamburgScenario
 			strategy.applyConfig(config, this::addRunOption);
 
-			if(MultiModeDrtConfigGroup.get(config) != null){
-				MultiModeDrtEstimatorConfigGroup estimatorConfig = ConfigUtils.addOrGetModule(config, MultiModeDrtEstimatorConfigGroup.class);
-				// Use estimators with default values
-				estimatorConfig.addParameterSet(new DrtEstimatorConfigGroup("drt"));
-			}
-
-			//right now i just hack the distanceBasedPtFareParams in and set everything to zero. We are using dailyMonetaryConstant in Hamburg currently. We should either write an own pt estimator or update our pt fare model
+			//right now i just hack the distanceBasedPtFareParams in and set everything to zero. We are using dailyMonetaryConstant in Hamburg currently.
+			//TODO clean up: either introduce new pt fare model or use custom/new pt leg estimator
 			PtFareConfigGroup ptFareConfigGroup = ConfigUtils.addOrGetModule(config, PtFareConfigGroup.class);
 			DistanceBasedPtFareParams distanceBasedPtFareParams = ConfigUtils.addOrGetModule(config, DistanceBasedPtFareParams.class);
 
@@ -95,6 +102,31 @@ public class RunHamburgScenario extends MATSimApplication {
 			distanceBasedPtFareParams.setLongDistanceTripSlope(0); // y = ax + b --> a value, for long trips
 			distanceBasedPtFareParams.setLongDistanceTripIntercept(0); // y = ax + b --> b value, for long trips
 
+			if(drt){
+//				ConfigGroup[] customModulesToAdd = new ConfigGroup[] { new DvrpConfigGroup(), new MultiModeDrtConfigGroup(),
+//						new SwissRailRaptorConfigGroup(), new IntermodalTripFareCompensatorsConfigGroup(),
+//						new PtIntermodalRoutingModesConfigGroup()};
+
+				//materialize config groups
+				MultiModeDrtConfigGroup mmDrtCfg = ConfigUtils.addOrGetModule(config, MultiModeDrtConfigGroup.class);
+				ConfigUtils.addOrGetModule(config, DvrpConfigGroup.class);
+				ConfigUtils.addOrGetModule(config, IntermodalTripFareCompensatorsConfigGroup.class);
+//				ConfigUtils.addOrGetModule(config, PtIntermodalRoutingModesConfigGroup.class);
+
+
+				// Use estimators with default values
+				MultiModeDrtEstimatorConfigGroup estimatorConfig = ConfigUtils.addOrGetModule(config, MultiModeDrtEstimatorConfigGroup.class);
+				for (DrtConfigGroup drtCfg : mmDrtCfg.getModalElements()) {
+					estimatorConfig.addParameterSet(new DrtEstimatorConfigGroup(drtCfg.getMode()));
+				}
+
+				//when simulating dvrp, we need/should simulate from the start to the end
+				config.qsim().setSimStarttimeInterpretation(QSimConfigGroup.StarttimeInterpretation.onlyUseStarttime);
+				config.qsim().setSimEndtimeInterpretation(QSimConfigGroup.EndtimeInterpretation.onlyUseEndtime);
+
+				DrtConfigs.adjustMultiModeDrtConfig(mmDrtCfg, config.planCalcScore(), config.plansCalcRoute());
+			}
+
 		}
 
 		return config;
@@ -105,6 +137,9 @@ public class RunHamburgScenario extends MATSimApplication {
 
 		try {
 			RunBaseCaseHamburgScenario.prepareScenario(scenario);
+			if(drt){
+				RunDRTHamburgScenario.prepareNetwork(scenario);
+			}
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
@@ -115,10 +150,13 @@ public class RunHamburgScenario extends MATSimApplication {
 	protected void prepareControler(Controler controler) {
 
 		RunBaseCaseHamburgScenario.prepareControler(controler);
+		if(drt){
+			RunDRTHamburgScenario.prepareControler(controler);
+		}
 		controler.addOverridingModule(new AbstractModule() {
 			@Override
 			public void install() {
-				if(MultiModeDrtConfigGroup.get(controler.getConfig()) != null){
+				if(drt){
 					install(new DrtEstimatorModule());
 				}
 				// Configure informed mode choice strategy
@@ -148,7 +186,7 @@ public class RunHamburgScenario extends MATSimApplication {
 												"ride", 0.11132056,
 												"pt", 0.07964946
 										)));
-						if(MultiModeDrtConfigGroup.get(controler.getConfig()) != null) {
+						if(drt) {
 							builder.withLegEstimator(MultiModalDrtLegEstimator.class, ModeOptions.AlwaysAvailable.class, "drt");
 						}
 					})
