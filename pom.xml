@@ -75,7 +75,7 @@
             <groupId>org.matsim.contrib</groupId>
             <artifactId>informed-mode-choice</artifactId>
             <version>${matsim.version}</version>
-            <scope>compile</scope>
+<!--            <scope>compile</scope>-->
         </dependency>
 
         <dependency>

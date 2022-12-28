@@ -4,17 +4,37 @@ package org.matsim.run;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.application.MATSimApplication;
 import org.matsim.application.prepare.population.CleanPopulation;
 import org.matsim.application.prepare.population.ExtractHomeCoordinates;
 import org.matsim.application.prepare.population.FixSubtourModes;
+import org.matsim.contrib.drt.estimator.MultiModalDrtLegEstimator;
+import org.matsim.contrib.drt.estimator.run.DrtEstimatorConfigGroup;
+import org.matsim.contrib.drt.estimator.run.DrtEstimatorModule;
+import org.matsim.contrib.drt.estimator.run.MultiModeDrtEstimatorConfigGroup;
+import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.modechoice.InformedModeChoiceModule;
+import org.matsim.modechoice.ModeOptions;
+import org.matsim.modechoice.commands.StrategyOptions;
+import org.matsim.modechoice.estimators.DefaultActivityEstimator;
+import org.matsim.modechoice.estimators.DefaultLegScoreEstimator;
+import org.matsim.modechoice.estimators.FixedCostsEstimator;
+import org.matsim.modechoice.pruning.DistanceBasedPruner;
+import org.matsim.modechoice.pruning.ModeDistanceBasedPruner;
 import picocli.CommandLine;
+import playground.vsp.pt.fare.DistanceBasedPtFareParams;
+import playground.vsp.pt.fare.PtFareConfigGroup;
+import playground.vsp.pt.fare.PtTripFareEstimator;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Map;
 
 
 /**
@@ -30,12 +50,16 @@ public class RunHamburgScenario extends MATSimApplication {
 
 	private static final Logger log = LogManager.getLogger(RunHamburgScenario.class);
 
+	@CommandLine.Mixin
+	private StrategyOptions strategy = new StrategyOptions(StrategyOptions.ModeChoice.subTourModeChoice, "person");
+
+
 	public static void main(String[] args) {
 		MATSimApplication.run(RunHamburgScenario.class, args);
 	}
 
 	public RunHamburgScenario() {
-		super("public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-25pct.config.baseCase.xml");
+		super("scenarios/input/hamburg-v4.0-1pct.config.baseCase.xml");
 	}
 
 	public RunHamburgScenario(@Nullable Config config) {
@@ -46,6 +70,32 @@ public class RunHamburgScenario extends MATSimApplication {
 	protected Config prepareConfig(Config config) {
 
 		RunBaseCaseHamburgScenario.prepareConfig(config);
+
+		{ //informed mode choice stuff. part of this potentially should be migrated to RunDRTHamburgScenario
+			strategy.applyConfig(config, this::addRunOption);
+
+			if(MultiModeDrtConfigGroup.get(config) != null){
+				MultiModeDrtEstimatorConfigGroup estimatorConfig = ConfigUtils.addOrGetModule(config, MultiModeDrtEstimatorConfigGroup.class);
+				// Use estimators with default values
+				estimatorConfig.addParameterSet(new DrtEstimatorConfigGroup("drt"));
+			}
+
+			//right now i just hack the distanceBasedPtFareParams in and set everything to zero. We are using dailyMonetaryConstant in Hamburg currently. We should either write an own pt estimator or update our pt fare model
+			PtFareConfigGroup ptFareConfigGroup = ConfigUtils.addOrGetModule(config, PtFareConfigGroup.class);
+			DistanceBasedPtFareParams distanceBasedPtFareParams = ConfigUtils.addOrGetModule(config, DistanceBasedPtFareParams.class);
+
+			// Set parameters
+			ptFareConfigGroup.setApplyUpperBound(true);
+			ptFareConfigGroup.setUpperBoundFactor(1.5);
+
+			distanceBasedPtFareParams.setMinFare(0.0);  // Minimum fare (e.g. short trip or 1 zone ticket)
+			distanceBasedPtFareParams.setLongDistanceTripThreshold(0); // Division between long trip and short trip (unit: m)
+			distanceBasedPtFareParams.setNormalTripSlope(0.0); // y = ax + b --> a value, for short trips
+			distanceBasedPtFareParams.setNormalTripIntercept(0); // y = ax + b --> b value, for short trips
+			distanceBasedPtFareParams.setLongDistanceTripSlope(0); // y = ax + b --> a value, for long trips
+			distanceBasedPtFareParams.setLongDistanceTripIntercept(0); // y = ax + b --> b value, for long trips
+
+		}
 
 		return config;
 	}
@@ -65,6 +115,46 @@ public class RunHamburgScenario extends MATSimApplication {
 	protected void prepareControler(Controler controler) {
 
 		RunBaseCaseHamburgScenario.prepareControler(controler);
+		controler.addOverridingModule(new AbstractModule() {
+			@Override
+			public void install() {
+				if(MultiModeDrtConfigGroup.get(controler.getConfig()) != null){
+					install(new DrtEstimatorModule());
+				}
+				// Configure informed mode choice strategy
+				install(strategy.applyModule(binder(), controler.getConfig(), builder ->{
+						builder.withFixedCosts(FixedCostsEstimator.DailyConstant.class, TransportMode.car, TransportMode.pt)
+										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.bike, TransportMode.ride, TransportMode.walk)
+										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.ConsiderIfCarAvailable.class, TransportMode.car)
+										.withTripEstimator(PtTripFareEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.pt)
+										.withActivityEstimator(DefaultActivityEstimator.class)
+										.withPruner("d99", new DistanceBasedPruner(3.28179737, 0.16710464))
+										.withPruner("d95", new DistanceBasedPruner(3.09737874, 0.03390164))
+										.withPruner("m99", new ModeDistanceBasedPruner(2.54076057, Map.of(
+												"bike", 0.32642463,
+												"walk", 0.13978577,
+												"car", 0.0448102,
+												"ride", 0.07041452,
+												"pt", 0.13576849
+										)))
+										// These are with activity estimation enabled
+										.withPruner("ad999", new DistanceBasedPruner(3.03073657, 0.22950583))
+										.withPruner("ad99", new DistanceBasedPruner(2.10630819, 0.0917091))
+										.withPruner("ad95", new DistanceBasedPruner(1.72092386, 0.03189323))
+										.withPruner("am99", new ModeDistanceBasedPruner(2.68083795, Map.of(
+												"bike", 0.22681661,
+												"walk", 0d,
+												"car", 0.052746,
+												"ride", 0.11132056,
+												"pt", 0.07964946
+										)));
+						if(MultiModeDrtConfigGroup.get(controler.getConfig()) != null) {
+							builder.withLegEstimator(MultiModalDrtLegEstimator.class, ModeOptions.AlwaysAvailable.class, "drt");
+						}
+					})
+				);
+			}
+		});
 
 	}
 }
