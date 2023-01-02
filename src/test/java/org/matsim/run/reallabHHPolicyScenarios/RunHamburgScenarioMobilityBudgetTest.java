@@ -71,10 +71,10 @@ public class RunHamburgScenarioMobilityBudgetTest {
 
         controler.run();
 
-        Assert.assertEquals("wrong number of expected mobility budget payments!",2, handler.mobilityBudgetEvents.size());
+        Assert.assertEquals("wrong number of expected mobility budget payments!",1, handler.mobilityBudgetEvents.size());
 
         PersonMoneyEvent event = handler.mobilityBudgetEvents.iterator().next();
-        Assert.assertEquals("wrong person", "113f00", event.getPersonId().toString() );
+        Assert.assertEquals("wrong person", "113f00_ptCopy", event.getPersonId().toString() );
         Assert.assertEquals("wrong mobility budget amount", dailyMobilityBudget , event.getAmount(), 0. );
 
         Map<Id<Person>, ? extends Person> persons = controler.getScenario().getPopulation().getPersons();
@@ -83,11 +83,9 @@ public class RunHamburgScenarioMobilityBudgetTest {
         expectedScores.put(Id.createPersonId("113ecc"),121.64330939529705);
         //Agent stays at home the whole day so doesn´t use his car so does not get the MobilityBudget
         expectedScores.put(Id.createPersonId("113efb"), 0.0);
-        //Agent used car in BaseCase and now switched to all bike --> MobilityBudget
-        expectedScores.put(Id.createPersonId("113f00"),84.83619800878152);
+        //Agent used car in BaseCase and still uses it
+        expectedScores.put(Id.createPersonId("113f00"),30.318758225233882);
         //Agent didn´t use car in Base Case
-        // why is his score diffrent now?
-        //expectedScores.put(Id.createPersonId("113f02"),117.49532306296163);
         expectedScores.put(Id.createPersonId("113f02"),117.12172395135431);
         //Agent with commercial activities are excluded from the MobilityBudget
         expectedScores.put(Id.createPersonId("commercial_820440"),113.91685874278578);
