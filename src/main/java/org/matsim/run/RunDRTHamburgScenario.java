@@ -5,6 +5,7 @@ import ch.sbb.matsim.routing.pt.raptor.RaptorIntermodalAccessEgress;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.commons.nullanalysis.NotNull;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -44,9 +45,8 @@ public class RunDRTHamburgScenario {
 
     private static final Logger log = LogManager.getLogger(RunDRTHamburgScenario.class);
 
-    public static final String DRT_FEEDER_MODE = "drt_feeder";
-    private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "drtStopFilter";
-    private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "HVV_switch_drtServiceArea";
+    private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE = "intermodalPtDrtStop";
+    private static final String DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE = "railway-subway";
 
     public static void main(String[] args) throws ParseException, IOException {
 
@@ -55,11 +55,11 @@ public class RunDRTHamburgScenario {
         }
 
         if (args.length == 0) {
-            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030/hamburg-v3.0-10pct.config.reallabHH2030.xml"};
+//            args = new String[] {"https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/reallab2030/hamburg-v3.0-10pct.config.reallabHH2030.xml"};
+            args = new String[] {"scenarios/input/hamburg-v4.0-1pct.config.drt.xml"};
         }
 
-        RunDRTHamburgScenario realLabHH2030 = new RunDRTHamburgScenario();
-        realLabHH2030.run(args);
+        new RunDRTHamburgScenario().run(args);
     }
 
     private void run(String[] args) throws IOException {
@@ -81,7 +81,7 @@ public class RunDRTHamburgScenario {
     }
 
     public static void prepareControler(Controler controler) {
-        //        // drt + dvrp module
+        //drt + dvrp module
         controler.addOverridingModule(new MultiModeDrtModule());
         controler.addOverridingModule(new DvrpModule());
 
@@ -130,9 +130,8 @@ public class RunDRTHamburgScenario {
     }
 
     /**
-     * loads the scenario based on the {@code config}. Then adds the drt modes to all links inside the area defined by
-     * {@link HamburgExperimentalConfigGroup.drtNetworkOperationArea}.
-     * If a drt service with mode={@value DRT_FEEDER_MODE} is defined, all rail and subway transit stops inside the corresponding service area are marked as intermodal access/egress stops.
+     * loads the scenario based on the {@code config}. Then adds the drt modes to all links inside the service area, if defined and necessary.
+     * All rail and subway transit stops inside the corresponding service area are marked as intermodal access/egress stops.
      * @param config
      * @return
      * @throws IOException
@@ -144,27 +143,29 @@ public class RunDRTHamburgScenario {
 
     public static Scenario prepareNetwork(Scenario scenario) {
         HamburgExperimentalConfigGroup hamburgExperimentalConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), HamburgExperimentalConfigGroup.class);
-        for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
-            //TODO: this is not the best solution as it requires the user to set an additional config pointer to an additional shape file that must contain all drt service areas...
-            if(hamburgExperimentalConfigGroup.getDrtNetworkOperationArea() != null){
-                addDRTmode(scenario, drtCfg.getMode(), hamburgExperimentalConfigGroup.getDrtNetworkOperationArea(), 0.);
-            }
+        DvrpConfigGroup dvrpConfig = ConfigUtils.addOrGetModule(scenario.getConfig(), DvrpConfigGroup.class);
 
-            if(drtCfg.getMode().equals(DRT_FEEDER_MODE)){
-                //tag pt stops that are to be used for intermodal access and egress
-                tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
-                        DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
-                        drtCfg.drtServiceAreaShapeFile,
-                        /* "stopFilter", "station_S/U/RE/RB",*/
-                        0.); //
+        for (DrtConfigGroup drtCfg : MultiModeDrtConfigGroup.get(scenario.getConfig()).getModalElements()) {
+            String drtServiceAreaShapeFile = drtCfg.drtServiceAreaShapeFile;
+            if(dvrpConfig.networkModes.contains(drtCfg.getMode()) || drtCfg.useModeFilteredSubnetwork){
+                if (drtServiceAreaShapeFile != null && !drtServiceAreaShapeFile.equals("") && !drtServiceAreaShapeFile.equals("null")) {
+                    addDRTmode(scenario, drtCfg.getMode(), drtServiceAreaShapeFile, 1000.);
+                }
             }
+            //tag pt stops that are to be used for intermodal access and egress
+            tagTransitStopsInServiceArea(scenario.getTransitSchedule(),
+                    DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_ATTRIBUTE, DRT_ACCESS_EGRESS_TO_PT_STOP_FILTER_VALUE,
+                    drtCfg.drtServiceAreaShapeFile,
+                    // This does not mean that a drt vehicle can pick the passenger up outside the service area,
+                    // rather the passenger has to walk the last few meters from the drt drop off to the station.
+                    250.); //
         }
         return scenario;
     }
 
-    public static void addDRTmode(Scenario scenario, String drtNetworkMode, String drtServiceAreaShapeFile, double buffer) {
-        Preconditions.checkNotNull(drtServiceAreaShapeFile,"you have to provide a shape file that defines where all drt modes are allowed on the network." +
-                "The place for that is drtNetworkOperationArea in " + HamburgExperimentalConfigGroup.GROUP_NAME + "config group.");
+    public static void addDRTmode(Scenario scenario, @NotNull String drtNetworkMode, @NotNull String drtServiceAreaShapeFile, double buffer) {
+        Preconditions.checkNotNull(drtServiceAreaShapeFile,"you have to provide a shape file that defines where the mode " +
+                drtNetworkMode + " is supposed to get allowed on the network.");
 
         log.info("Adjusting network...");
 
@@ -219,17 +220,5 @@ public class RunDRTHamburgScenario {
                 .filter(stop2Type -> shpUtils.isCoordInDrtServiceAreaWithBuffer(stop2Type.getStop().getCoord(), bufferAroundServiceArea)) //filter spatially
                 .forEach(stop2type -> stop2type.getStop().getAttributes().putAttribute(newAttributeName, newAttributeValue));
 
-
-//        for (TransitStopFacility stop: transitSchedule.getFacilities().values()) {
-//
-//
-//            /*if (stop.getAttributes().getAttribute(oldFilterAttribute) != null) {
-//                if (stop.getAttributes().getAttribute(oldFilterAttribute).equals(oldFilterValue)) {*/
-//                    if (shpUtils.isCoordInDrtServiceAreaWithBuffer(stop.getCoord(), bufferAroundServiceArea)) {
-//                        stop.getAttributes().putAttribute(newAttributeName, newAttributeValue);
-//                    }
-//                }
-//            }
-//        }
     }
 }
