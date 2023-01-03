@@ -66,11 +66,11 @@ import java.util.stream.Collectors;
  * @author  gleich, tschlenther
  *
  */
-public class DrtFeederVehicleCreator {
-	private static final Logger log = LogManager.getLogger(DrtFeederVehicleCreator.class);
+public class DrtVehicleCreator {
+	private static final Logger log = LogManager.getLogger(DrtVehicleCreator.class);
 
 	//NOTE: for emission analysis, it is important to include 'drt' in the vehicleId
-	public final static String VEHICLE_PREFIX = "drtFeeder_";
+	public final static String VEHICLE_PREFIX = "drt_";
 
 	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
@@ -83,43 +83,41 @@ public class DrtFeederVehicleCreator {
 	public static void main(String[] args) {
 
 
-		//careful: currently reallabHH2030plus network!
-		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030plus/input/network/hamburg-v2.0-reallab2030plus-network-with-pt-and-parkingPressure.xml.gz";
+		String networkFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v3/v3.0/input/baseCase/hamburg-v3.0-network-with-pt.xml.gz";
 //		String populationFile = "";
 //		String facilitiesFile = "";
 
 		//where people can be picked up and dropped off
 
-		//careful: currently drt2030 area!
-		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
+		String drtServiceAreaShapeFile = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/shp/hamburg_festland.shp";
 
 		//where vehicles are allowed to drive
-		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp";
+		String drtOperationArea = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/shp/hamburg_festland.shp";
 
 		//transforms from service area crs to the network crs
 		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation("EPSG:25832", RunBaseCaseHamburgScenario.COORDINATE_SYSTEM);
 
 		//TODO you need to adjust this to your local copy because you can not write from your IDE.
-		String vehiclesFilePrefix = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/drt2030/drt/vehicles/hamburg-v2.2-drt-by-rndLocations-";
+		String vehiclesFilePrefix = "scenarios/input/hamburg-v4.0-drt-by-rndLocations-";
 
 		Set<Integer> numbersOfVehicles = new HashSet<>();
-		numbersOfVehicles.add(500);
-		numbersOfVehicles.add(600);
-		numbersOfVehicles.add(700);
-		numbersOfVehicles.add(800);
-		numbersOfVehicles.add(900);
-		numbersOfVehicles.add(1000);
-//		numbersOfVehicles.add(1200);
-		numbersOfVehicles.add(1500);
+//		numbersOfVehicles.add(500);
+//		numbersOfVehicles.add(600);
+//		numbersOfVehicles.add(700);
+//		numbersOfVehicles.add(800);
+//		numbersOfVehicles.add(900);
+//		numbersOfVehicles.add(1000);
+////		numbersOfVehicles.add(1200);
+//		numbersOfVehicles.add(1500);
 		numbersOfVehicles.add(2000);
 //		numbersOfVehicles.add(2500);
-		numbersOfVehicles.add(3000);
-		numbersOfVehicles.add(4000);
-		numbersOfVehicles.add(5000);
-		numbersOfVehicles.add(10000);
+//		numbersOfVehicles.add(3000);
+//		numbersOfVehicles.add(4000);
+//		numbersOfVehicles.add(5000);
+//		numbersOfVehicles.add(10000);
 		int seats = 8;
 
-		DrtFeederVehicleCreator tvc = new DrtFeederVehicleCreator(networkFile, drtServiceAreaShapeFile, drtOperationArea, ct);
+		DrtVehicleCreator tvc = new DrtVehicleCreator(networkFile, drtServiceAreaShapeFile, drtOperationArea, ct);
 //		tvc.setLinkWeightsByActivities(populationFile, facilitiesFile);
 //		tvc.setWeightsToSquareRoot();
 		for (int numberOfVehicles: numbersOfVehicles) {
@@ -128,7 +126,7 @@ public class DrtFeederVehicleCreator {
 		}
 }
 
-	public DrtFeederVehicleCreator(String networkfile, String drtServiceAreaShapeFile, String drtOperationArea, CoordinateTransformation ct) {
+	public DrtVehicleCreator(String networkfile, String drtServiceAreaShapeFile, String drtOperationArea, CoordinateTransformation ct) {
 		this.ct = ct;
 		
 		Config config = ConfigUtils.createConfig();

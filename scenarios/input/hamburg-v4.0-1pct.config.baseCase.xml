@@ -133,6 +133,7 @@
 		</parameterset>
 		<parameterset type="strategysettings" >
 			<param name="strategyName" value="SubtourModeChoice" />
+<!--			<param name="strategyName" value="SelectSubtourMode" />-->
 			<param name="subpopulation" value="person" />
 			<param name="weight" value="0.2" />
 		</parameterset>
@@ -167,6 +168,10 @@
         	<param name="considerCarAvailability" value="true"/>
         	<param name="behavior" value="betweenAllAndFewerConstraints"/>
         	<param name="probaForRandomSingleTripMode" value="0.5" />
+	</module>
+	<module name="informedModeChoice">
+		<param name="modes" value="car,pt,bike,walk"/>
+		<param name="topK" value="5"/>
 	</module>
 	<module name="swissRailRaptor" >
 		<!-- Sets whether intermodal access and egress modes are selected by least cost (default) or randomly chosen out of the available access / egress modes. -->
