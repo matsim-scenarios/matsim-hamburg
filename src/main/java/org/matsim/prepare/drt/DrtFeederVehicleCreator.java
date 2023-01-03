@@ -75,7 +75,7 @@ public class DrtFeederVehicleCreator {
 	private final CoordinateTransformation ct;
 	private final Scenario scenario ;
 	private final Random random = MatsimRandom.getRandom();
-	private final String drtNetworkMode = RunDRTHamburgScenario.DRT_FEEDER_MODE;
+	private final String drtNetworkMode = TransportMode.drt;
 	private final HamburgShpUtils shpUtils;
 	private final Network drtNetwork;
 	private List<Pair<Id<Link>, Double>> links2weights = new ArrayList();

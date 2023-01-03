@@ -18,7 +18,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String Increase_Storage_Capacity = "increaseStorageCapacity";
     private static final String Sample_Size = "sampleSize";
     private static final String Filter_Commercial = "filterCommercial";
-    private static final String DRT_NETWORK_OPERATION_AREA = "drtNetworkOperationArea";
     private static final String FIXED_DAILY_MOBILITY_BUDGET = "fixedDailyMobilityBudget";
     private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
     private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
@@ -120,13 +119,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public void setFreeSpeedFactor(double freeSpeedFactor) {
         this.freeSpeedFactor = freeSpeedFactor;
     }
-
-    @StringGetter(DRT_NETWORK_OPERATION_AREA)
-    public String getDrtNetworkOperationArea() {
-        return drtNetworkOperationArea;
-    }
-    @StringSetter(DRT_NETWORK_OPERATION_AREA)
-    public void setDrtNetworkOperationArea(String drtNetworkOperationArea) {      this.drtNetworkOperationArea = drtNetworkOperationArea;  }
 
     @StringGetter(FIXED_DAILY_MOBILITY_BUDGET)
     public Double getfixedDailyMobilityBudget() {
