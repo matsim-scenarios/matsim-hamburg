@@ -102,7 +102,11 @@ public class RunHamburgScenario extends MATSimApplication {
 				// Use estimators with default values
 				MultiModeDrtEstimatorConfigGroup estimatorConfig = ConfigUtils.addOrGetModule(config, MultiModeDrtEstimatorConfigGroup.class);
 				for (DrtConfigGroup drtCfg : mmDrtCfg.getModalElements()) {
-					estimatorConfig.addParameterSet(new DrtEstimatorConfigGroup(drtCfg.getMode()));
+					DrtEstimatorConfigGroup drtEstimatorCfg = new DrtEstimatorConfigGroup(drtCfg.getMode());
+					drtCfg.getDrtSpeedUpParams().ifPresent(drtSpeedUpParams -> {
+						drtEstimatorCfg.defaultWaitTime = drtSpeedUpParams.initialWaitingTime;
+					});
+					estimatorConfig.addParameterSet(drtEstimatorCfg);
 				}
 
 				//when simulating dvrp, we need/should simulate from the start to the end
@@ -147,7 +151,7 @@ public class RunHamburgScenario extends MATSimApplication {
 				// Configure informed mode choice strategy
 				install(strategy.applyModule(binder(), controler.getConfig(), builder ->{
 						builder.withFixedCosts(FixedCostsEstimator.DailyConstant.class, TransportMode.car, TransportMode.pt)
-										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.bike, TransportMode.ride, TransportMode.walk)
+										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.bike, TransportMode.walk)
 										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.ConsiderIfCarAvailable.class, TransportMode.car)
 										.withTripEstimator(PtTripEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.pt)
 										.withActivityEstimator(DefaultActivityEstimator.class)
