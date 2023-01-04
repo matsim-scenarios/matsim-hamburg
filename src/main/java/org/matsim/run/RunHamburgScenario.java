@@ -33,6 +33,7 @@ import org.matsim.modechoice.commands.StrategyOptions;
 import org.matsim.modechoice.estimators.DefaultActivityEstimator;
 import org.matsim.modechoice.estimators.DefaultLegScoreEstimator;
 import org.matsim.modechoice.estimators.FixedCostsEstimator;
+import org.matsim.modechoice.estimators.PtTripEstimator;
 import org.matsim.modechoice.pruning.DistanceBasedPruner;
 import org.matsim.modechoice.pruning.ModeDistanceBasedPruner;
 import picocli.CommandLine;
@@ -85,22 +86,6 @@ public class RunHamburgScenario extends MATSimApplication {
 
 		{ //informed mode choice stuff. part of this potentially should be migrated to RunDRTHamburgScenario
 			strategy.applyConfig(config, this::addRunOption);
-
-			//right now i just hack the distanceBasedPtFareParams in and set everything to zero. We are using dailyMonetaryConstant in Hamburg currently.
-			//TODO clean up: either introduce new pt fare model or use custom/new pt leg estimator
-			PtFareConfigGroup ptFareConfigGroup = ConfigUtils.addOrGetModule(config, PtFareConfigGroup.class);
-			DistanceBasedPtFareParams distanceBasedPtFareParams = ConfigUtils.addOrGetModule(config, DistanceBasedPtFareParams.class);
-
-			// Set parameters
-			ptFareConfigGroup.setApplyUpperBound(true);
-			ptFareConfigGroup.setUpperBoundFactor(1.5);
-
-			distanceBasedPtFareParams.setMinFare(0.0);  // Minimum fare (e.g. short trip or 1 zone ticket)
-			distanceBasedPtFareParams.setLongDistanceTripThreshold(0); // Division between long trip and short trip (unit: m)
-			distanceBasedPtFareParams.setNormalTripSlope(0.0); // y = ax + b --> a value, for short trips
-			distanceBasedPtFareParams.setNormalTripIntercept(0); // y = ax + b --> b value, for short trips
-			distanceBasedPtFareParams.setLongDistanceTripSlope(0); // y = ax + b --> a value, for long trips
-			distanceBasedPtFareParams.setLongDistanceTripIntercept(0); // y = ax + b --> b value, for long trips
 
 			if(drt){
 //				ConfigGroup[] customModulesToAdd = new ConfigGroup[] { new DvrpConfigGroup(), new MultiModeDrtConfigGroup(),
@@ -164,7 +149,7 @@ public class RunHamburgScenario extends MATSimApplication {
 						builder.withFixedCosts(FixedCostsEstimator.DailyConstant.class, TransportMode.car, TransportMode.pt)
 										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.bike, TransportMode.ride, TransportMode.walk)
 										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.ConsiderIfCarAvailable.class, TransportMode.car)
-										.withTripEstimator(PtTripFareEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.pt)
+										.withTripEstimator(PtTripEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.pt)
 										.withActivityEstimator(DefaultActivityEstimator.class)
 										.withPruner("d99", new DistanceBasedPruner(3.28179737, 0.16710464))
 										.withPruner("d95", new DistanceBasedPruner(3.09737874, 0.03390164))
