@@ -21,7 +21,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private static final String FIXED_DAILY_MOBILITY_BUDGET = "fixedDailyMobilityBudget";
     private static final String CAR_SHARING_SERVICE_INPUT_FILE = "carSharingServiceInputFile";
     private static final String BIKE_SHARING_SERVICE_INPUT_FILE = "bikeSharingServiceInputFile";
-    private static final String SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE = "smcProbaForSingleTripChange";
     private static final String SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION = "scorePenaltyForMassConservationViolation";
 
 
@@ -44,7 +43,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     private Double fixedDailyMobilityBudget = null;
     private String carSharingServiceInputFile = null;
     private String bikeSharingServiceInputFile = null;
-    private double smcProbaForSingleTripChange = 0; // same default as in {@link SubtourModeChoiceConfigGroup} //TODO delete and make original config group setting available in MATSim
     private double scorePenaltyForMassConservationViolation = -0.0d;
 
 
@@ -136,16 +134,6 @@ public class HamburgExperimentalConfigGroup extends ReflectiveConfigGroup {
     public String getBikeSharingServiceInputFile() { return bikeSharingServiceInputFile; }
     @StringSetter(BIKE_SHARING_SERVICE_INPUT_FILE)
     public void setBikeSharingServiceInputFile(String bikeSharingServiceInputFile) { this.bikeSharingServiceInputFile = bikeSharingServiceInputFile; }
-
-    @StringGetter(SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE)
-    public double getSubTourModeChoiceProbaForSingleTripChange() {
-        return this.smcProbaForSingleTripChange;
-    }
-
-    @StringSetter(SUBTOUR_MODE_CHOICE_PROBA_FOR_SINGLE_TRIP_CHANGE)
-    public void setSubTourModeChoiceProbaForSingleTripChange(double val) {
-        this.smcProbaForSingleTripChange = val;
-    }
 
     @StringGetter(SCORE_PENALTY_FOR_MASS_CONSERVATION_VIOLATION)
     public double getScorePenaltyForMassConservationViolation() {
