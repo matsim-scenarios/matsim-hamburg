@@ -151,26 +151,10 @@ public class RunHamburgScenario extends MATSimApplication {
 										.withLegEstimator(DefaultLegScoreEstimator.class, ModeOptions.ConsiderIfCarAvailable.class, TransportMode.car)
 										.withTripEstimator(PtTripEstimator.class, ModeOptions.AlwaysAvailable.class, TransportMode.pt)
 										.withActivityEstimator(DefaultActivityEstimator.class)
-										.withPruner("d99", new DistanceBasedPruner(3.28179737, 0.16710464))
-										.withPruner("d95", new DistanceBasedPruner(3.09737874, 0.03390164))
-										.withPruner("m99", new ModeDistanceBasedPruner(2.54076057, Map.of(
-												"bike", 0.32642463,
-												"walk", 0.13978577,
-												"car", 0.0448102,
-												"ride", 0.07041452,
-												"pt", 0.13576849
-										)))
 										// These are with activity estimation enabled
 										.withPruner("ad999", new DistanceBasedPruner(3.03073657, 0.22950583))
 										.withPruner("ad99", new DistanceBasedPruner(2.10630819, 0.0917091))
-										.withPruner("ad95", new DistanceBasedPruner(1.72092386, 0.03189323))
-										.withPruner("am99", new ModeDistanceBasedPruner(2.68083795, Map.of(
-												"bike", 0.22681661,
-												"walk", 0d,
-												"car", 0.052746,
-												"ride", 0.11132056,
-												"pt", 0.07964946
-										)));
+										.withPruner("ad95", new DistanceBasedPruner(1.72092386, 0.03189323));
 						if(drt) {
 							builder.withLegEstimator(MultiModalDrtLegEstimator.class, ModeOptions.AlwaysAvailable.class, "drt");
 						}
