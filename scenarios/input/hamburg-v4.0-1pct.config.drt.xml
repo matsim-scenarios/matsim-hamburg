@@ -147,7 +147,6 @@
 		</parameterset>
 		<parameterset type="strategysettings" >
 			<param name="strategyName" value="SubtourModeChoice" />
-<!--			<param name="strategyName" value="SelectSubtourMode" />-->
 			<param name="subpopulation" value="person" />
 			<param name="weight" value="0.2" />
 		</parameterset>
@@ -182,10 +181,6 @@
         	<param name="considerCarAvailability" value="true"/>
         	<param name="behavior" value="betweenAllAndFewerConstraints"/>
         	<param name="probaForRandomSingleTripMode" value="0.5" />
-	</module>
-	<module name="informedModeChoice">
-		<param name="modes" value="car,pt,bike,walk,drt"/>
-		<param name="topK" value="5"/>
 	</module>
 	<module name="swissRailRaptor" >
 		<!-- Sets whether intermodal access and egress modes are selected by least cost (default) or randomly chosen out of the available access / egress modes. -->
@@ -295,7 +290,7 @@
 			<!-- If true, the startLink is changed to last link in the current schedule, so the taxi starts the next day at the link where it stopped operating the day before. False by default. -->
 			<param name="changeStartLinkToLastLinkInSchedule" value="true" />
 			<!-- allows to configure a service area per drt mode.Used with serviceArea Operational Scheme -->
-			<param name="drtServiceAreaShapeFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/shp/hamburg_festland.shp" />
+			<param name="drtServiceAreaShapeFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea.shp" />
 			<!-- Idle vehicles return to the nearest of all start links. See: DvrpVehicle.getStartLink() -->
 			<param name="idleVehiclesReturnToDepots" value="false" />
 			<!-- Defines the slope of the maxTravelTime estimation function (optimisation constraint), i.e. maxTravelTimeAlpha * unsharedRideTime + maxTravelTimeBeta. Alpha should not be smaller than 1. -->
@@ -319,7 +314,7 @@
 			<!-- Limit the operation of vehicles to links (of the 'dvrp_routing' network) with 'allowedModes' containing this 'mode'. For backward compatibility, the value is set to false by default - this means that the vehicles are allowed to operate on all links of the 'dvrp_routing' network. The 'dvrp_routing' is defined by DvrpConfigGroup.networkModes) -->
 			<param name="useModeFilteredSubnetwork" value="true" />
 			<!-- An XML file specifying the vehicle fleet. The file format according to dvrp_vehicles_v1.dtd -->
-			<param name="vehiclesFile" value="hamburg-v4.0-drt-by-rndLocations-2000vehicles-8seats.xml.gz" />
+			<param name="vehiclesFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.2/input/drt2030/drt/vehicles/hamburg-v2.2-drt-by-rndLocations-10000vehicles-8seats.xml.gz" />
 			<!-- Writes out detailed DRT customer stats in each iteration. True by default. -->
 			<param name="writeDetailedCustomerStats" value="true" />
 			<parameterset type="ExtensiveInsertionSearch" >
@@ -371,13 +366,13 @@
 			</parameterset>
 			<parameterset type="zonalSystem" >
 				<!-- size of square cells used for demand aggregation. Depends on demand, supply and network. Often used with values in the range of 500 - 2000 m -->
-				<param name="cellSize" value="2000" />
+				<param name="cellSize" value="null" />
 				<!-- Possible values: random, mostCentral -->
 				<param name="zoneTargetLinkSelection" value="random" />
 				<!-- Logic for generation of zones for the DRT zonal system. Value can be: [GridFromNetwork, ShapeFile]. -->
-				<param name="zonesGeneration" value="GridFromNetwork" />
+				<param name="zonesGeneration" value="ShapeFile" />
 				<!-- allows to configure zones. Used with zonesGeneration=ShapeFile -->
-				<param name="zonesShapeFile" value="" />
+				<param name="zonesShapeFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/hamburg/hamburg-v2/hamburg-v2.0/reallab2030/input/drt/allDrtNetworkOperationArea/allDrtNetworkOperationArea-1000mSquares.shp" />
 			</parameterset>
 		</parameterset>
 	</module>
