@@ -8,33 +8,39 @@ library(sf)
 
 source("https://raw.githubusercontent.com/matsim-scenarios/matsim-duesseldorf/master/src/main/R/theme.R")
 
-setwd("PLEASE ADJUST TO YOUR LOCAL DIRECTORY FOR matsim-kelheim/src/main/R")
+setwd("D:git/matsim-hamburg/src/main/R")
 
 theme_set(theme_Publication(18))
 
 # trip distance groups
-levels = c("0 - 1000", "1000 - 2000", "2000 - 5000", "5000 - 10000", "10000 - 20000", "20000+")
-breaks = c(0, 1000, 2000, 5000, 10000, 20000, Inf)
+levels = c("0 - 500", "500 - 1000", "1000 - 2000", "2000 - 5000", "5000 - 10000", "10000 - 20000", "20000 - 50000", "50000 - 100000", "100000+")
+breaks = c(0, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, Inf)
 
-shape <- st_read("../../../scenarios/input/shp/dilutionArea.shp", crs=25832)
+shape <- st_read("D:/svn/shared-svn/projects/realLabHH/data/hamburg_shapeFile/hamburg_merge", crs=25832)
 
 #########
 # Read simulation data
 #########
 
 sim_scale <- 4 # set to 4 for 25pct, 10 for 10pct, 100 for 1pct, ...
-f <- "Z:\\matsim-kelheim\\calibration-v3\\runs\\012" # set to run output directory
+f <- "//sshfs.r/schlenther@cluster.math.tu-berlin.de/net/ils/matsim-hamburg/v4.0-calibration/runs/020" # set to run output directory
 
-homes <- read_csv("../../../scenarios/input/kelheim-v3.0-homes.csv", 
-                  col_types = cols(
-                    person = col_character()
-                  ))
+#homes <- read_csv("../../../scenarios/input/kelheim-v3.0-homes.csv", 
+#                  col_types = cols(
+#                    person = col_character()
+#                  ))
+
+homes <- read_tsv("D:/svn/shared-svn/projects/matsim-hamburg/hamburg-v3/hamburg-v3.0-person2HomeLocation.tsv",
+                   col_types = cols( person = col_character())
+                  )
 
 persons <- read_delim(list.files(f, pattern = "*.output_persons.csv.gz", full.names = T, include.dirs = F), delim = ";", trim_ws = T, 
                      col_types = cols(
                        person = col_character(),
                        good_type = col_integer()
-                     )) %>%
+                     ))
+
+persons <- persons %>%
           right_join(homes) %>%
           st_as_sf(coords = c("home_x", "home_y"), crs = 25832) %>%
 #          st_as_sf(coords = c("first_act_x", "first_act_y"), crs = 25832) %>%
@@ -61,9 +67,12 @@ sim <- trips %>%
 # Read survey data
 ########
 
-srv <- read_csv("mid.csv") %>%
+
+#for scaling trips, see https://svn.vsp.tu-berlin.de/repos/shared-svn/projects/realLabHH/data/MiD_Hamburg_2019/MiD-Hamburg.xlsx
+# Hamburg Metropolregion has 16960000 trips (5.3*10^6 inhabitants * 3.2 trips per day)
+srv <- read_csv("analysis/mid.csv") %>%
     mutate(main_mode=mode) %>%
-    mutate(scaled_trips=122258 * 3.2 * share) %>%
+    mutate(scaled_trips=16960000 * share) %>% ## number of person agents * avgTrips * mode-share
     mutate(source = "mid") %>%
     mutate(dist_group=fct_relevel(dist_group, levels)) %>%
     arrange(dist_group)
@@ -123,10 +132,10 @@ total <- bind_rows(srv, sim) %>%
 
 # Maps left overgroups
 dist_order <- factor(total$dist_group, level = levels)
-dist_order <- fct_explicit_na(dist_order, "20000+")
+dist_order <- fct_explicit_na(dist_order, "100000+")
 
 g <- ggplot(total, aes(fill=mode, y=scaled_trips, x=source)) +
-  labs(subtitle = paste("Kelheim scenario", substring(f, 52)), x="distance [m]", y="trips") +
+  labs(subtitle = paste("Hamburg scenario", substring(f, 52)), x="distance [m]", y="trips") +
   geom_bar(position="stack", stat="identity", width = 0.5) +
   facet_wrap(dist_order, nrow = 1) +
   scale_y_continuous(labels = scales::number_format(suffix = " K", scale = 1e-3)) +
@@ -138,7 +147,11 @@ g
 ggsave(filename = "modal-distance-distribution.png", path = out, g,
        width = 12, height = 10, device='png', dpi=300)
 
-
+###############################################################################
+##
+#        !!! CODE AND VALUES FROM KELHEIM !!!
+##
+##############################################################################
 # Needed for adding short distance trips
 
 sim_sum <- sum(sim$trips)
@@ -208,7 +221,7 @@ dist_order <- factor(by_distance$dist_group, level = levels)
 dist_order <- fct_explicit_na(dist_order, "100000+")
 
 g <- ggplot(by_distance, aes(y=share, x=source, fill=mode)) +
-  labs(subtitle = paste("Kelheim scenario", substring(f, 52)), x="distance [m]", y="share") +
+  labs(subtitle = paste("Hamburg scenario", substring(f, 52)), x="distance [m]", y="share") +
   geom_bar(position="stack", stat="identity", width = 0.5) +
   facet_wrap(dist_order, nrow = 1) +
   scale_fill_locuszoom() +
