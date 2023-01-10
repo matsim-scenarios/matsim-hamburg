@@ -1,8 +1,6 @@
 package org.matsim.run;
 
 
-import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
-import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
@@ -20,14 +18,11 @@ import org.matsim.contrib.drt.run.DrtConfigs;
 import org.matsim.contrib.drt.run.MultiModeDrtConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.extensions.pt.fare.intermodalTripFareCompensator.IntermodalTripFareCompensatorsConfigGroup;
-import org.matsim.extensions.pt.routing.ptRoutingModes.PtIntermodalRoutingModesConfigGroup;
-import org.matsim.modechoice.InformedModeChoiceModule;
 import org.matsim.modechoice.ModeOptions;
 import org.matsim.modechoice.commands.StrategyOptions;
 import org.matsim.modechoice.estimators.DefaultActivityEstimator;
@@ -35,17 +30,11 @@ import org.matsim.modechoice.estimators.DefaultLegScoreEstimator;
 import org.matsim.modechoice.estimators.FixedCostsEstimator;
 import org.matsim.modechoice.estimators.PtTripEstimator;
 import org.matsim.modechoice.pruning.DistanceBasedPruner;
-import org.matsim.modechoice.pruning.ModeDistanceBasedPruner;
 import picocli.CommandLine;
-import playground.vsp.pt.fare.DistanceBasedPtFareParams;
-import playground.vsp.pt.fare.PtFareConfigGroup;
-import playground.vsp.pt.fare.PtTripFareEstimator;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
