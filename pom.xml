@@ -101,6 +101,13 @@
 
         <dependency>
             <groupId>org.matsim.contrib</groupId>
+            <artifactId>ev</artifactId>
+            <version>${matsim.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.matsim.contrib</groupId>
             <artifactId>osm</artifactId>
             <version>${matsim.version}</version>
             <scope>compile</scope>
