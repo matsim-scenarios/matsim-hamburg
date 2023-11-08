@@ -20,14 +20,15 @@
 
 package org.matsim.run;
 
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
-import org.matsim.contrib.ev.EvUnits;
 import org.matsim.contrib.ev.fleet.ElectricFleetSpecification;
 import org.matsim.contrib.ev.fleet.ElectricFleetSpecificationImpl;
 import org.matsim.contrib.ev.fleet.ElectricVehicleSpecificationWithMatsimVehicle;
@@ -35,14 +36,11 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.population.PopulationUtils;
 import org.matsim.utils.objectattributes.attributable.Attributes;
-import org.matsim.vehicles.EngineInformation;
-import org.matsim.vehicles.Vehicle;
-import org.matsim.vehicles.VehicleUtils;
-import org.matsim.vehicles.Vehicles;
+import org.matsim.vehicles.*;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import static org.matsim.contrib.ev.fleet.ElectricVehicleSpecificationWithMatsimVehicle.*;
@@ -82,9 +80,24 @@ public class RunEVScenario {
 	private Scenario prepareScenario(Config config) throws IOException {
 		Scenario scenario = RunBaseCaseHamburgScenario.prepareScenario(config);
 
-		for (Vehicle vehicle : scenario.getVehicles().getVehicles().values()) {
-			VehicleUtils.setHbefaTechnology(vehicle.getType().getEngineInformation(), "electricity");
-		}
+
+		//create vehicles ourselves (even though we still use  QSimConfigGroup.VehiclesSource.modeVehicleTypesFromVehiclesData, which we should change at some point!
+		//this is sloppy and we should do this in a separate pre-process instead!!
+
+		VehicleType carVehicleType = scenario.getVehicles().getVehicleTypes().get(Id.create("car", VehicleType.class));
+		EngineInformation engineInfo = carVehicleType.getEngineInformation();
+		VehicleUtils.setHbefaTechnology(engineInfo, EV_ENGINE_HBEFA_TECHNOLOGY);
+		VehicleUtils.setEnergyCapacity(engineInfo, 100);
+		engineInfo.getAttributes().putAttribute(CHARGER_TYPES, List.of("blue"));
+		scenario.getPopulation().getPersons().values().stream()
+				.filter(p -> PopulationUtils.getSubpopulation(p).equals("person"))
+				.forEach(p -> {
+					Id<Vehicle> vehicleId = createVehicleId(scenario.getConfig().qsim(), p, TransportMode.car);
+					Vehicle vehicle = VehicleUtils.createVehicle(vehicleId, carVehicleType);
+					Attributes attributes = vehicle.getAttributes();
+					attributes.putAttribute(INITIAL_ENERGY_kWh, 100d);
+					scenario.getVehicles().addVehicle(vehicle);
+				});
 
 		return scenario;
 	}
@@ -117,16 +130,10 @@ public class RunEVScenario {
 						vehicles.getVehicles()
 								.values()
 								.stream()
-								.filter(v -> v.getType().getId().toString().equals("car"))
-								.forEach(v -> {
-									Attributes attributes = v.getAttributes();
-									EngineInformation engineInfo = v.getType().getEngineInformation();
-									attributes.putAttribute(INITIAL_ENERGY_kWh, "100");
-									VehicleUtils.setHbefaTechnology(engineInfo, EV_ENGINE_HBEFA_TECHNOLOGY);
-									attributes.putAttribute(CHARGER_TYPES, List.of("blue"));
-									VehicleUtils.setEnergyCapacity(engineInfo, 100);
-									fleetSpecification.addVehicleSpecification(new ElectricVehicleSpecificationWithMatsimVehicle (v));
-								});
+								.filter(vehicle -> EV_ENGINE_HBEFA_TECHNOLOGY.equals(
+										VehicleUtils.getHbefaTechnology(vehicle.getType().getEngineInformation())))
+								.map(ElectricVehicleSpecificationWithMatsimVehicle::new)
+								.forEach(fleetSpecification::addVehicleSpecification);
 						return fleetSpecification;
 					}
 				}).asEagerSingleton();
@@ -134,6 +141,16 @@ public class RunEVScenario {
 		});
 
 		return controler;
+	}
+
+	//copied from PrepareForSimImpl
+	private static Id<Vehicle> createVehicleId(QSimConfigGroup qSimConfigGroup, Person person, String modeType) {
+		if (qSimConfigGroup.getUsePersonIdForMissingVehicleId() && TransportMode.car.equals(modeType)) {
+
+			return Id.createVehicleId(person.getId());
+		}
+
+		return VehicleUtils.createVehicleId(person, modeType);
 	}
 
 }
