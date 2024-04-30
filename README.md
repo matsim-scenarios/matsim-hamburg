@@ -94,3 +94,7 @@ For more information about MATSim, see here: https://www.matsim.org/.
 ### Acknowledgements
 
 The travel demand data for the area of Hamburg is provided by Senozon Deutschland GmbH (https://senozon.com).
+
+### Internal documentation
+
+Internal documentation can be found here: https://docs.google.com/document/d/14xNeAjfJEFKVPU66dkOO6UJdgtQ7V-evsy3W8QLTRqQ/edit#heading=h.duf90oovpyz5
